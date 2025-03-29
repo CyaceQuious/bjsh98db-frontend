@@ -15,7 +15,9 @@ export default function SearchPage() {
 
         return {
             name: query.name ? String(query.name) : "",
-            projectname: query.projectname ? String(query.projectname) : ""
+            projectname: query.projectname ? String(query.projectname) : "", 
+            meet: query.meet ? String(query.meet) : "",
+            groupname: query.groupname ? String(query.groupname) : "",
         };
     };
 

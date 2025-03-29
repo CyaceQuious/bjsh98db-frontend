@@ -1,12 +1,16 @@
 export interface SearchQuery {
     name?: string; 
+    meet?: string; 
     projectname?: string; 
+    groupname?: string; 
 }
 
 export function getEmptyQuery():SearchQuery {
     return {
         name: "", 
-        projectname: ""
+        meet: "", 
+        projectname: "", 
+        groupname: ""
     }
 }
 

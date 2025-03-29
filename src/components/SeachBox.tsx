@@ -13,16 +13,26 @@ interface SearchBoxProps {
 }
 
 export default function SearchBox({ query, queryChange, doSearch}: SearchBoxProps) {
-    const listname: string[] = Object.keys(query)
-    const searchTextBoxes = listname.map((name)=>(
-        <div key={name}>
-        <SearchTextBox 
-            name={name} 
-            query={query[name as keyof SearchQuery]??""}
-            textChange={queryChange}
-        />
-        </div>
-    ))
+    const listname: string[] = Object.keys(query);
+
+    // decode all queries into Boxes
+    const searchTextBoxes = [];
+    for (let i = 0; i<listname.length; i++) {
+        const curValue: string | boolean | undefined = query[listname[i] as keyof SearchQuery]
+        if (typeof curValue === "string") {
+            searchTextBoxes.push((
+                <div key={i}>
+                <SearchTextBox 
+                    name={listname[i]} 
+                    query={curValue}
+                    textChange={queryChange}
+                />
+                </div>
+            ))
+        } else if (typeof curValue === "boolean") {
+            // TODO
+        }
+    }
     return (
         <div style={{ display: "flex", flexDirection: "row" }}>
             <div style={{ display: "flex", flexDirection: "column", width: "80%"}}>
