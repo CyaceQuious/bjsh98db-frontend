@@ -36,32 +36,33 @@ export const request = async (
         body: body && JSON.stringify(body),
     });
 
-    // BEGIN: fake response for test
-    const datatest = {
-        code: 0, 
-        info: "Succeed", 
-        count: 2, 
-        results: [
-            {
-                name: "戎胤泽",
-                meet: "2024清华大学第六十七届马拉松杯学生田径运动会",
-                projectname: "男子甲组800米决赛",
-                groupname: "致理",
-                result: "02:20.71",
-                grade: ""
-            },
-            {
-                name: "戎胤泽2",
-                meet: "2024清华大学第六十七届马拉松杯学生田径运动会",
-                projectname: "男子甲组800米决赛",
-                groupname: "致理",
-                result: "02:20.71",
-                grade: ""
-            }
-        ]
-    }
-    return { ...datatest};
-    // END: fake response for test
+    // // BEGIN: fake response for test
+    // // reserved temporarily for future test use
+    // const datatest = {
+    //     code: 0, 
+    //     info: "Succeed", 
+    //     count: 2, 
+    //     results: [
+    //         {
+    //             name: "戎胤泽",
+    //             meet: "2024清华大学第六十七届马拉松杯学生田径运动会",
+    //             projectname: "男子甲组800米决赛",
+    //             groupname: "致理",
+    //             result: "02:20.71",
+    //             grade: ""
+    //         },
+    //         {
+    //             name: "戎胤泽2",
+    //             meet: "2024清华大学第六十七届马拉松杯学生田径运动会",
+    //             projectname: "男子甲组800米决赛",
+    //             groupname: "致理",
+    //             result: "02:20.71",
+    //             grade: ""
+    //         }
+    //     ]
+    // }
+    // return { ...datatest};
+    // // END: fake response for test
     const data = await response.json();
     const code = Number(data.code);
 
