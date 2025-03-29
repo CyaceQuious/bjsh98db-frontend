@@ -1,4 +1,4 @@
-// 组件：搜索结果的一个条目
+// 组件：搜索结果的表头
 
 import { SearchResultItem } from "../utils/types";
 

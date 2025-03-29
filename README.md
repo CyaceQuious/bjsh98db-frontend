@@ -6,7 +6,7 @@
 
 按照[小作业手册](https://thuse-course.github.io/course-index/handout/react/environment/)的指导，安装完成node.js与pnpm。
 
-具体来说，WSL2可以这样操作：
+举例来说，WSL2可以这样操作：
 ```bash
 mkdir ~/workspace && cd ~/workspace
 wget https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
@@ -14,6 +14,32 @@ tar -xf node-v22.14.0-linux-x64.tar.xz
 cd node-v22.14.0-linux-x64/bin
 pwd
 ```
+请将这个输出的路径添加到环境变量中。为了方便，你可以在 `~/.bashrc` 最后加上这句话：
+```bash
+export PATH=~/workspace/node-v22.14.0-linux-x64/bin:$PATH
+```
+随后回到你的终端，运行：
+```bash
+source ~/.bashrc
+```
+以重载配置。
+至此我们安装好了 node.js ，可以终端输入指令 `node -v` 确认。
+
+接下来，我们启用包管理器，下载项目，安装依赖：
+```bash
+corepack enable # 启用包管理器的管理器 corepack
+git clone <OUR_PROJECT>
+cd <PATH_TO_OUR_PROJECT>
+pnpm install # 安装项目依赖
+```
+
+## 运行前端服务器
+
+直接在项目文件夹里运行：
+```bash
+pnpm dev
+```
+接下来你可以在 http://localhost:3000/ 看到前端页面
 
 # OLD README
 

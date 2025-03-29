@@ -1,4 +1,6 @@
-// 组件：完整搜索框
+// 组件：所有搜索结果
+// 使用 html 标签 table 展示
+// 包含若干 SearchTableEntry 以及一个 SearchTableHead
 
 import { useEffect, useRef, useState } from "react";
 import SearchResultTableEntry from "./SeachResultTableEntry";

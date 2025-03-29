@@ -1,5 +1,6 @@
 // 组件：完整搜索框
 // 包含 SearchBox 以及 SearchResultTable
+// 进行搜索网络请求，并自动更新搜索结果
 
 import { SearchQuery, SearchResultItem, SearchResult, getEmptyQuery, searchQueryToString } from "../utils/types";
 import SearchBox from "./SeachBox"

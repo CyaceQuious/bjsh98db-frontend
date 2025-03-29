@@ -1,3 +1,6 @@
+// 位于页面上端的导航栏
+// 点击跳转到相应页面
+
 import { useRouter } from 'next/router';
 
 export default function Navbar() {

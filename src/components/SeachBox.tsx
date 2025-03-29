@@ -1,4 +1,6 @@
 // 组件：完整搜索框
+// 包含若干 SearchTextBox
+// 
 
 import { SearchQuery } from "../utils/types";
 import SearchTextBox from "./SeachTextBox"

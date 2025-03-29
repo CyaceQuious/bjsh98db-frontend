@@ -1,3 +1,7 @@
+// 主页
+// 包含欢迎语以及 SearchBox。
+
+
 import SearchBox from "../components/SeachBox";
 import styles from '../styles/container.module.css'
 import { getEmptyQuery, SearchQuery, searchQueryToString } from "../utils/types";
