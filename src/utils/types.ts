@@ -1,11 +1,48 @@
-export type Board = (0 | 1)[][];
+export interface SearchQuery {
+    name?: string; 
+    projectname?: string; 
+}
 
-/**
- * @note 用于前后端交互的 Board 数据格式
- */
-export interface BoardMetaData {
-    id: number;
-    boardName: string;
-    createdAt: number;
-    userName: string;
+export function getEmptyQuery():SearchQuery {
+    return {
+        name: "", 
+        projectname: ""
+    }
+}
+
+export function searchQueryToString(params: SearchQuery): string {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            searchParams.append(key, value.toString());
+        }
+    });
+
+    return searchParams.toString();
+}
+
+// Example: 
+// "name": "戎胤泽",
+// "meet": "2024清华大学第六十七届马拉松杯学生田径运动会",
+// "projectname": "男子甲组800米决赛",
+// "groupname": "致理",
+// "result": "02:20.71",
+// "grade": ""
+// 
+// 用于前后端交互，传递搜索结果
+export interface SearchResultItem {
+    name: string; 
+    meet: string; 
+    projectname: string; 
+    groupname: string; 
+    result: string; 
+    grade: string; 
+}
+
+export interface SearchResult {
+    code: number;
+    info: string;
+    count: number;
+    results: SearchResultItem[]; 
 }

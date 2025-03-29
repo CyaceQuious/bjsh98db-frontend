@@ -1,3 +1,22 @@
+# 大体协数据库 - 前端
+
+本前端修改自 [Next.js 小作业](https://git.tsinghua.edu.cn/se-2025spring/2025-next-hw)
+
+## 安装环境
+
+按照[小作业手册](https://thuse-course.github.io/course-index/handout/react/environment/)的指导，安装完成node.js与pnpm。
+
+具体来说，WSL2可以这样操作：
+```bash
+mkdir ~/workspace && cd ~/workspace
+wget https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
+tar -xf node-v22.14.0-linux-x64.tar.xz
+cd node-v22.14.0-linux-x64/bin
+pwd
+```
+
+# OLD README
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

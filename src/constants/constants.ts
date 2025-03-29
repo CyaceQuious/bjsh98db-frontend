@@ -4,4 +4,3 @@
  *       即所谓的回避**魔数**问题
  */
 
-export const BOARD_LENGTH = 50;

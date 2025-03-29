@@ -1,5 +1,5 @@
 # TODO Start: [Student] URL
-image: registry.spring25{a|b}.secoder.net/tool/deployer
+image: registry.spring25a.secoder.net/tool/deployer
 # TODO End
 
 stages:
@@ -27,7 +27,7 @@ deploy:
   script:
     - export DEPLOY_ENV=$GITLAB_USER_LOGIN
     # TODO Start: [Student] URL
-    - export API_SERVER=https://deployer.spring25{a|b}.secoder.net/api
+    - export API_SERVER=https://deployer.spring25a.secoder.net/api
     # TODO End
     - deployer dyno replace frontend $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG gitlab-ci-token $REGISTRY_PWD
   only:

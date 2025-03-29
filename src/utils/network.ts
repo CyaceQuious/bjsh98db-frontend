@@ -1,9 +1,5 @@
-/**
- * @note 本文件是一个网络请求 wrapper 示例，其作用是将所有网络请求汇总到一个函数内处理
- *       我们推荐你在大作业中也尝试写一个网络请求 wrapper，本文件可以用作参考
- */
-
-import store from "../redux/store";
+// 网络请求处理器，为后续鉴权方便考虑
+// 修改自小作业提供的 wrapper
 
 export enum NetworkErrorType {
     UNAUTHORIZED,
@@ -33,27 +29,52 @@ export class NetworkError extends Error {
 export const request = async (
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE",
-    needAuth: boolean,
-    body?: object,
+    body?: object
 ) => {
-    /**
-     * @todo [Step 4] 请在下述两处代码缺失部分以正确根据 `needAuth` 参数读取 JWT 信息并构建请求头
-     */
-    // Step 4 BEGIN
-
-    // Step 4 END
-
     const response = await fetch(url, {
         method,
         body: body && JSON.stringify(body),
-
-        // Step 4 BEGIN
-
-        // Step 4 END
     });
 
+    // BEGIN: fake response for test
+    const datatest = {
+        code: 0, 
+        info: "Succeed", 
+        count: 2, 
+        results: [
+            {
+                name: "戎胤泽",
+                meet: "2024清华大学第六十七届马拉松杯学生田径运动会",
+                projectname: "男子甲组800米决赛",
+                groupname: "致理",
+                result: "02:20.71",
+                grade: ""
+            },
+            {
+                name: "戎胤泽2",
+                meet: "2024清华大学第六十七届马拉松杯学生田径运动会",
+                projectname: "男子甲组800米决赛",
+                groupname: "致理",
+                result: "02:20.71",
+                grade: ""
+            }
+        ]
+    }
+    return { ...datatest};
+    // END: fake response for test
     const data = await response.json();
     const code = Number(data.code);
+
+    // HTTP status 200
+    if (response.status === 200 && code === 0) {
+        return { ...data};
+    }
+    else if (response.status === 200) {
+        throw new NetworkError(
+            NetworkErrorType.CORRUPTED_RESPONSE,
+            "[200] " + data.info,
+        );
+    }
 
     // HTTP status 401
     if (response.status === 401 && code === 2) {
@@ -83,21 +104,6 @@ export const request = async (
         );
     }
 
-    // HTTP status 200
-    if (response.status === 200 && code === 0) {
-        return { ...data, code: undefined };
-    }
-    else if (response.status === 200) {
-        throw new NetworkError(
-            NetworkErrorType.CORRUPTED_RESPONSE,
-            "[200] " + data.info,
-        );
-    }
-
-    /**
-     * @note 这里的错误处理显然是粗糙的，根据 HTTP status 和 code 的不同应该有更精细的处理
-     *       在大作业中，可以尝试编写更为精细的错误处理代码以理清网络请求逻辑
-     */
     throw new NetworkError(
         NetworkErrorType.UNKNOWN_ERROR,
         `[${response.status}] ` + data.info,
