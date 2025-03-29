@@ -44,6 +44,10 @@ export interface SearchResultItem {
     grade: string; 
 }
 
+export function getSearchResultDisplayOrder(): string[] {
+    return ["name", "meet", "projectname", "groupname", "result", "grade"]
+}
+
 export interface SearchResult {
     code: number;
     info: string;
