@@ -32,6 +32,8 @@ unit-test:
     - SUFFIX=$RANDOM
     - curl "http://api.spring25a.secoder.net/static/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
     - tar -xf "/tmp/sonar-$SUFFIX.tar.gz" -C /opt
+    - sed -i 's/sonarqube.secoder.net/sonarqube.spring25a.secoder.net/g' /opt/sonar-scanner/conf/sonar-scanner.properties
+    - sed -i 's/api.secoder.net/api.spring25a.secoder.net/g' /opt/sonar-scanner/bin/sonar-scanner
     - /opt/sonar-scanner/bin/sonar-scanner
   allow_failure: true
 
