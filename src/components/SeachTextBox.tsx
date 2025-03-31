@@ -1,9 +1,10 @@
 // 组件：基本文本搜索框
+import { SearchQuery } from "../utils/types";
 
 interface SearchTextBoxProps {
-    name: string; // 搜索框名称
+    name: keyof SearchQuery; // 搜索框名称
     query: string; // 搜索框中内容
-    textChange: (name: string, value: string) => void;
+    textChange: (name: keyof SearchQuery, value: string) => void;
 }
 
 export default function SearchTextBox({ name, query, textChange}: SearchTextBoxProps) {
