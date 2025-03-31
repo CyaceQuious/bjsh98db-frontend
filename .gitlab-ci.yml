@@ -22,7 +22,7 @@ build:
   stage: test
 
   before_script:
-    - pnpm config set registry registr https://registry.npmmirror.com
+    - pnpm config set registry https://registry.npmmirror.com
     - pnpm install
 
 unit-test:
