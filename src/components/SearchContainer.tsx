@@ -3,8 +3,8 @@
 // 进行搜索网络请求，并自动更新搜索结果
 
 import { SearchQuery, SearchResultItem, SearchResult, getEmptyQuery, searchQueryToString } from "../utils/types";
-import SearchBox from "./SeachBox"
-import SearchResultTable from "./SeachResultTable";
+import SearchBox from "./SearchBox"
+import SearchResultTable from "./SearchResultTable";
 import { request } from "../utils/network"
 import { useEffect, useState } from "react";
 import { FAILURE_PREFIX, SEARCH_ERROR } from "../constants/string";
