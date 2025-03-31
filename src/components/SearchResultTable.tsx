@@ -2,8 +2,8 @@
 // 使用 html 标签 table 展示
 // 包含若干 SearchTableEntry 以及一个 SearchTableHead
 
-import SearchResultTableEntry from "./SeachResultTableEntry";
-import SearchResultTableHead from "./SeachResultTableHead";
+import SearchResultTableEntry from "./SearchResultTableEntry";
+import SearchResultTableHead from "./SearchResultTableHead";
 import { SearchResultItem } from "../utils/types";
 
 interface SearchResultTableProps {
@@ -19,7 +19,7 @@ export default function SearchResultTable({ results }: SearchResultTableProps) {
     }
     return (
         <div>
-            <table>
+            <table style={{width: "100%"}}>
                 <thead>
                     <SearchResultTableHead/>
                 </thead>

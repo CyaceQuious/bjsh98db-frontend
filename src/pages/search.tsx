@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router';
 import { SearchQuery } from '../utils/types';
 
-import SearchContainer from "../components/SeachContainer";
+import SearchContainer from "../components/SearchContainer";
 import styles from '../styles/container.module.css'
 
 export default function SearchPage() {
@@ -18,6 +18,8 @@ export default function SearchPage() {
             projectname: query.projectname ? String(query.projectname) : "", 
             meet: query.meet ? String(query.meet) : "",
             groupname: query.groupname ? String(query.groupname) : "",
+            ranked: query.ranked ? Boolean(query.ranked) : false,
+            precise: query.precise ? Boolean(query.precise) : false,
         };
     };
 
