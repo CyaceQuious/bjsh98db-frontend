@@ -4,38 +4,54 @@
 
 import { SearchQuery } from "../utils/types";
 import SearchTextBox from "./SeachTextBox"
+import SearchBooleanBox from "./SeachBooleanBox";
 
 interface SearchBoxProps {
     query: SearchQuery; // 搜索框中内容
-    queryChange: (name: string, value: string) => void;
+    queryTextChange: (name: keyof SearchQuery, value: string) => void;
+    queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void; 
     doSearch: () => void; 
 }
 
-export default function SearchBox({ query, queryChange, doSearch}: SearchBoxProps) {
+export default function SearchBox({ query, queryTextChange, queryBooleanChange, doSearch}: SearchBoxProps) {
     const listname: string[] = Object.keys(query);
 
     // decode all queries into Boxes
     const searchTextBoxes = [];
+    const searchBooleanBoxes = []; 
     for (let i = 0; i<listname.length; i++) {
         const curValue: string | boolean | undefined = query[listname[i] as keyof SearchQuery]
         if (typeof curValue === "string") {
             searchTextBoxes.push((
                 <div key={i}>
                 <SearchTextBox 
-                    name={listname[i]} 
+                    name={listname[i] as keyof SearchQuery} 
                     query={curValue}
-                    textChange={queryChange}
+                    textChange={queryTextChange}
                 />
                 </div>
             ))
         } else if (typeof curValue === "boolean") {
-            // TODO
+            searchBooleanBoxes.push((
+                <div key={i}>
+                <SearchBooleanBox 
+                    name={listname[i] as keyof SearchQuery} 
+                    query={curValue}
+                    booleanChange={queryBooleanChange}
+                />
+                </div>
+            ))
         }
     }
     return (
         <div style={{ display: "flex", flexDirection: "row" }}>
             <div style={{ display: "flex", flexDirection: "column", width: "80%"}}>
-                {searchTextBoxes}
+                <div style={{ display: "flex", flexDirection: "column"}}>
+                    {searchTextBoxes}
+                </div>
+                <div style={{ display: "flex", flexDirection: "row"}}>
+                    {searchBooleanBoxes}
+                </div>
             </div>
             <button onClick={()=>doSearch()} style={{marginLeft: "5%", width: "15%"}}>Search</button>
         </div>
