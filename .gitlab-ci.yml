@@ -21,13 +21,14 @@ build:
   stage: test
 
   before_script:
+    - corepack enable
     - pnpm config set registry https://registry.npmmirror.com
     - pnpm install
 
 unit-test:
   extends: .test
   script:
-    - pnpm test
+    - pnpm test --coverage
   after_script:
     - SUFFIX=$RANDOM
     - curl "http://api.spring25a.secoder.net/static/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
