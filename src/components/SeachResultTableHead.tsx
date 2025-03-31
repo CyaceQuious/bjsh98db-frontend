@@ -2,10 +2,7 @@
 
 import { getSearchResultDisplayOrder } from "../utils/types";
 
-interface SearchResultTableHeadProps {
-}
-
-export default function SearchResultTableHead({ }: SearchResultTableHeadProps) {
+export default function SearchResultTableHead() {
     const listname = getSearchResultDisplayOrder(); 
     const headContent = listname.map((name)=>(
         <th key={name}>
