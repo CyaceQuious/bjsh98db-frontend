@@ -12,8 +12,8 @@ import { FAILURE_PREFIX, SEARCH_ERROR } from "../constants/string";
 import { useRouter } from 'next/router';
 
 interface SearchContainerProps {
-    oldQuery?: SearchQuery;
-    hiddenResult?: boolean;
+    oldQuery?: SearchQuery; 
+    hiddenResult?: boolean; 
 }
 
 export default function SearchContainer({ oldQuery, hiddenResult }: SearchContainerProps) {
@@ -90,9 +90,9 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                 doSearch={handleSearch}
             />
             <div>
-                {hiddenResult ? <br /> :
-                    isLoading ? <p>Loading...</p> :
-                        error === undefined ? <SearchResultTable results={results} /> : error}
+                {hiddenResult ? <br/> :
+                isLoading ? <p>Loading...</p> :
+                    error === undefined ? <SearchResultTable results={results} /> : error}
             </div>
         </div>
     )
