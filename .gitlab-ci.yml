@@ -18,6 +18,7 @@ build:
 
 # TODO Start: [Student] Complete test stage
 .test:
+  image: node:22
   stage: test
 
   before_script:
