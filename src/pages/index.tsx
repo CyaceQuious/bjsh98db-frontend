@@ -2,7 +2,7 @@
 // 包含欢迎语以及 SearchBox。
 
 
-import SearchContainer from '../components/SeachContainer';
+import SearchContainer from '../components/SearchContainer';
 import styles from '../styles/container.module.css'
 import { useRouter } from 'next/router';
 

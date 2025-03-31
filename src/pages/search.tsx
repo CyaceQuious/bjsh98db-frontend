@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router';
 import { SearchQuery } from '../utils/types';
 
-import SearchContainer from "../components/SeachContainer";
+import SearchContainer from "../components/SearchContainer";
 import styles from '../styles/container.module.css'
 
 export default function SearchPage() {
