@@ -7,9 +7,7 @@ const nextConfig = {
     async rewrites() {
         return [{
             source: "/api/:path*",
-            // TODO Start: [Student] Change to standard backend URL
-            destination: process.env.NODE_ENV !== "production" ? "http://127.0.0.1:8000/:path*" : process.env.BACKEND_URL,
-            // TODO End
+            destination: process.env.NODE_ENV !== "production" ? "http://127.0.0.1:8000/:path*" : "https://backend-bjsh98db.app.spring25a.secoder.net/:path*",
         }];
     }
 };
