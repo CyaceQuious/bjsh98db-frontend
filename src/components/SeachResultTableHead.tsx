@@ -1,6 +1,6 @@
 // 组件：搜索结果的表头
 
-import { SearchResultItem, getSearchResultDisplayOrder } from "../utils/types";
+import { getSearchResultDisplayOrder } from "../utils/types";
 
 interface SearchResultTableHeadProps {
 }

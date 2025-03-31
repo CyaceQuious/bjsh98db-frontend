@@ -6,7 +6,7 @@ import SearchBox from "../components/SeachBox";
 import styles from '../styles/container.module.css'
 import { getEmptyQuery, SearchQuery, searchQueryToString } from "../utils/types";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { useRouter } from 'next/router';
 
@@ -23,7 +23,7 @@ const WelcomeSearch = () => {
 
     // change query
     const changeQuery = (name: string, value: string) => {
-        let new_query = { ...query }
+        const new_query = { ...query }
         new_query[name as keyof SearchQuery] = value
         setQuery(new_query)
     }

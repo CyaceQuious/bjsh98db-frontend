@@ -4,7 +4,6 @@
 
 import { SearchQuery } from "../utils/types";
 import SearchTextBox from "./SeachTextBox"
-import { useEffect, useRef, useState } from "react";
 
 interface SearchBoxProps {
     query: SearchQuery; // 搜索框中内容

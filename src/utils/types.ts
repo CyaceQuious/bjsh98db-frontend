@@ -18,7 +18,7 @@ export function searchQueryToString(params: SearchQuery): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
+        if (value !== undefined && value !== "") {
             searchParams.append(key, value.toString());
         }
     });

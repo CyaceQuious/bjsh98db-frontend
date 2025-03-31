@@ -6,7 +6,7 @@ import { SearchQuery, SearchResultItem, SearchResult, getEmptyQuery, searchQuery
 import SearchBox from "./SeachBox"
 import SearchResultTable from "./SeachResultTable";
 import { request } from "../utils/network"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FAILURE_PREFIX, SEARCH_ERROR } from "../constants/string";
 
 import { useRouter } from 'next/router';
@@ -21,7 +21,7 @@ export default function SearchContainer({ oldQuery }: SearchContainerProps) {
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
     const [results, setResults] = useState<SearchResultItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | undefined>(undefined);
 
     // initialize
     useEffect(()=>{
@@ -43,7 +43,7 @@ export default function SearchContainer({ oldQuery }: SearchContainerProps) {
             console.log(res.results)
             setResults(res.results)
             console.log('set result over')
-            setError(null)
+            setError(undefined)
         }).catch((err) => {
             alert(FAILURE_PREFIX + err);
             setError(SEARCH_ERROR + err);
@@ -54,7 +54,7 @@ export default function SearchContainer({ oldQuery }: SearchContainerProps) {
 
     // change query
     const changeQuery = (name: string, value: string) => {
-        let new_query = { ...query }
+        const new_query = { ...query }
         new_query[name as keyof SearchQuery] = value
         setQuery(new_query)
     }
@@ -74,7 +74,7 @@ export default function SearchContainer({ oldQuery }: SearchContainerProps) {
             />
             <div>
                 {isLoading ? <p>Loading...</p> :
-                    error === null ? <SearchResultTable results={results} /> : error}
+                    error === undefined ? <SearchResultTable results={results} /> : error}
             </div>
         </div>
     )
