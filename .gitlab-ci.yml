@@ -1,6 +1,4 @@
-# TODO Start: [Student] URL
 image: registry.spring25a.secoder.net/tool/deployer
-# TODO End
 
 stages:
   - build
@@ -19,6 +17,30 @@ build:
     - main
 
 # TODO Start: [Student] Complete test stage
+.test:
+  image: node:22
+  stage: test
+
+  before_script:
+    - pnpm config set registry registry https://npm-cache-sepi.app.spring25a.secoder.net/
+    - pnpm install
+
+unit-test:
+  extends: .test
+  script:
+    - pnpm test
+  after_script:
+    - SUFFIX=$RANDOM
+    - curl "http://api.spring25a.secoder.net/static/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
+    - tar -xf "/tmp/sonar-$SUFFIX.tar.gz" -C /opt
+    - /opt/sonar-scanner/bin/sonar-scanner
+  allow_failure: true
+
+style-test:
+  extends: .test
+  script:
+    - pnpm lint
+  allow_failure: true
 
 # TODO End
 
