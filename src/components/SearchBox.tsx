@@ -3,8 +3,9 @@
 // 
 
 import { SearchQuery } from "../utils/types";
-import SearchTextBox from "./SeachTextBox"
-import SearchBooleanBox from "./SeachBooleanBox";
+import SearchTextBox from "./SearchTextBox"
+import SearchBooleanBox from "./SearchBooleanBox";
+import { getSearchButtonText } from "../utils/lang";
 
 interface SearchBoxProps {
     query: SearchQuery; // 搜索框中内容
@@ -53,7 +54,9 @@ export default function SearchBox({ query, queryTextChange, queryBooleanChange, 
                     {searchBooleanBoxes}
                 </div>
             </div>
-            <button onClick={()=>doSearch()} style={{marginLeft: "5%", width: "15%"}}>Search</button>
+            <button onClick={()=>doSearch()} style={{marginLeft: "10px", width: "60px", height: "30px", alignSelf: "center"}}>
+                {getSearchButtonText()}
+            </button>
         </div>
     );
 }

@@ -1,6 +1,7 @@
 // 组件：基本文本搜索框
 
 import { SearchQuery } from "../utils/types";
+import { getQueryItemName } from "../utils/lang";
 
 interface SearchBooleanBoxProps {
     name: keyof SearchQuery; // 搜索框名称
@@ -12,7 +13,7 @@ export default function SearchBooleanBox({ name, query, booleanChange }: SearchB
     return (
         <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
             <div style={{ marginRight: 8 }}>
-                <p>{name}:</p>
+                <p>{getQueryItemName(name)}:</p>
             </div>
             <input
                 type="checkbox"
