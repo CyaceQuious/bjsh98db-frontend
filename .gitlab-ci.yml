@@ -22,7 +22,7 @@ build:
   stage: test
 
   before_script:
-    - pnpm config set registry registry https://npm-cache-sepi.app.spring25a.secoder.net/
+    - pnpm config set registry registr https://registry.npmmirror.com
     - pnpm install
 
 unit-test:
