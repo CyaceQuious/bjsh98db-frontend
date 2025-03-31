@@ -21,7 +21,13 @@ const customConfig = {
     // By default jest will use a node environment, so DOM elements (like document) will be undefined without this
     "testEnvironment": "jsdom",
     // Collect coverage with Jest Sonar Reporter
+    reporters: [
+        'default',
+        ['jest-junit', { outputDirectory: 'reports', outputName: 'junit.xml' }]
+    ],
     collectCoverage: true,
+    coverageReporters: ['lcov'],
+    coverageDirectory: 'coverage',
     collectCoverageFrom: ["src/**/*.{ts,tsx}"],
     testResultsProcessor: "jest-sonar-reporter",
 };

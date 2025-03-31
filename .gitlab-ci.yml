@@ -35,6 +35,12 @@ unit-test:
     - sed -i 's/sonarqube.secoder.net/sonarqube.spring25a.secoder.net/g' /opt/sonar-scanner/conf/sonar-scanner.properties
     - sed -i 's/api.secoder.net/api.spring25a.secoder.net/g' /opt/sonar-scanner/bin/sonar-scanner
     - /opt/sonar-scanner/bin/sonar-scanner
+      -Dsonar.testExecutionReportPaths=reports/junit.xml
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+  artifacts:
+    paths:
+      - reports/
+      - coverage/
   allow_failure: true
 
 style-test:
