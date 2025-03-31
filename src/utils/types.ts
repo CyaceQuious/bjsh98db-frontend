@@ -3,6 +3,8 @@ export interface SearchQuery {
     meet?: string; 
     projectname?: string; 
     groupname?: string; 
+    ranked?: boolean; 
+    precise?: boolean; 
 }
 
 export function getEmptyQuery():SearchQuery {
@@ -10,7 +12,9 @@ export function getEmptyQuery():SearchQuery {
         name: "", 
         meet: "", 
         projectname: "", 
-        groupname: ""
+        groupname: "", 
+        ranked: false, 
+        precise: false, 
     }
 }
 
@@ -18,8 +22,11 @@ export function searchQueryToString(params: SearchQuery): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== "") {
+        if (value !== undefined && value !== "" && typeof value === "string") {
             searchParams.append(key, value.toString());
+        }
+        if (value === true) {
+            searchParams.append(key, value)
         }
     });
 

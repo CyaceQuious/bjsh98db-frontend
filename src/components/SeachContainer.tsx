@@ -12,10 +12,11 @@ import { FAILURE_PREFIX, SEARCH_ERROR } from "../constants/string";
 import { useRouter } from 'next/router';
 
 interface SearchContainerProps {
-    oldQuery?: SearchQuery
+    oldQuery?: SearchQuery; 
+    hiddenResult?: boolean; 
 }
 
-export default function SearchContainer({ oldQuery }: SearchContainerProps) {
+export default function SearchContainer({ oldQuery, hiddenResult }: SearchContainerProps) {
     const router = useRouter();
 
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
@@ -89,7 +90,8 @@ export default function SearchContainer({ oldQuery }: SearchContainerProps) {
                 doSearch={handleSearch}
             />
             <div>
-                {isLoading ? <p>Loading...</p> :
+                {hiddenResult ? <br/> :
+                isLoading ? <p>Loading...</p> :
                     error === undefined ? <SearchResultTable results={results} /> : error}
             </div>
         </div>
