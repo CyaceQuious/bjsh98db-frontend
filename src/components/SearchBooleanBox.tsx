@@ -3,6 +3,9 @@
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName } from "../utils/lang";
 
+import { Checkbox, Space, Switch, Typography } from 'antd';
+const { Text } = Typography;
+
 interface SearchBooleanBoxProps {
     name: keyof SearchQuery; // 搜索框名称
     query: boolean; // 搜索框中内容
@@ -11,20 +14,12 @@ interface SearchBooleanBoxProps {
 
 export default function SearchBooleanBox({ name, query, booleanChange }: SearchBooleanBoxProps) {
     return (
-        <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
-            <div style={{ marginRight: 8 }}>
-                <p>{getQueryItemName(name)}:</p>
-            </div>
-            <input
-                type="checkbox"
+        <Space style={{ margin: '3px' }}>
+            <Text strong>{getQueryItemName(name)}:</Text>
+            <Switch
                 checked={query}
-                onChange={(e) => booleanChange(name, e.target.checked)}
-                style={{
-                    width: 16,
-                    height: 16,
-                    cursor: 'pointer'
-                }}
+                onChange={(e) => booleanChange(name, e.valueOf())}
             />
-        </div>
+        </Space>
     );
 }

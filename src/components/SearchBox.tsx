@@ -1,62 +1,116 @@
-// 组件：完整搜索框
-// 包含若干 SearchTextBox
-// 
-
+import {
+	Button,
+	Form,
+	Row,
+	Col,
+	Space,
+	Switch,
+	Typography,
+	theme
+} from 'antd';
+import { useState } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import type { FormProps } from 'antd';
+import SearchTextBox from "./SearchTextBox";
 import { SearchQuery } from "../utils/types";
-import SearchTextBox from "./SearchTextBox"
-import SearchBooleanBox from "./SearchBooleanBox";
 import { getSearchButtonText } from "../utils/lang";
+import SearchBooleanBox from './SearchBooleanBox';
+
+const { useToken } = theme;
+const { Text } = Typography;
 
 interface SearchBoxProps {
-    query: SearchQuery; // 搜索框中内容
-    queryTextChange: (name: keyof SearchQuery, value: string) => void;
-    queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
-    doSearch: () => void;
+	query: SearchQuery;
+	queryTextChange: (name: keyof SearchQuery, value: string) => void;
+	queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
+	doSearch: () => void;
+	searchItems: Array<{
+		key: keyof SearchQuery;
+		type: 'text' | 'boolean';
+    isFullLine?: boolean; 
+	}>;
 }
 
-export default function SearchBox({ query, queryTextChange, queryBooleanChange, doSearch }: SearchBoxProps) {
-    const listname: string[] = ["name", "meet", "projectname", "groupname", "ranked", "precise"];
+export default function SearchBox({
+	query,
+	queryTextChange,
+	queryBooleanChange,
+	doSearch, 
+  searchItems
+}: SearchBoxProps) {
+	const { token } = useToken();
+	const [form] = Form.useForm();
+	const [loading, setLoading] = useState(false);
 
-    // decode all queries into Boxes
-    const searchTextBoxes = [];
-    const searchBooleanBoxes = [];
-    for (let i = 0; i < listname.length; i++) {
-        const curValue: string | boolean | undefined = query[listname[i] as keyof SearchQuery]
-        if (typeof curValue === "string") {
-            searchTextBoxes.push((
-                <div key={i}>
-                    <SearchTextBox
-                        name={listname[i] as keyof SearchQuery}
-                        query={curValue}
-                        textChange={queryTextChange}
-                    />
-                </div>
-            ))
-        } else if (typeof curValue === "boolean") {
-            searchBooleanBoxes.push((
-                <div key={i}>
-                    <SearchBooleanBox
-                        name={listname[i] as keyof SearchQuery}
-                        query={curValue}
-                        booleanChange={queryBooleanChange}
-                    />
-                </div>
-            ))
-        }
-    }
-    return (
-        <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ display: "flex", flexDirection: "column", width: "80%" }}>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    {searchTextBoxes}
-                </div>
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                    {searchBooleanBoxes}
-                </div>
-            </div>
-            <button onClick={() => doSearch()} style={{ marginLeft: "10px", width: "60px", height: "30px", alignSelf: "center" }}>
-                {getSearchButtonText()}
-            </button>
-        </div>
-    );
+	const handleSearch: FormProps['onFinish'] = async () => {
+		try {
+			setLoading(true);
+			await doSearch();
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	return (
+		<Form
+			form={form}
+			onFinish={handleSearch}
+			initialValues={query}
+			autoComplete="off"
+		>
+			<Row
+				gutter={[token.marginSM, token.marginSM]}
+				align="middle"
+			>
+				{searchItems.map((item) => (
+					<Col
+						key={item.key.toString()}
+						xs={item.isFullLine ? 24 : item.type === 'text' ? 24 : 12}
+						sm={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
+						md={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
+						lg={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
+					>
+						{item.type === 'text' ? (
+							<Form.Item name={item.key}>
+								<SearchTextBox
+									name={item.key}
+									query={query[item.key] as string}
+									textChange={queryTextChange}
+								/>
+							</Form.Item>
+						) : (
+							<Form.Item name={item.key}>
+								<SearchBooleanBox
+									name={item.key}
+									query={query[item.key] as boolean}
+									booleanChange={queryBooleanChange}
+								/>
+							</Form.Item>
+						)}
+					</Col>
+				))}
+
+				<Col
+					xs={24}
+					style={{
+						textAlign: 'right',
+						marginTop: token.marginSM
+					}}
+				>
+					<Button
+						type="primary"
+						icon={<SearchOutlined />}
+						htmlType="submit"
+						loading={loading}
+						style={{
+							width: 120,
+							height: token.controlHeightLG
+						}}
+					>
+						{getSearchButtonText()}
+					</Button>
+				</Col>
+			</Row>
+		</Form>
+	);
 }
