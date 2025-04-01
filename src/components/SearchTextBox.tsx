@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Space, Typography } from 'antd';
+import { AutoComplete, Space, Typography } from 'antd';
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
 import { HistoryOutlined } from '@ant-design/icons';
@@ -14,7 +14,7 @@ interface SearchTextBoxProps {
 }
 
 export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
-    let {history, addHistory, clearHistory} = useSearchHistory(name); 
+    const {history, addHistory, clearHistory} = useSearchHistory(name); 
     return {
         item: (
         <Space.Compact
