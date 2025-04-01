@@ -18,7 +18,7 @@ const searchResultItemNameDictCn: Record<keyof SearchResultItem, string> = {
     meet: "运动会",
     projectname: "比赛项目",
     result: "成绩", 
-    grade: "运动成绩等级", 
+    grade: "运动技术等级", 
     rank: "名次"
 };
 // current language is simplified chinese
