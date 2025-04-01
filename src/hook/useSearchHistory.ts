@@ -11,7 +11,7 @@ interface SearchHistoryItem {
 
 export default function useSearchHistory(name: string) {
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
-  const realSearchHistoryKey = SEARCH_HISTORY_KEY + '_' + name; 
+  const realSearchHistoryKey = SEARCH_HISTORY_KEY + '_' + name;
   // initialize: 加载历史记录
   useEffect(() => {
     const saved = localStorage.getItem(realSearchHistoryKey);
@@ -24,14 +24,14 @@ export default function useSearchHistory(name: string) {
   const addHistory = (query: string) => {
     console.log(`in addHistory, name: ${name}, query: ${query}`)
     if (query === undefined || query === "") {
-      return; 
+      return;
     }
     console.log(`in addHistory, actually add`)
     const newHistory = [
       { query, timestamp: Date.now() },
       ...history.filter(item => item.query !== query)
     ].slice(0, MAX_SEARCH_HISTORY_ITEMS);
-    
+
     setHistory(newHistory);
     localStorage.setItem(realSearchHistoryKey, JSON.stringify(newHistory));
   };

@@ -3,7 +3,6 @@ import {
   Form,
   Row,
   Col,
-  Typography,
   theme
 } from 'antd';
 import { useState } from 'react';
@@ -13,7 +12,7 @@ import SearchTextBox from "./SearchTextBox";
 import { SearchQuery } from "../utils/types";
 import { getSearchButtonText, getSearchHistoryDelete } from "../utils/lang";
 import SearchBooleanBox from './SearchBooleanBox';
-import { HistoryOutlined, DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const { useToken } = theme;
 
@@ -25,7 +24,7 @@ interface SearchBoxProps {
   searchItems: {
     key: keyof SearchQuery;
     type: 'text' | 'boolean';
-    isFullLine?: boolean; 
+    isFullLine?: boolean;
   }[];
 }
 
@@ -33,21 +32,21 @@ export default function SearchBox({
   query,
   queryTextChange,
   queryBooleanChange,
-  doSearch, 
+  doSearch,
   searchItems
 }: SearchBoxProps) {
   const { token } = useToken();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const allSearchBoxes: any[] = []; 
+  const allSearchBoxes: any[] = [];
   const allFunctionCallOnQuery: any[] = [];
-  const allFunctionDeleteHistory: any[] = []; 
+  const allFunctionDeleteHistory: any[] = [];
 
   const handleSearch: FormProps['onFinish'] = async () => {
     try {
       setLoading(true);
-      allFunctionCallOnQuery.forEach((item)=>{item()}); 
+      allFunctionCallOnQuery.forEach((item) => { item() });
       await doSearch();
     } finally {
       setLoading(false);
@@ -55,9 +54,9 @@ export default function SearchBox({
   };
 
   searchItems.forEach((item) => {
-    const curr = item.type === 'text' ? 
-      SearchTextBox({name: item.key, query: query[item.key] as string, textChange: queryTextChange}) : 
-      SearchBooleanBox({name: item.key, query: query[item.key] as boolean, booleanChange: queryBooleanChange}); 
+    const curr = item.type === 'text' ?
+      SearchTextBox({ name: item.key, query: query[item.key] as string, textChange: queryTextChange }) :
+      SearchBooleanBox({ name: item.key, query: query[item.key] as boolean, booleanChange: queryBooleanChange });
     allSearchBoxes.push((
       <Col
         key={item.key.toString()}
@@ -70,9 +69,9 @@ export default function SearchBox({
           {curr.item}
         </Form.Item>
       </Col>
-    )); 
-    allFunctionCallOnQuery.push(curr.callFunc); 
-    allFunctionDeleteHistory.push(curr.clearFunc); 
+    ));
+    allFunctionCallOnQuery.push(curr.callFunc);
+    allFunctionDeleteHistory.push(curr.clearFunc);
   })
 
   return (
@@ -97,15 +96,15 @@ export default function SearchBox({
             marginTop: token.marginSM
           }}
         >
-          <Button 
-            icon={<DeleteOutlined />} 
-            onClick={()=>allFunctionDeleteHistory.forEach((item)=>item())}
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() => allFunctionDeleteHistory.forEach((item) => item())}
             disabled={history.length === 0}
           >
             {getSearchHistoryDelete()}
           </Button>
-          </Col>
-          <Col
+        </Col>
+        <Col
           xs={3}
           sm={3}
           md={3}

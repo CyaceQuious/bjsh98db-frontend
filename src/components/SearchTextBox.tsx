@@ -1,7 +1,7 @@
 import { AutoComplete, Button, Space, Typography } from 'antd';
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
-import { HistoryOutlined, DeleteOutlined } from '@ant-design/icons';
+import { HistoryOutlined } from '@ant-design/icons';
 
 import useSearchHistory from '../hook/useSearchHistory';
 
