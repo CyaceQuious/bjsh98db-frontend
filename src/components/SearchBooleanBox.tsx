@@ -3,7 +3,7 @@
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName } from "../utils/lang";
 
-import { Checkbox, Space, Switch, Typography } from 'antd';
+import { Space, Switch, Typography } from 'antd';
 const { Text } = Typography;
 
 interface SearchBooleanBoxProps {

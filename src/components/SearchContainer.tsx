@@ -82,28 +82,22 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
     }
 
     return (
-        <div style={{ width: "80%" , marginTop: "25px"}}>
+        <div style={{ width: "80%", marginTop: "25px" }}>
             <SearchBox
                 query={query}
                 queryTextChange={changeTextQuery}
                 queryBooleanChange={changeBooleanQuery}
                 doSearch={handleSearch}
-                // ["name", "meet", "projectname", "groupname", "ranked", "precise"]
-                //{
-                //     key: keyof SearchQuery;
-                //     type: 'text' | 'boolean';
-                //     label?: string;
-                // }
                 searchItems={[
-                    {key: "name", type: "text"}, 
-                    {key: "projectname", type: "text"}, 
-                    {key: "groupname", type: "text"}, 
-                    {key: "meet", type: "text", isFullLine: true}, 
-                    {key: "ranked", type: "boolean"}, 
-                    {key: "precise", type: "boolean"}, 
+                    { key: "name", type: "text" },
+                    { key: "projectname", type: "text" },
+                    { key: "groupname", type: "text" },
+                    { key: "meet", type: "text", isFullLine: true },
+                    { key: "ranked", type: "boolean" },
+                    { key: "precise", type: "boolean" },
                 ]}
             />
-            <div style={{marginTop: "20px"}}>
+            <div style={{ marginTop: "20px" }}>
                 {hiddenResult ? <br /> :
                     isLoading ? <p>Loading...</p> :
                         error === undefined ? <SearchResultTable results={results} /> : error}

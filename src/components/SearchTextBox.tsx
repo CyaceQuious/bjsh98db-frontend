@@ -3,7 +3,6 @@ import type { SearchProps } from 'antd/es/input';
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
 
-const { Search } = Input;
 const { Text } = Typography;
 
 interface SearchTextBoxProps {
@@ -13,10 +12,6 @@ interface SearchTextBoxProps {
 }
 
 export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
-    const handleSearch: SearchProps['onSearch'] = (value) => {
-        textChange(name, value);
-    };
-
     return (
         <Space.Compact
             direction="horizontal"
