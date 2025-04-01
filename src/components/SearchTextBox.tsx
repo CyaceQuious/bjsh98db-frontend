@@ -1,5 +1,4 @@
 import { Input, Space, Typography } from 'antd';
-import type { SearchProps } from 'antd/es/input';
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
 

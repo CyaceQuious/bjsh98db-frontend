@@ -21,11 +21,11 @@ interface SearchBoxProps {
   queryTextChange: (name: keyof SearchQuery, value: string) => void;
   queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
   doSearch: () => void;
-  searchItems: Array<{
+  searchItems: {
     key: keyof SearchQuery;
     type: 'text' | 'boolean';
     isFullLine?: boolean; 
-  }>;
+  }[];
 }
 
 export default function SearchBox({
