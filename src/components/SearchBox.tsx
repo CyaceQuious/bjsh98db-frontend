@@ -65,7 +65,7 @@ export default function SearchBox({
 				{searchItems.map((item) => (
 					<Col
 						key={item.key.toString()}
-						xs={item.isFullLine ? 24 : item.type === 'text' ? 24 : 12}
+						xs={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
 						sm={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
 						md={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
 						lg={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
@@ -91,7 +91,10 @@ export default function SearchBox({
 				))}
 
 				<Col
-					xs={24}
+					xs={8}
+          sm={8}
+          md={16}
+          lg={16}
 					style={{
 						textAlign: 'right',
 						marginTop: token.marginSM
