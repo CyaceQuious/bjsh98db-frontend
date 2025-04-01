@@ -1,10 +1,10 @@
 import { SearchQuery, SearchResultItem } from "./types";
 const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     name: "姓名",
-    groupname: "代表队", 
+    groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
-    precise: "精确搜索", 
+    precise: "精确搜索",
     ranked: "只显示前八名"
 };
 // current language is simplified chinese
@@ -14,11 +14,11 @@ export function getQueryItemName(itemName: keyof SearchQuery): string {
 
 const searchResultItemNameDictCn: Record<keyof SearchResultItem, string> = {
     name: "姓名",
-    groupname: "代表队", 
+    groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
-    result: "成绩", 
-    grade: "运动技术等级", 
+    result: "成绩",
+    grade: "运动技术等级",
     rank: "名次"
 };
 // current language is simplified chinese
@@ -37,10 +37,14 @@ export function getSearchButtonText(): string {
 }
 
 const navBarItemDictCn: Record<"homepage" | "search", string> = {
-    homepage: "主页", 
+    homepage: "主页",
     search: "搜索"
 };
 // current language is simplified chinese
 export function getNavBarItem(name: "homepage" | "search"): string {
     return navBarItemDictCn[name]
+}
+
+export function getSearchHistoryDelete(): string {
+    return "清除搜索历史"
 }

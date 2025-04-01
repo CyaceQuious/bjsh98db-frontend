@@ -13,13 +13,17 @@ interface SearchBooleanBoxProps {
 }
 
 export default function SearchBooleanBox({ name, query, booleanChange }: SearchBooleanBoxProps) {
-    return (
-        <Space style={{ margin: '3px' }}>
-            <Text strong>{getQueryItemName(name)}:</Text>
-            <Switch
-                checked={query}
-                onChange={(e) => booleanChange(name, e.valueOf())}
-            />
-        </Space>
-    );
+    return {
+        item: (
+            <Space style={{ margin: '3px' }}>
+                <Text strong>{getQueryItemName(name)}:</Text>
+                <Switch
+                    checked={query}
+                    onChange={(e) => booleanChange(name, e.valueOf())}
+                />
+            </Space>
+        ),
+        callFunc: () => { },
+        clearFunc: () => { }
+    };
 }

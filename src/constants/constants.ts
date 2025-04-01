@@ -4,3 +4,6 @@
  *       即所谓的回避**魔数**问题
  */
 
+export const MAX_SEARCH_HISTORY_ITEMS = 10;
+
+export const SEARCH_HISTORY_KEY = 'searchHistory';

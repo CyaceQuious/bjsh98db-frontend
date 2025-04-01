@@ -1,6 +1,9 @@
-import { Input, Space, Typography } from 'antd';
+import { AutoComplete, Space, Typography } from 'antd';
 import { SearchQuery } from "../utils/types";
 import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
+import { HistoryOutlined } from '@ant-design/icons';
+
+import useSearchHistory from '../hook/useSearchHistory';
 
 const { Text } = Typography;
 
@@ -11,7 +14,9 @@ interface SearchTextBoxProps {
 }
 
 export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
-    return (
+    const {history, addHistory, clearHistory} = useSearchHistory(name); 
+    return {
+        item: (
         <Space.Compact
             direction="horizontal"
             style={{ width: '100%', margin: '4px 0' }}
@@ -24,12 +29,28 @@ export default function SearchTextBox({ name, query, textChange }: SearchTextBox
             }}>
                 {getQueryItemName(name)}:
             </Text>
-            <Input
+            <AutoComplete
                 allowClear
+                options={history.map(item => ({
+                    value: item.query,
+                    label: (
+                      <Space>
+                        <HistoryOutlined />
+                        <span>{item.query}</span>
+                        {/* <span className="timestamp">
+                          {new Date(item.timestamp).toLocaleString()}
+                        </span> */}
+                      </Space>
+                    )
+                  }))}
                 value={query}
-                onChange={(e) => textChange(name, e.target.value)}
+                style={{textAlign: "left"}}
+                onChange={(e) => textChange(name, e.valueOf())}
                 placeholder={getSearchBoxPlaceHolder()}
             />
         </Space.Compact>
-    );
+        ), 
+        callFunc: ()=>{addHistory(query)}, 
+        clearFunc: ()=>{clearHistory()}
+    };
 }
