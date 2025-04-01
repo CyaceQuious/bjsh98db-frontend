@@ -49,10 +49,11 @@ export interface SearchResultItem {
     groupname: string; 
     result: string; 
     grade: string; 
+    rank: string; 
 }
 
 export function getSearchResultDisplayOrder(): string[] {
-    return ["name", "meet", "projectname", "groupname", "result", "grade"]
+    return ["name", "meet", "projectname", "groupname", "result", "grade", "rank"]
 }
 
 export interface SearchResult {
