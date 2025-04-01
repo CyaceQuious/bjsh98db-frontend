@@ -44,3 +44,7 @@ const navBarItemDictCn: Record<"homepage" | "search", string> = {
 export function getNavBarItem(name: "homepage" | "search"): string {
     return navBarItemDictCn[name]
 }
+
+export function getSearchHistoryDelete(): string {
+    return "清除搜索历史"
+}

@@ -13,7 +13,8 @@ interface SearchBooleanBoxProps {
 }
 
 export default function SearchBooleanBox({ name, query, booleanChange }: SearchBooleanBoxProps) {
-    return (
+    return {
+        item: (
         <Space style={{ margin: '3px' }}>
             <Text strong>{getQueryItemName(name)}:</Text>
             <Switch
@@ -21,5 +22,8 @@ export default function SearchBooleanBox({ name, query, booleanChange }: SearchB
                 onChange={(e) => booleanChange(name, e.valueOf())}
             />
         </Space>
-    );
+        ), 
+        callFunc: ()=>{}, 
+        clearFunc: ()=>{}
+    };
 }
