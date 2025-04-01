@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 
 import Navbar from "../components/NaviBar";
 
+import '@ant-design/v5-patch-for-react-19';
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const App = ({ Component, pageProps }: AppProps) => {
     return (

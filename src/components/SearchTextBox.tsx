@@ -1,26 +1,35 @@
-// 组件：基本文本搜索框
+import { Input, Space, Typography } from 'antd';
 import { SearchQuery } from "../utils/types";
-import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";  
+import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
+
+const { Text } = Typography;
 
 interface SearchTextBoxProps {
-    name: keyof SearchQuery; // 搜索框名称
-    query: string; // 搜索框中内容
+    name: keyof SearchQuery;
+    query: string;
     textChange: (name: keyof SearchQuery, value: string) => void;
 }
 
-export default function SearchTextBox({ name, query, textChange}: SearchTextBoxProps) {
+export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
     return (
-        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", margin: "3px"}}>
-            <div style={{width: "20%"}}>
-                <p>{getQueryItemName(name)}: </p>
-            </div>
-            <input
-                type="text"
+        <Space.Compact
+            direction="horizontal"
+            style={{ width: '100%', margin: '4px 0' }}
+        >
+            <Text strong style={{
+                padding: '0 8px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100px'
+            }}>
+                {getQueryItemName(name)}:
+            </Text>
+            <Input
+                allowClear
                 value={query}
                 onChange={(e) => textChange(name, e.target.value)}
                 placeholder={getSearchBoxPlaceHolder()}
-                style={{width: "80%"}}
             />
-        </div>
+        </Space.Compact>
     );
 }

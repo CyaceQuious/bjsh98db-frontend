@@ -1,42 +1,59 @@
-// 位于页面上端的导航栏
-// 点击跳转到相应页面
-
 import { useRouter } from 'next/router';
+import { Layout, Menu, theme } from 'antd';
+import type { MenuProps } from 'antd';
+
+const { Header } = Layout;
 
 export default function Navbar() {
     const router = useRouter();
+    const {
+        token: { colorBgContainer },
+    } = theme.useToken();
 
-    const handleNavigate = (path: string) => {
-        router.push(path);
-    };
+    // 根据当前路径自动选中菜单项
+    const selectedKeys = [
+        router.pathname === '/' ? 'home' :
+            router.pathname.startsWith('/search') ? 'search' : ''
+    ].filter(Boolean);
+
+    // 菜单项配置
+    const items: MenuProps['items'] = [
+        {
+            key: 'home',
+            label: '主页',
+            onClick: () => router.push('/'),
+        },
+        {
+            key: 'search',
+            label: '搜索',
+            onClick: () => router.push('/search'),
+        }
+    ];
 
     return (
-        <nav style={{
-            width: "100%",
-            height: "20px"
-        }}>
-            <button
-                key={0}
-                onClick={() => handleNavigate('/')}
+        <Header
+            style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
+                width: '100%',
+                background: colorBgContainer,
+                display: 'flex',
+                alignItems: 'center',
+            }}
+        >
+            <div className="demo-logo" />
+            <Menu
+                theme="light"
+                mode="horizontal"
+                selectedKeys={selectedKeys}
+                items={items}
                 style={{
-                    backgroundColor: "transparent",
-                    color: "inherit",
-                    cursor: "pointer",
+                    flex: 1,
+                    minWidth: 0,
+                    justifyContent: 'flex-start'
                 }}
-            >
-                主页
-            </button>
-            <button
-                key={1}
-                onClick={() => handleNavigate('/search?')}
-                style={{
-                    backgroundColor: "transparent",
-                    color: "inherit",
-                    cursor: "pointer",
-                }}
-            >
-                搜索
-            </button>
-        </nav>
+            />
+        </Header>
     );
 }

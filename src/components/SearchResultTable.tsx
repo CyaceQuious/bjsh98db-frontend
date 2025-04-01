@@ -1,32 +1,57 @@
-// 组件：所有搜索结果
-// 使用 html 标签 table 展示
-// 包含若干 SearchTableEntry 以及一个 SearchTableHead
+// SearchResultTable.tsx
+import { Table, theme } from 'antd';
+import type { TableColumnsType } from 'antd';
+import { SearchResultItem, getSearchResultDisplayOrder } from "../utils/types";
+import { getResultItemName } from "../utils/lang";
 
-import SearchResultTableEntry from "./SearchResultTableEntry";
-import SearchResultTableHead from "./SearchResultTableHead";
-import { SearchResultItem } from "../utils/types";
+const { useToken } = theme;
 
 interface SearchResultTableProps {
-    results: SearchResultItem[]; // 所有搜索结果
+    results: SearchResultItem[];
 }
 
 export default function SearchResultTable({ results }: SearchResultTableProps) {
-    const searchResultEntries = []
-    for (let i = 0; i<results.length; i++) {
-        searchResultEntries.push(
-            <SearchResultTableEntry key={i+10} result={results[i]}/>
-        )
-    }
+    const { token } = useToken();
+
+    // 生成动态列配置
+    const columns: TableColumnsType<SearchResultItem> = getSearchResultDisplayOrder().map(name => ({
+        title: getResultItemName(name as keyof SearchResultItem),
+        dataIndex: name,
+        key: name,
+        ellipsis: true,
+        sorter: (a, b) => {
+            const valA = a[name as keyof SearchResultItem];
+            const valB = b[name as keyof SearchResultItem];
+            return typeof valA === 'string' && typeof valB === 'string'
+                ? valA.localeCompare(valB)
+                : 0;
+        },
+        render: (value: any) => {
+            // TODO: 加入判断逻辑，跳转到比赛主页
+            if (typeof value === 'boolean') {
+                return value ? '✅' : '❌';
+            }
+            return value?.toString() || '-';
+        }
+    }));
+
     return (
-        <div>
-            <table style={{width: "100%"}}>
-                <thead>
-                    <SearchResultTableHead/>
-                </thead>
-                <tbody>
-                    {searchResultEntries}
-                </tbody>
-            </table>
-        </div>
+        <Table
+            columns={columns}
+            dataSource={results.map((r, index) => ({ ...r, key: index }))}
+            bordered
+            size="middle"
+            scroll={{ x: 'max-content' }}
+            rowClassName={() => 'hover-highlight'}
+            style={{
+                background: token.colorBgContainer,
+                borderRadius: token.borderRadius,
+            }}
+            pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showTotal: total => `共 ${total} 条`,
+            }}
+        />
     );
 }
