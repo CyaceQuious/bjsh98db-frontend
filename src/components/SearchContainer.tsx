@@ -12,8 +12,8 @@ import { FAILURE_PREFIX, SEARCH_ERROR } from "../constants/string";
 import { useRouter } from 'next/router';
 
 interface SearchContainerProps {
-    oldQuery?: SearchQuery;
-    hiddenResult?: boolean;
+    oldQuery?: SearchQuery; 
+    hiddenResult?: boolean; 
 }
 
 export default function SearchContainer({ oldQuery, hiddenResult }: SearchContainerProps) {
