@@ -31,7 +31,7 @@ export default function Navbar() {
         },
         {
             key: 'contests',
-            label: '主页',
+            label: '比赛',
             onClick: () => router.push('/contests'),
         }
     ];

@@ -62,3 +62,12 @@ export interface SearchResult {
     count: number;
     results: SearchResultItem[]; 
 }
+
+// 分页组件接口
+export interface PaginationProps {
+    itemsPerPage: number;
+    totalItems: number;
+    paginate: (pageNumber: number) => void;
+    currentPage: number;
+}
+  
