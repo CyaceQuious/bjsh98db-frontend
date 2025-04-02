@@ -54,8 +54,11 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
     }
 
     // change text query
-    const changeTextQuery = (name: keyof SearchQuery, value: string) => {
+    const changeTextQuery = (name: keyof SearchQuery, value: string | undefined) => {
         setQuery(prev => {
+            if (value === undefined) {
+                value = ''; 
+            }
             if (typeof prev[name] === "string") {
                 return { ...prev, [name]: value }
             }
