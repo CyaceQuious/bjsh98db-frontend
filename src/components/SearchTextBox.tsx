@@ -10,7 +10,7 @@ const { Text } = Typography;
 interface SearchTextBoxProps {
     name: keyof SearchQuery;
     query: string;
-    textChange: (name: keyof SearchQuery, value: string) => void;
+    textChange: (name: keyof SearchQuery, value: string | undefined) => void;
 }
 
 export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
@@ -45,7 +45,7 @@ export default function SearchTextBox({ name, query, textChange }: SearchTextBox
                   }))}
                 value={query}
                 style={{textAlign: "left"}}
-                onChange={(e) => textChange(name, e.valueOf())}
+                onChange={(e) => textChange(name, e)}
                 placeholder={getSearchBoxPlaceHolder()}
             />
         </Space.Compact>

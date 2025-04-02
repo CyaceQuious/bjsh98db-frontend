@@ -18,7 +18,7 @@ const { useToken } = theme;
 
 interface SearchBoxProps {
   query: SearchQuery;
-  queryTextChange: (name: keyof SearchQuery, value: string) => void;
+  queryTextChange: (name: keyof SearchQuery, value: string | undefined) => void;
   queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
   doSearch: () => void;
   searchItems: {
