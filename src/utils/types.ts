@@ -75,3 +75,18 @@ export interface MeetsApiResponse {
     count: number;
     results: Meet[];
 }
+
+export interface TeamScoreResponse {
+    code: number;
+    info: string;
+    results: TeamScore[];
+  }
+  
+  export interface TeamScore {
+    team: string;
+    total_score: number;
+  }
+  
+  export interface TeamScoreRequest {
+    mid: number;
+  }

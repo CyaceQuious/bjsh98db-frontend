@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
+
 
 interface Meet {
   name: string;
@@ -47,6 +49,7 @@ const MeetsPage: NextPage = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = meets.slice(indexOfFirstItem, indexOfLastItem);
+  
 
   // 改变页码
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -83,6 +86,7 @@ const MeetsPage: NextPage = () => {
               >
                 <div className="col-span-1 text-gray-600">{meet.mid}</div>
                 <div className="col-span-11">{meet.name}</div>
+                <Link href={`/group/${meet.mid}`}>查看团体总分</Link>
               </div>
             ))
           ) : (
