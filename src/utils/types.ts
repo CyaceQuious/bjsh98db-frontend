@@ -63,11 +63,15 @@ export interface SearchResult {
     results: SearchResultItem[]; 
 }
 
-// 分页组件接口
-export interface PaginationProps {
-    itemsPerPage: number;
-    totalItems: number;
-    paginate: (pageNumber: number) => void;
-    currentPage: number;
+
+export interface Meet {
+    name: string;
+    mid: number;
 }
   
+export interface MeetsApiResponse {
+    code: number;
+    info: string;
+    count: number;
+    results: Meet[];
+}
