@@ -19,11 +19,11 @@ const About = () => {
     );
 
     const Developers = [
-        { name: 'ryz', link: '/' },
-        { name: 'czy', link: '/' },
-        { name: 'fgf', link: '/' },
-        { name: 'zjy', link: '/' },
-        { name: 'mpc', link: '/' }
+        { name: 'ryz', link: '/' , other: ''},
+        { name: 'czy', link: '/' , other: ''},
+        { name: 'zjy', link: '/' , other: ''},
+        { name: 'fgf', link: '/' , other: ''},
+        { name: 'mpc', link: '/' , other: ''}
     ]
 
     return (
@@ -65,6 +65,9 @@ const About = () => {
                                 >
                                     {item.name}
                                 </Link>
+                                <Text>
+                                    {item.other}
+                                </Text>
                             </List.Item>
                         )}
                     />
