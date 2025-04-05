@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { Meet, MeetsApiResponse } from "../utils/types"
+
+interface Meet {
+  name: string;
+  mid: number;
+}
 
 interface ApiResponse {
   code: number;
@@ -14,6 +18,8 @@ const MeetsPage: NextPage = () => {
   const [meets, setMeets] = useState<Meet[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage] = useState<number>(10); // 每页显示10条
 
   useEffect(() => {
     const fetchMeets = async () => {
@@ -36,6 +42,14 @@ const MeetsPage: NextPage = () => {
 
     fetchMeets();
   }, []);
+
+  // 计算当前页数据
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = meets.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 改变页码
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -61,8 +75,8 @@ const MeetsPage: NextPage = () => {
             <div className="col-span-11">比赛名称</div>
           </div>
           
-          {meets.length > 0 ? (
-            meets.map((meet) => (
+          {currentItems.length > 0 ? (
+            currentItems.map((meet) => (
               <div 
                 key={meet.mid} 
                 className="grid grid-cols-12 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors"
@@ -76,8 +90,39 @@ const MeetsPage: NextPage = () => {
           )}
         </div>
 
-        <div className="mt-4 text-sm text-gray-500">
-          共 {meets.length} 场比赛
+        {/* 分页控件 */}
+        <div className="flex justify-center mt-6">
+          <nav className="inline-flex rounded-md shadow">
+            <button
+              onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-l-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            >
+              上一页
+            </button>
+            
+            {Array.from({ length: Math.ceil(meets.length / itemsPerPage) }, (_, i) => i + 1).map(number => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`px-4 py-2 border-t border-b border-gray-300 ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                {number}
+              </button>
+            ))}
+            
+            <button
+              onClick={() => paginate(currentPage < Math.ceil(meets.length / itemsPerPage) ? currentPage + 1 : currentPage)}
+              disabled={currentPage === Math.ceil(meets.length / itemsPerPage)}
+              className="px-4 py-2 rounded-r-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            >
+              下一页
+            </button>
+          </nav>
+        </div>
+
+        <div className="mt-4 text-sm text-gray-500 text-center">
+          显示 {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, meets.length)} 条，共 {meets.length} 条
         </div>
       </main>
     </div>
