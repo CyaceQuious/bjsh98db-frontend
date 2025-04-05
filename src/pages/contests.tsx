@@ -19,7 +19,7 @@ const MeetsPage: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(10); // 每页显示10条
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   useEffect(() => {
     const fetchMeets = async () => {
@@ -89,8 +89,19 @@ const MeetsPage: NextPage = () => {
             <div className="p-8 text-center text-gray-500">暂无比赛数据</div>
           )}
         </div>
-
-        {/* 分页控件 */}
+        <select 
+          value={itemsPerPage}
+          onChange={(e) => {
+            setItemsPerPage(Number(e.target.value));
+            setCurrentPage(1); // 重置到第一页
+          }}
+          className="mr-4 px-3 py-2 border border-gray-300 rounded-md"
+        >
+          <option value="5">5条/页</option>
+          <option value="10">10条/页</option>
+          <option value="20">20条/页</option>
+          <option value="50">50条/页</option>
+        </select>
         <div className="flex justify-center mt-6">
           <nav className="inline-flex rounded-md shadow">
             <button
