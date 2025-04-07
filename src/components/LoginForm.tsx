@@ -79,7 +79,7 @@ export default function LoginForm() {
             dispatch(setIsSystemAdmin(res.Is_System_Admin));
             dispatch(setOrg(res.org));
 
-            setModalContent(`${res.username} 登录成功`);
+            setModalContent(`用户 ${res.username} 登录成功`);
             setIsLoginSuccess(true);
             setModalVisible(true);
         }).catch((err) => {
@@ -97,7 +97,7 @@ export default function LoginForm() {
             const timer = setInterval(() => {
                 setCountdown((prev) => {
                     if (prev <= 1) {
-                        handleConfirm();
+                        handleConfirm('back');
                         return 3;
                     }
                     return prev - 1;
@@ -111,7 +111,7 @@ export default function LoginForm() {
         if (type === 'back' && canGoBack) {
             router.back();
         } else {
-            router.push(type === 'home' ? "/" : canGoBack ? router.asPath : "/");
+            router.push("/");
         }
     };
     const jumpRegister = () => {
