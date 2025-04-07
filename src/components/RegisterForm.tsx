@@ -3,33 +3,30 @@ import { useState } from "react";
 import { useRouter } from 'next/router';
 
 import { RootState } from "../redux/store";
-import { useSelector, useDispatch } from "react-redux";
-import { setUserName, setSession, setCreateTime, setEmail, setRealName, setIsContestOfficial, setIsDepartmentOfficial, setIsSystemAdmin, setOrg } from "../redux/auth";
-
-import useRouteHistory from "../hook/useRouteHistroy";
+import { useSelector } from "react-redux";
 
 import { checkUserName, checkPassword } from "../utils/auth";
-import { LoginRequest, LoginResponse } from "../utils/types";
 
 import { FAILURE_PREFIX } from "../constants/string";
 
-import { interfaceToString } from "../utils/types";
+import { interfaceToString, RegisterRequest, RegisterResponse } from "../utils/types";
 
-export default function LoginForm() {
-    const { canGoBack } = useRouteHistory();
+export default function RegisterForm() {
     const router = useRouter();
-    const dispatch = useDispatch();
     // 如果已登录，强制跳转到登出界面
     if (useSelector((state: RootState) => state.auth.userName) !== "") {
         router.push("/logout"); 
     }
     const [userName, setUserNameNow] = useState(""); 
     const [password, setPassword] = useState("");
+    const [password2, setPassword2] = useState(""); 
     const [userNameInfo, setUserNameInfo] = useState(""); 
     const [passwordInfo, setPasswordInfo] = useState(""); 
+    const [password2Info, setPassword2Info] = useState(""); 
     const clearInfo = () => {
         setUserNameInfo(""); 
         setPasswordInfo(""); 
+        setPassword2Info(""); 
     }
     const changeUserName = (newValue: string) => {
         clearInfo(); 
@@ -45,9 +42,27 @@ export default function LoginForm() {
             setPasswordInfo("密码应当只包含字母、数字、下划线。"); 
             return; 
         }
+        if (newValue !== password2 && password2 !== "") {
+            setPassword2Info("两次密码应当相同。"); 
+        }
         setPassword(newValue); 
     }
-    const tryLogin = async () => {
+    const changePassword2 = (newValue: string) => {
+        clearInfo(); 
+        if (checkPassword(newValue) === false) {
+            if (password !== password2) {
+                setPassword2Info("密码应当只包含字母、数字、下划线。两次密码应当相同。")
+            } else {
+                setPassword2Info("密码应当只包含字母、数字、下划线。"); 
+            }
+            return; 
+        }
+        if (newValue !== password && password2 !== "") {
+            setPassword2Info("两次密码应当相同。"); 
+        }
+        setPassword2(newValue); 
+    }
+    const tryRegister = async () => {
         clearInfo(); 
         if (userName.length === 0) {
             setUserNameInfo("用户名不能为空。"); 
@@ -57,39 +72,25 @@ export default function LoginForm() {
             setPasswordInfo("密码不能为空。"); 
             return; 
         }
+        if (password2 !== password) {
+            setPassword2Info("两次密码应当相同。"); 
+            return; 
+        }
         request(
-            `/api/users/login`,
+            `/api/users/register`,
             'POST',
-            interfaceToString({username: userName, password: password} as LoginRequest),
+            interfaceToString({username: userName, password: password} as RegisterRequest),
             false
-        ).then((res)=> {
-            return res.data; 
-        }).then((res: LoginResponse) => {
-            console.log(res);
-            dispatch(setUserName(res.username)); 
-            dispatch(setSession(res.session));
-            dispatch(setCreateTime(res.create_time));
-            dispatch(setEmail(res.email));
-            dispatch(setRealName(res.real_name));
-            dispatch(setIsContestOfficial(res.Is_Contest_Official));
-            dispatch(setIsDepartmentOfficial(res.Is_Department_Official));
-            dispatch(setIsSystemAdmin(res.Is_System_Admin));
-            dispatch(setOrg(res.org));
-
-            alert(`${res.username}登陆成功`); 
-            // 检查是否可以后退
-            if (canGoBack) {
-                router.back();
-            } else {
-                router.push("/");
-            }
+        ).then((res: RegisterResponse) => {
+            alert(`${res.username} 注册成功！`); 
+            router.push("/login"); 
         }).catch((err) => {
             alert(FAILURE_PREFIX + err);
         })
 
     }
-    const jumpRegister = () => {
-        router.push("/register")
+    const jumpLogin = () => {
+        router.push("/login")
     }
     return (
         <div>
@@ -109,12 +110,20 @@ export default function LoginForm() {
             />
             <div>{passwordInfo}</div>
             <br/>
-            <button onClick={tryLogin} disabled={userName === "" || password === ""}>
-                登录
-            </button>
-            <button onClick={jumpRegister}>
+            <input
+                type="password"
+                placeholder="密码"
+                value={password2}
+                onChange={(e) => changePassword2(e.target.value)}
+            />
+            <div>{password2Info}</div>
+            <br/>
+            <button onClick={tryRegister} disabled={userName === "" || password === ""}>
                 注册
             </button>
+            <div>
+                已有帐号？直接前往 <div onClick={jumpLogin}>登录</div>
+            </div> 
         </div>
     )
 }

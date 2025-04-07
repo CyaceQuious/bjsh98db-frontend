@@ -18,7 +18,7 @@ export function getEmptyQuery():SearchQuery {
     }
 }
 
-export function searchQueryToString(params: SearchQuery): string {
+export function interfaceToString(params: object): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
@@ -78,4 +78,13 @@ export interface LoginResponse {
     Is_Department_Official: boolean; 
     Is_Contest_Official: boolean; 
     Is_System_Admin: boolean; 
+}
+
+export interface RegisterRequest {
+    username: string; 
+    password: string; 
+}
+
+export interface RegisterResponse {
+    username: string;
 }

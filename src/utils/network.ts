@@ -32,7 +32,7 @@ export class NetworkError extends Error {
 export const request = async (
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE",
-    body?: object, 
+    body?: string, 
     needAuth?: boolean
 ) => {
     const headers = new Headers();
@@ -40,10 +40,12 @@ export const request = async (
         const session = useSelector((state: RootState) => state.auth.session); 
         headers.append("Authorization", `${session}`);
     }
-    headers.append("Content-Type", "application/json");
+    if (body !== undefined) {
+        headers.append("Content-Type", "application/x-www-form-urlencoded");
+    }
     const response = await fetch(url, {
         method,
-        body: body && JSON.stringify(body),
+        body: body ? body : undefined,
         headers: headers, 
     });
 
@@ -77,6 +79,7 @@ export const request = async (
     const data = await response.json();
     const code = Number(data.code);
     console.log(`${data}, ${code}`);
+    console.log(data)
     // HTTP status 200
     if (response.status === 200 && code === 0) {
         return { ...data, code: 0};
