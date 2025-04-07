@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 import { RootState } from "../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -17,14 +18,22 @@ export default function Logout() {
         <div>Loading...</div>
     );
 
-    if (userName === "") {
-        alert("暂未登录。将返回首页。")
-        router.push("/")
-        return (<div>暂未登录。将返回首页。</div>)
-    } 
+    useEffect(() => {
+        if (userName === "") {
+            alert("暂未登录所以无法登出。将返回首页。")
+            router.push("/")
+        }
+    }, [])
 
     const decideLogout = () => {
-        dispatch(resetData())
+        const oldUserName = userName; 
+        dispatch(resetData()); 
+        alert(`用户 ${oldUserName} 已登出。`)
+        if (canGoBack) {
+            router.back();
+        } else {
+            router.push("/");
+        }
     }
     const quitLogout = () => {
         // 检查是否可以后退

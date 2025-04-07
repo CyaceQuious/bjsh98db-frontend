@@ -1,9 +1,10 @@
 import { request } from "../utils/network";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
+import store from "../redux/store";
 
 import { checkUserName, checkPassword } from "../utils/auth";
 
@@ -14,9 +15,11 @@ import { interfaceToString, RegisterRequest, RegisterResponse } from "../utils/t
 export default function RegisterForm() {
     const router = useRouter();
     // 如果已登录，强制跳转到登出界面
-    if (useSelector((state: RootState) => state.auth.userName) !== "") {
-        router.push("/logout"); 
-    }
+    useEffect(() => {
+        if (store.getState().auth.userName !== "") {
+            router.push("/logout"); 
+        }
+    }, [])
     const [userName, setUserNameNow] = useState(""); 
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState(""); 

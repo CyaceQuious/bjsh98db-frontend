@@ -1,8 +1,9 @@
 import { request } from "../utils/network";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 
 import { RootState } from "../redux/store";
+import store from "../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserName, setSession, setCreateTime, setEmail, setRealName, setIsContestOfficial, setIsDepartmentOfficial, setIsSystemAdmin, setOrg } from "../redux/auth";
 
@@ -20,9 +21,11 @@ export default function LoginForm() {
     const router = useRouter();
     const dispatch = useDispatch();
     // 如果已登录，强制跳转到登出界面
-    if (useSelector((state: RootState) => state.auth.userName) !== "") {
-        router.push("/logout"); 
-    }
+    useEffect(() => {
+        if (store.getState().auth.userName !== "") {
+            router.push("/logout"); 
+        }
+    }, [])
     const [userName, setUserNameNow] = useState(""); 
     const [password, setPassword] = useState("");
     const [userNameInfo, setUserNameInfo] = useState(""); 
