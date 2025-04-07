@@ -74,7 +74,7 @@ const MeetsPage: NextPage = () => {
         
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="grid grid-cols-12 bg-gray-100 p-4 font-semibold">
-            <div className="col-span-1">ID</div>
+            <div className="col-span-1">ID</div> 
             <div className="col-span-11">比赛名称</div>
           </div>
           
@@ -85,8 +85,14 @@ const MeetsPage: NextPage = () => {
                 className="grid grid-cols-12 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 <div className="col-span-1 text-gray-600">{meet.mid}</div>
-                <div className="col-span-11">{meet.name}</div>
-                <Link href={`/group/${meet.mid}`}>查看团体总分</Link>
+                <div className="col-span-11">
+                <Link href={{
+                  pathname: '/group',
+                  query: { mid: meet.mid }
+                }}>
+                  {meet.name}
+                </Link>
+                </div>
               </div>
             ))
           ) : (

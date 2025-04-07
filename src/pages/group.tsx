@@ -21,13 +21,7 @@ export default function CompetitionTeamScore() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/query_team_score', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ mid: Number(mid) }),
-        });
+        const response = await fetch(`/api/query_team_score?mid=${mid}`);
 
         const data = await response.json();
 
