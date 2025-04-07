@@ -46,7 +46,7 @@ export const request = async (
     const response = await fetch(url, {
         method,
         body: body ? body : undefined,
-        headers: headers, 
+        headers
     });
 
     // // BEGIN: fake response for test

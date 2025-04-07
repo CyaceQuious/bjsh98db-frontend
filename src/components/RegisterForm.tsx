@@ -1,3 +1,6 @@
+// 注册账号的组件
+// 用于/register
+
 import { request } from "../utils/network";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
@@ -52,29 +55,28 @@ export default function RegisterForm() {
                         ? Promise.resolve()
                         : Promise.reject('密码只能包含字母、数字和下划线')
             }
-        ], 
+        ],
         password2: [
             { required: true, message: '请再次输入密码' },
             {
-              validator: (_: FormRule, value: string) =>
-                checkPassword(value)
-                  ? Promise.resolve()
-                  : Promise.reject('密码只能包含字母、数字和下划线')
-            }, 
-            // 添加依赖项并调整验证逻辑
-            ({ getFieldValue }: {getFieldValue: (name: string) => any}) => ({
-              validator(_: FormRule, value: string) {
-                const password = getFieldValue('password');
-                if (!value || password === value) {
-                  return Promise.resolve();
+                validator: (_: FormRule, value: string) =>
+                    checkPassword(value)
+                        ? Promise.resolve()
+                        : Promise.reject('密码只能包含字母、数字和下划线')
+            },
+            ({ getFieldValue }: { getFieldValue: (name: string) => any }) => ({
+                validator(_: FormRule, value: string) {
+                    const password = getFieldValue('password');
+                    if (!value || password === value) {
+                        return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('两次输入的密码不一致'));
                 }
-                return Promise.reject(new Error('两次输入的密码不一致'));
-              },
-            //   dependencies: ['password'] // 声明依赖以确保password变化时触发验证
             }),
-          ]
+        ]
     };
 
+    // 提交注册信息
     const handleRegister = async (values: { username: string; password: string }) => {
         setLoading(true);
         console.log(values)
@@ -98,6 +100,8 @@ export default function RegisterForm() {
             setLoading(false);
         });
     }
+    
+    // 注册完成后跳转框的处理
     const handleConfirm = (type?: 'login' | 'home') => {
         setModalVisible(false);
         if (type === 'login') {
