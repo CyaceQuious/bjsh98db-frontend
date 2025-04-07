@@ -1,3 +1,6 @@
+// 登出页面
+// 不过目前正常使用应该不会到这个页面来
+
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
