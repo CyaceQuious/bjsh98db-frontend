@@ -62,3 +62,20 @@ export interface SearchResult {
     count: number;
     results: SearchResultItem[]; 
 }
+
+export interface LoginRequest {
+    username: string; 
+    password: string; 
+}
+
+export interface LoginResponse {
+    session: string; 
+    username: string;
+    email: string; 
+    create_time: string; 
+    real_name: string; 
+    org: string;
+    Is_Department_Official: boolean; 
+    Is_Contest_Official: boolean; 
+    Is_System_Admin: boolean; 
+}
