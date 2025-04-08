@@ -15,6 +15,7 @@ export default function Navbar() {
         router.pathname === '/' ? 'home' :
         router.pathname.startsWith('/search') ? 'search' : 
         router.pathname.startsWith('/contests') ? 'contests' :
+        router.pathname.startsWith('/manage') ? 'manage' :
         router.pathname === '/about' ? 'about' : ''
     ].filter(Boolean);
 
@@ -34,6 +35,11 @@ export default function Navbar() {
             key: 'contests',
             label: '比赛',
             onClick: () => router.push('/contests'),
+        },
+        {
+            key: 'manage',
+            label: '管理',
+            onClick: () => router.push('/manage'),
         },
         {
             key: 'about',
