@@ -19,7 +19,7 @@ interface ApiResponse {
 const contestsPage: NextPage = () => {
   const [contests, setContests] = useState<Contest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchContests = async () => {
