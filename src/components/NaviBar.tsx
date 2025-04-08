@@ -14,7 +14,8 @@ export default function Navbar() {
     const selectedKeys = [
         router.pathname === '/' ? 'home' :
         router.pathname.startsWith('/search') ? 'search' : 
-        router.pathname.startsWith('/contests') ? 'contests' : ''
+        router.pathname.startsWith('/contests') ? 'contests' :
+        router.pathname === '/about' ? 'about' : ''
     ].filter(Boolean);
 
     // 菜单项配置
@@ -33,7 +34,12 @@ export default function Navbar() {
             key: 'contests',
             label: '比赛',
             onClick: () => router.push('/contests'),
-        }
+        },
+        {
+            key: 'about',
+            label: '关于我们',
+            onClick: () => router.push('/about'),
+        },
     ];
 
     return (
