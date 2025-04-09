@@ -121,8 +121,8 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                 doSearch={handleSearch}
                 searchItems={[
                     { key: "name", type: "text" },
-                    { key: "projectname", type: "text" },
                     { key: "groupname", type: "text" },
+                    { key: "projectname", type: "text" },
                     { key: "meet", type: "text", isFullLine: true },
                     { key: "ranked", type: "boolean" },
                     { key: "precise", type: "boolean" },

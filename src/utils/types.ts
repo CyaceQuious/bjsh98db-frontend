@@ -30,7 +30,7 @@ export function interfaceToString(params: object, skipKeys: string[] = []): stri
             return; 
         }
         if (value !== undefined && value !== "" && typeof value === "string") {
-            value.split(' ').forEach(item => {
+            value.split(/[\s,，;；]+/).filter(Boolean).forEach(item => {
                 searchParams.append(key, item); 
             });
         }

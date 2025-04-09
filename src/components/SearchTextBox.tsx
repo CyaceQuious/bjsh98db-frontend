@@ -19,7 +19,11 @@ export default function SearchTextBox({ name, query, textChange }: SearchTextBox
         item: (
         <Space.Compact
             direction="horizontal"
-            style={{ width: '100%', margin: '4px 0' }}
+            style={{ 
+                width: '100%', 
+                margin: '4px 0', 
+                alignItems: 'center'
+            }}
         >
             <Text strong style={{
                 padding: '0 8px',
@@ -37,9 +41,6 @@ export default function SearchTextBox({ name, query, textChange }: SearchTextBox
                       <Space>
                         <HistoryOutlined />
                         <span>{item.query}</span>
-                        {/* <span className="timestamp">
-                          {new Date(item.timestamp).toLocaleString()}
-                        </span> */}
                       </Space>
                     )
                   }))}
