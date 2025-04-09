@@ -96,7 +96,9 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
         setQuery(newQuery); 
         setLastQuery(newQuery)
         router.push(`/search?${interfaceToString(newQuery)}`);
-        if (hiddenResult === false) fetchResults(newQuery);
+        if (hiddenResult === false) {
+            fetchResults(newQuery);
+        }
     }
 
     // 处理分页变化
@@ -130,7 +132,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                 ]}
             />
             <div style={{ marginTop: "20px" }}>
-                {hiddenResult ? <br /> :
+                {hiddenResult ? "" :
                     isLoading ? <p>Loading...</p> :
                         error === undefined ? <SearchResultTable
                         results={results}
