@@ -10,6 +10,7 @@
 /coverage
 /.coverage
 /test-report.xml
+/reports/*
 
 # next.js
 /.next/
