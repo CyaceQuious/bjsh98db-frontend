@@ -1,6 +1,9 @@
 // 网络请求处理器，为后续鉴权方便考虑
 // 修改自小作业提供的 wrapper
 
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+
 export enum NetworkErrorType {
     UNAUTHORIZED,
     REJECTED,
@@ -29,11 +32,21 @@ export class NetworkError extends Error {
 export const request = async (
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE",
-    body?: object
+    body?: string, 
+    needAuth?: boolean
 ) => {
+    const headers = new Headers();
+    if (needAuth === true) {
+        const session = useSelector((state: RootState) => state.auth.session); 
+        headers.append("Authorization", `${session}`);
+    }
+    if (body !== undefined) {
+        headers.append("Content-Type", "application/x-www-form-urlencoded");
+    }
     const response = await fetch(url, {
         method,
-        body: body && JSON.stringify(body),
+        body: body ? body : undefined,
+        headers
     });
 
     // // BEGIN: fake response for test
@@ -65,10 +78,11 @@ export const request = async (
     // // END: fake response for test
     const data = await response.json();
     const code = Number(data.code);
-
+    console.log(`${data}, ${code}`);
+    console.log(data)
     // HTTP status 200
     if (response.status === 200 && code === 0) {
-        return { ...data};
+        return { ...data, code: 0};
     }
     else if (response.status === 200) {
         throw new NetworkError(

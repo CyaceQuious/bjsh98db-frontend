@@ -2,7 +2,7 @@
 // 包含 SearchBox 以及 SearchResultTable
 // 进行搜索网络请求，并自动更新搜索结果
 
-import { SearchQuery, SearchResultItem, SearchResult, getEmptyQuery, searchQueryToString } from "../utils/types";
+import { SearchQuery, SearchResultItem, SearchResult, getEmptyQuery, interfaceToString } from "../utils/types";
 import SearchBox from "./SearchBox"
 import SearchResultTable from "./SearchResultTable";
 import { request } from "../utils/network"
@@ -27,7 +27,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
     // initialize
     useEffect(() => {
         console.log(query);
-        if (searchQueryToString(query) !== "") {
+        if (interfaceToString(query) !== "") {
             fetchResults();
         }
     }, [])
@@ -36,7 +36,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
     const fetchResults = async () => {
         setIsLoading(true);
         request(
-            `/api/query?${searchQueryToString(query)}`,
+            `/api/query?${interfaceToString(query)}`,
             'GET',
             undefined,
         ).then((res: SearchResult) => {
@@ -80,7 +80,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
 
     // 处理按下搜索按钮后的行为
     const handleSearch = () => {
-        router.push(`/search?${searchQueryToString(query)}`);
+        router.push(`/search?${interfaceToString(query)}`);
         fetchResults();
     }
 

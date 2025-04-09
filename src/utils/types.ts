@@ -18,7 +18,7 @@ export function getEmptyQuery():SearchQuery {
     }
 }
 
-export function searchQueryToString(params: SearchQuery): string {
+export function interfaceToString(params: object): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
@@ -63,6 +63,31 @@ export interface SearchResult {
     results: SearchResultItem[]; 
 }
 
+export interface LoginRequest {
+    username: string; 
+    password: string; 
+}
+
+export interface LoginResponse {
+    session: string; 
+    username: string;
+    email: string; 
+    create_time: string; 
+    real_name: string; 
+    org: string;
+    Is_Department_Official: boolean; 
+    Is_Contest_Official: boolean; 
+    Is_System_Admin: boolean; 
+}
+
+export interface RegisterRequest {
+    username: string; 
+    password: string; 
+}
+
+export interface RegisterResponse {
+    username: string;
+}
 
 export interface Meet {
     name: string;

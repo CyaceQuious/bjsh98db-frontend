@@ -1,5 +1,5 @@
 import { SearchQuery } from "../utils/types";
-import { searchQueryToString } from "../utils/types";
+import { interfaceToString } from "../utils/types";
 
 
 it("Query to String test", () => {
@@ -10,7 +10,7 @@ it("Query to String test", () => {
         groupname: undefined
     }; 
     const answer1 = ""; 
-    expect(searchQueryToString(query1)).toEqual(answer1); 
+    expect(interfaceToString(query1)).toEqual(answer1); 
 
     const query2: SearchQuery = {
         name: "fgf", 
@@ -19,5 +19,5 @@ it("Query to String test", () => {
         groupname: undefined
     }; 
     const answer2 = "name=fgf&meet=abc"; 
-    expect(searchQueryToString(query2)).toEqual(answer2)
+    expect(interfaceToString(query2)).toEqual(answer2)
 });
