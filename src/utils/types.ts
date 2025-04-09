@@ -4,7 +4,9 @@ export interface SearchQuery {
     projectname?: string; 
     groupname?: string; 
     ranked?: boolean; 
-    precise?: boolean; 
+    precise?: boolean;
+    page?: number;
+    page_size?: number;
 }
 
 export function getEmptyQuery():SearchQuery {
@@ -15,6 +17,8 @@ export function getEmptyQuery():SearchQuery {
         groupname: "", 
         ranked: false, 
         precise: false, 
+        page: 1, 
+        page_size: 2000
     }
 }
 
