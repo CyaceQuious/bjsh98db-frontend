@@ -29,13 +29,6 @@ export default function SearchResultTable({
         dataIndex: name,
         key: name,
         ellipsis: true,
-        sorter: (a, b) => {
-            const valA = a[name as keyof SearchResultItem];
-            const valB = b[name as keyof SearchResultItem];
-            return typeof valA === 'string' && typeof valB === 'string'
-                ? valA.localeCompare(valB)
-                : 0;
-        },
         render: (value: any) => {
             // TODO: 加入判断逻辑，跳转到比赛主页
             if (typeof value === 'boolean') {

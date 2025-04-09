@@ -103,6 +103,9 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
         if (page * (newPageSize-1) >= total) {
             page = Math.floor((total-1)/newPageSize)+1;
         }
+        if (page <= 0) {
+            return; 
+        }
         const newQuery: SearchQuery = { ...lastQuery, page, page_size: newPageSize }
         setLastQuery(newQuery);
         router.push(`/search?${interfaceToString(newQuery)}`);
