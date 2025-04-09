@@ -34,7 +34,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
             setQuery(oldQuery);
             console.log(query);
             setLastQuery(oldQuery);
-            if (interfaceToString(oldQuery) !== "") {
+            if (interfaceToString( {oldQuery, skipKeys: ["page", "page_size"]} ) !== "") {
                 fetchResults(oldQuery);
             }
         }
@@ -102,6 +102,9 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
     const handlePageChange = (page: number, newPageSize: number) => {
         if (page * (newPageSize-1) >= total) {
             page = Math.floor((total-1)/newPageSize)+1;
+        }
+        if (page <= 0) {
+            return; 
         }
         const newQuery: SearchQuery = { ...lastQuery, page, page_size: newPageSize }
         setLastQuery(newQuery);

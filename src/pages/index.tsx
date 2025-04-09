@@ -2,7 +2,7 @@
 // 包含欢迎语以及 SearchBox。
 
 
-import SearchContainer from '../components/SearchContainer';
+import AboutCard from '../components/AboutCard';
 import styles from '../styles/container.module.css'
 import { useRouter } from 'next/router';
 
@@ -12,9 +12,9 @@ const WelcomeSearch = () => {
     return (
         <div className={styles.container}>
             <div>
-            <h1>欢迎使用 BJSH98.DB</h1>
+            <h1>--== 欢迎使用 BJSH98.DB ==--</h1>
             </div>
-            <SearchContainer hiddenResult={true}/>
+            <AboutCard mode='simple'/>
         </div>
     )
 };

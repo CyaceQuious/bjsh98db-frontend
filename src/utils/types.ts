@@ -18,16 +18,21 @@ export function getEmptyQuery():SearchQuery {
         ranked: false, 
         precise: false, 
         page: 1, 
-        page_size: 20
+        page_size: 10
     }
 }
 
-export function interfaceToString(params: object): string {
+export function interfaceToString(params: object, skipKeys: string[] = []): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
+        if (key in skipKeys) {
+            return; 
+        }
         if (value !== undefined && value !== "" && typeof value === "string") {
-            searchParams.append(key, value.toString());
+            value.split(' ').forEach(item => {
+                searchParams.append(key, item); 
+            });
         }
         if (value === true) {
             searchParams.append(key, value); 

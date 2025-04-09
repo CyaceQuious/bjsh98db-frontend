@@ -114,7 +114,9 @@ export default function RegisterForm() {
         router.push("/login")
     }
     return (
-        <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
+        <Row justify="center" align="middle" style={{ 
+            minHeight: '70vh' 
+        }}>
             <Col xs={20} sm={16} md={12} lg={8}>
                 <Card variant={"borderless"} style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
                     <Title level={3} style={{ textAlign: 'center', marginBottom: 40 }}>
