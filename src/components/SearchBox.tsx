@@ -62,7 +62,7 @@ export default function SearchBox({
         key={item.key.toString()}
         xs={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
         sm={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
-        md={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
+        md={item.isFullLine ? 24 : item.type === 'text' ? 12 : 4}
         lg={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
       >
         <Form.Item name={item.key}>
@@ -87,8 +87,8 @@ export default function SearchBox({
       >
         {allSearchBoxes}
         <Col
-          xs={5}
-          sm={5}
+          xs={24}
+          sm={8}
           md={13}
           lg={13}
           style={{
@@ -105,8 +105,8 @@ export default function SearchBox({
           </Button>
         </Col>
         <Col
-          xs={3}
-          sm={3}
+          xs={24}
+          sm={24}
           md={3}
           lg={3}
           style={{
