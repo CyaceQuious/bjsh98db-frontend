@@ -6,11 +6,7 @@ import AboutCard from '../components/AboutCard';
 import styles from '../styles/container.module.css'
 import { useRouter } from 'next/router';
 
-import { theme } from 'antd';
-const { useToken } = theme;
-
 const WelcomeSearch = () => {
-    const { token } = useToken();
     const router = useRouter();
     if (!router.isReady) return <div>Loading...</div>;
     return (
