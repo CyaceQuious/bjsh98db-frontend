@@ -8,9 +8,19 @@ const { useToken } = theme;
 
 interface SearchResultTableProps {
     results: SearchResultItem[];
+    currentPage: number;
+    pageSize: number;
+    total: number;
+    onPageChange: (page: number, pageSize: number) => void;
 }
 
-export default function SearchResultTable({ results }: SearchResultTableProps) {
+export default function SearchResultTable({
+    results,
+    currentPage, // 当前第几页
+    pageSize,    // 每页多少条
+    total,     // 总共多少条
+    onPageChange 
+}: SearchResultTableProps) {
     const { token } = useToken();
 
     // 生成动态列配置
@@ -43,12 +53,20 @@ export default function SearchResultTable({ results }: SearchResultTableProps) {
             size="middle"
             scroll={{ x: 'max-content' }}
             rowClassName={() => 'hover-highlight'}
+            onChange={(pagination) => {
+                if (onPageChange) {
+                    onPageChange(pagination.current ?? 1, pagination.pageSize ?? 10);
+                }
+            }}
             style={{
                 background: token.colorBgContainer,
                 borderRadius: token.borderRadius,
             }}
             pagination={{
-                pageSize: 10,
+                current: currentPage,
+                pageSize,
+                total,
+                pageSizeOptions: ['10', '20', '50'],
                 showSizeChanger: true,
                 showTotal: total => `共 ${total} 条`,
             }}

@@ -20,29 +20,40 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
     const router = useRouter();
 
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
+    const [lastQuery, setLastQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
     const [results, setResults] = useState<SearchResultItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
 
+    const [total, setTotal] = useState(0);
+
     // initialize
     useEffect(() => {
-        console.log(query);
-        if (interfaceToString(query) !== "") {
-            fetchResults();
+        console.log(oldQuery); 
+        if (oldQuery !== undefined) {
+            setQuery(oldQuery);
+            console.log(query);
+            setLastQuery(oldQuery);
+            if (interfaceToString(oldQuery) !== "") {
+                fetchResults(oldQuery);
+            }
         }
     }, [])
 
     // start to search
-    const fetchResults = async () => {
+    const fetchResults = async (curQuery: SearchQuery) => {
         setIsLoading(true);
+        console.log('start to search'); 
+        console.log(curQuery); 
         request(
-            `/api/query?${interfaceToString(query)}`,
+            `/api/query?${interfaceToString(curQuery)}`,
             'GET',
             undefined,
         ).then((res: SearchResult) => {
             console.log(res.info)
             console.log(res.results)
             setResults(res.results)
+            setTotal(res.count)
             console.log('set result over')
             setError(undefined)
         }).catch((err) => {
@@ -80,9 +91,23 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
 
     // 处理按下搜索按钮后的行为
     const handleSearch = () => {
-        router.push(`/search?${interfaceToString(query)}`);
-        fetchResults();
+        const newQuery = {...query, page: 1, page_size: lastQuery.page_size}; 
+        setQuery(newQuery); 
+        setLastQuery(newQuery)
+        router.push(`/search?${interfaceToString(newQuery)}`);
+        fetchResults(newQuery);
     }
+
+    // 处理分页变化
+    const handlePageChange = (page: number, newPageSize: number) => {
+        if (page * (newPageSize-1) >= total) {
+            page = Math.floor((total-1)/newPageSize)+1;
+        }
+        const newQuery: SearchQuery = { ...lastQuery, page, page_size: newPageSize }
+        setLastQuery(newQuery);
+        router.push(`/search?${interfaceToString(newQuery)}`);
+        fetchResults(newQuery); 
+    };
 
     return (
         <div style={{ width: "80%", marginTop: "25px" }}>
@@ -103,7 +128,13 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
             <div style={{ marginTop: "20px" }}>
                 {hiddenResult ? <br /> :
                     isLoading ? <p>Loading...</p> :
-                        error === undefined ? <SearchResultTable results={results} /> : error}
+                        error === undefined ? <SearchResultTable
+                        results={results}
+                        currentPage={lastQuery.page}
+                        pageSize={lastQuery.page_size}
+                        total={total}
+                        onPageChange={handlePageChange}
+                    /> : error}
             </div>
         </div>
     )

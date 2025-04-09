@@ -5,7 +5,9 @@ const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     meet: "运动会",
     projectname: "比赛项目",
     precise: "精确搜索",
-    ranked: "只显示前八名"
+    ranked: "只显示前八名", 
+    page: "", 
+    page_size: ""
 };
 // current language is simplified chinese
 export function getQueryItemName(itemName: keyof SearchQuery): string {
