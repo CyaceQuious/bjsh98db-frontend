@@ -18,7 +18,7 @@ export function getEmptyQuery():SearchQuery {
         ranked: false, 
         precise: false, 
         page: 1, 
-        page_size: 2000
+        page_size: 20
     }
 }
 
