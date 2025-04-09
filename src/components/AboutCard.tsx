@@ -120,8 +120,8 @@ const AboutCard = ({mode}: AboutCardProps) => {
                 margin: '0 auto',
                 padding: token.paddingLG,
                 background: token.colorBgContainer,
-                borderRadius: token.borderRadiusLG,
-                boxShadow: token.boxShadow
+                // borderRadius: token.borderRadiusLG,
+                // boxShadow: token.boxShadow
             }}>
                 <Title
                     level={2}
