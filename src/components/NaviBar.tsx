@@ -36,7 +36,7 @@ export default function Navbar() {
     // 根据当前路径自动选中菜单项
     const selectedKeys = [
         router.pathname === '/' ? 'home' :
-        router.pathname.startsWith('/search') ? 'search' : 
+        router.pathname.startsWith('/search') ? 'home' : 
         router.pathname.startsWith('/contests') ? 'contests' :
         router.pathname.startsWith('/manage') ? 'manage' :
         router.pathname === '/about' ? 'about' : ''
@@ -49,11 +49,11 @@ export default function Navbar() {
             label: '主页',
             onClick: () => router.push('/'),
         },
-        {
-            key: 'search',
-            label: '搜索',
-            onClick: () => router.push('/search'),
-        },
+        // {
+        //     key: 'search',
+        //     label: '搜索',
+        //     onClick: () => router.push('/search'),
+        // },
         {
             key: 'contests',
             label: '比赛',
