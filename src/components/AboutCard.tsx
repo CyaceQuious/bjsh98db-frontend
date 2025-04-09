@@ -123,6 +123,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
                 // borderRadius: token.borderRadiusLG,
                 // boxShadow: token.boxShadow
             }}>
+				{mode === "full" ? 
                 <Title
                     level={2}
                     style={{
@@ -132,6 +133,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
                 >
                     关于数据平台
                 </Title>
+				: "" }
                 
                 <Card title="项目介绍" style={{marginBottom: token.marginLG}}>
                 bjsh98.db（大体协数据库）是一个为北京市大学生体育协会（简称“大体协”）成绩查询页开发的数据检索平台，借助于信息化技术，尤其是软件技术和互联网技术，支持赛会组织方、运动员、观众等群体高效、安全地上传、修正、查询相关赛事成绩数据，优化落后的查询模式。
@@ -143,6 +145,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
 				</Card>
 				: "" }
 
+				{mode === "full" ? 
                 <Card title="开发者"  style={{marginBottom: token.marginLG}} >
                     <List
                         grid={{ gutter: 16, column: 2 }}
@@ -165,6 +168,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
                         )}
                     />
                 </Card>
+				: "" }
 
                 <Alert
                     message="数据声明"
