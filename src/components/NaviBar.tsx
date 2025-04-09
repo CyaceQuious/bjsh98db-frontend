@@ -46,7 +46,7 @@ export default function Navbar() {
     const items: MenuProps['items'] = [
         {
             key: 'home',
-            label: '主页',
+            label: '搜索',
             onClick: () => router.push('/'),
         },
         // {
