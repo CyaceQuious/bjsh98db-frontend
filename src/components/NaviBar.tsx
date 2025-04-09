@@ -36,8 +36,9 @@ export default function Navbar() {
     // 根据当前路径自动选中菜单项
     const selectedKeys = [
         router.pathname === '/' ? 'home' :
-            router.pathname.startsWith('/search') ? 'search' : 
-                router.pathname === '/about' ? 'about' : ''
+        router.pathname.startsWith('/search') ? 'search' : 
+        router.pathname.startsWith('/contests') ? 'contests' :
+        router.pathname === '/about' ? 'about' : ''
     ].filter(Boolean);
 
     // 菜单项配置
@@ -53,10 +54,15 @@ export default function Navbar() {
             onClick: () => router.push('/search'),
         },
         {
+            key: 'contests',
+            label: '比赛',
+            onClick: () => router.push('/contests'),
+        },
+        {
             key: 'about',
             label: '关于我们',
             onClick: () => router.push('/about'),
-        }
+        },
     ];
 
     const hideRightItems = ['/login', '/register', '/logout']

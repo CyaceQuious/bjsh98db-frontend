@@ -88,3 +88,30 @@ export interface RegisterRequest {
 export interface RegisterResponse {
     username: string;
 }
+
+export interface Meet {
+    name: string;
+    mid: number;
+}
+  
+export interface MeetsApiResponse {
+    code: number;
+    info: string;
+    count: number;
+    results: Meet[];
+}
+
+export interface TeamScoreResponse {
+    code: number;
+    info: string;
+    results: TeamScore[];
+  }
+  
+  export interface TeamScore {
+    team: string;
+    total_score: number;
+  }
+  
+  export interface TeamScoreRequest {
+    mid: number;
+  }
