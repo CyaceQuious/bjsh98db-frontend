@@ -20,16 +20,18 @@ export default function SearchPage() {
             groupname: query.groupname ? String(query.groupname) : "",
             ranked: query.ranked ? Boolean(query.ranked) : false,
             precise: query.precise ? Boolean(query.precise) : false,
-        };
+            page: query.page ? Number(query.page): 1, 
+            page_size: query.page_size ? Number(query.page_size): 10, 
+        } as SearchQuery;
     };
 
     if (!router.isReady) return <div>Loading...</div>;
 
-    const query = parseSearchQuery();
+    const curQuery = parseSearchQuery();
 
     return (
         <div className={styles.container}>
-            <SearchContainer oldQuery={query}/>
+            <SearchContainer oldQuery={curQuery}/>
         </div>
     )
 }

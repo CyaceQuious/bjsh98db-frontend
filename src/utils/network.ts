@@ -35,6 +35,7 @@ export const request = async (
     body?: string, 
     needAuth?: boolean
 ) => {
+    console.log(`[request] ${method} ${url}`);
     const headers = new Headers();
     if (needAuth === true) {
         const session = useSelector((state: RootState) => state.auth.session); 

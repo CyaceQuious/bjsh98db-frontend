@@ -5,8 +5,8 @@ export interface SearchQuery {
     groupname?: string; 
     ranked?: boolean; 
     precise?: boolean;
-    page?: number;
-    page_size?: number;
+    page: number;
+    page_size: number;
 }
 
 export function getEmptyQuery():SearchQuery {
@@ -30,7 +30,10 @@ export function interfaceToString(params: object): string {
             searchParams.append(key, value.toString());
         }
         if (value === true) {
-            searchParams.append(key, value)
+            searchParams.append(key, value); 
+        }
+        if (value !== undefined && typeof value === "number") {
+            searchParams.append(key, value.toString()); 
         }
     });
 
@@ -64,6 +67,8 @@ export interface SearchResult {
     code: number;
     info: string;
     count: number;
+    total_pages: number;
+    current_page: number;
     results: SearchResultItem[]; 
 }
 
