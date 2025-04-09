@@ -34,7 +34,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
             setQuery(oldQuery);
             console.log(query);
             setLastQuery(oldQuery);
-            if (interfaceToString(oldQuery) !== "") {
+            if (interfaceToString( {oldQuery, skipKeys: ["page", "page_size"]} ) !== "") {
                 fetchResults(oldQuery);
             }
         }

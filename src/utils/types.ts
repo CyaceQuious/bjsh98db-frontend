@@ -22,10 +22,13 @@ export function getEmptyQuery():SearchQuery {
     }
 }
 
-export function interfaceToString(params: object): string {
+export function interfaceToString(params: object, skipKeys: string[] = []): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
+        if (key in skipKeys) {
+            return; 
+        }
         if (value !== undefined && value !== "" && typeof value === "string") {
             searchParams.append(key, value.toString());
         }
