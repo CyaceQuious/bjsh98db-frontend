@@ -32,9 +32,10 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
         console.log(oldQuery); 
         if (oldQuery !== undefined) {
             setQuery(oldQuery);
+            console.log('initializing'); 
             console.log(query);
             setLastQuery(oldQuery);
-            if (interfaceToString( {oldQuery, skipKeys: ["page", "page_size"]} ) !== "") {
+            if (interfaceToString(oldQuery, ["page", "page_size"]) !== "") {
                 fetchResults(oldQuery);
             }
         }
@@ -95,7 +96,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
         setQuery(newQuery); 
         setLastQuery(newQuery)
         router.push(`/search?${interfaceToString(newQuery)}`);
-        fetchResults(newQuery);
+        if (hiddenResult === false) fetchResults(newQuery);
     }
 
     // 处理分页变化
