@@ -19,6 +19,10 @@ const contestsPage: NextPage = () => {
   const [contests, setContests] = useState<Contest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
+  // 分页状态
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
   useEffect(() => {
     const fetchContests = async () => {
@@ -30,6 +34,7 @@ const contestsPage: NextPage = () => {
           // Sort by mid in descending order (just in case API doesn't)
           const sortedContests = [...data.results].sort((a, b) => b.mid - a.mid);
           setContests(sortedContests);
+          setTotalItems(data.count || sortedContests.length);
         } else {
           setError(data.info || 'Failed to fetch contests');
         }
@@ -43,6 +48,21 @@ const contestsPage: NextPage = () => {
 
     fetchContests();
   }, []);
+
+  // 计算当前页的数据
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = contests.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // 改变页码
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  // 改变每页显示数量
+  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1); // 重置到第一页
+  };
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
@@ -63,24 +83,46 @@ const contestsPage: NextPage = () => {
           错误: {error}
         </div>
       )}
+
+      {/* 分页控制 - 顶部 */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div>
+          <span>每页显示: </span>
+          <select 
+            value={itemsPerPage} 
+            onChange={handleItemsPerPageChange}
+            style={{ padding: '5px', marginLeft: '5px' }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+        <div>
+          <span>共 {totalItems} 条记录</span>
+        </div>
+      </div>
+
       {!loading && !error && (
-        <table
-        style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          marginTop: '20px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        }}
-        >
+        <>
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              marginTop: '20px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            }}
+          >
             <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
-              <th style={{ padding: '12px', textAlign: 'left' }}>比赛名称</th>
-            </tr>
-          </thead>
+              <tr style={{ backgroundColor: '#f5f5f5' }}>
+                <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>比赛名称</th>
+              </tr>
+            </thead>
             <tbody>
-              {contests.length > 0 ? (
-                contests.map((contest) => (
+              {currentItems.length > 0 ? (
+                currentItems.map((contest) => (
                   <tr
                     key={contest.name}
                     style={{
@@ -108,6 +150,96 @@ const contestsPage: NextPage = () => {
               )}
             </tbody>
           </table>
+
+          {/* 分页控制 - 底部 */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <button 
+              onClick={() => paginate(1)} 
+              disabled={currentPage === 1}
+              style={{ 
+                padding: '5px 10px', 
+                margin: '0 5px', 
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                opacity: currentPage === 1 ? 0.5 : 1
+              }}
+            >
+              首页
+            </button>
+            <button 
+              onClick={() => paginate(currentPage - 1)} 
+              disabled={currentPage === 1}
+              style={{ 
+                padding: '5px 10px', 
+                margin: '0 5px', 
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                opacity: currentPage === 1 ? 0.5 : 1
+              }}
+            >
+              上一页
+            </button>
+            
+            {/* 页码显示 */}
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              // 显示当前页附近的页码
+              let pageNumber;
+              if (totalPages <= 5) {
+                pageNumber = i + 1;
+              } else if (currentPage <= 3) {
+                pageNumber = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNumber = totalPages - 4 + i;
+              } else {
+                pageNumber = currentPage - 2 + i;
+              }
+              
+              return (
+                <button
+                  key={pageNumber}
+                  onClick={() => paginate(pageNumber)}
+                  style={{
+                    padding: '5px 10px',
+                    margin: '0 5px',
+                    fontWeight: currentPage === pageNumber ? 'bold' : 'normal',
+                    backgroundColor: currentPage === pageNumber ? '#f0f0f0' : 'transparent',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+            
+            <button 
+              onClick={() => paginate(currentPage + 1)} 
+              disabled={currentPage === totalPages}
+              style={{ 
+                padding: '5px 10px', 
+                margin: '0 5px', 
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                opacity: currentPage === totalPages ? 0.5 : 1
+              }}
+            >
+              下一页
+            </button>
+            <button 
+              onClick={() => paginate(totalPages)} 
+              disabled={currentPage === totalPages}
+              style={{ 
+                padding: '5px 10px', 
+                margin: '0 5px', 
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                opacity: currentPage === totalPages ? 0.5 : 1
+              }}
+            >
+              末页
+            </button>
+          </div>
+          
+          {/* 当前页/总页数显示 */}
+          <div style={{ textAlign: 'center', marginTop: '10px' }}>
+            <span>第 {currentPage} 页 / 共 {totalPages} 页</span>
+          </div>
+        </>
       )}
     </div>
   );
