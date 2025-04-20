@@ -3,6 +3,8 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
+import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
+
 interface Contest {
   mid: number;
   name: string;
@@ -85,24 +87,7 @@ const contestsPage: NextPage = () => {
       )}
 
       {/* 分页控制 - 顶部 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <div>
-          <span>每页显示: </span>
-          <select 
-            value={itemsPerPage} 
-            onChange={handleItemsPerPageChange}
-            style={{ padding: '5px', marginLeft: '5px' }}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
-        </div>
-        <div>
-          <span>共 {totalItems} 条记录</span>
-        </div>
-      </div>
+      <PagerHeader itemsPerPage={itemsPerPage} totalItems={totalItems} handleItemsPerPageChange={handleItemsPerPageChange}/>
 
       {!loading && !error && (
         <>
@@ -133,7 +118,7 @@ const contestsPage: NextPage = () => {
                     <td style={{ padding: '12px' }}>{contest.mid}</td>
                     <td style={{ padding: '12px' }}>{
                       <Link href={{
-                        pathname: '/group',
+                        pathname: '/meet',
                         query: { mid: contest.mid }
                       }}>
                         {contest.name}
@@ -152,93 +137,10 @@ const contestsPage: NextPage = () => {
           </table>
 
           {/* 分页控制 - 底部 */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <button 
-              onClick={() => paginate(1)} 
-              disabled={currentPage === 1}
-              style={{ 
-                padding: '5px 10px', 
-                margin: '0 5px', 
-                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                opacity: currentPage === 1 ? 0.5 : 1
-              }}
-            >
-              首页
-            </button>
-            <button 
-              onClick={() => paginate(currentPage - 1)} 
-              disabled={currentPage === 1}
-              style={{ 
-                padding: '5px 10px', 
-                margin: '0 5px', 
-                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                opacity: currentPage === 1 ? 0.5 : 1
-              }}
-            >
-              上一页
-            </button>
-            
-            {/* 页码显示 */}
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              // 显示当前页附近的页码
-              let pageNumber;
-              if (totalPages <= 5) {
-                pageNumber = i + 1;
-              } else if (currentPage <= 3) {
-                pageNumber = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                pageNumber = totalPages - 4 + i;
-              } else {
-                pageNumber = currentPage - 2 + i;
-              }
-              
-              return (
-                <button
-                  key={pageNumber}
-                  onClick={() => paginate(pageNumber)}
-                  style={{
-                    padding: '5px 10px',
-                    margin: '0 5px',
-                    fontWeight: currentPage === pageNumber ? 'bold' : 'normal',
-                    backgroundColor: currentPage === pageNumber ? '#f0f0f0' : 'transparent',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {pageNumber}
-                </button>
-              );
-            })}
-            
-            <button 
-              onClick={() => paginate(currentPage + 1)} 
-              disabled={currentPage === totalPages}
-              style={{ 
-                padding: '5px 10px', 
-                margin: '0 5px', 
-                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                opacity: currentPage === totalPages ? 0.5 : 1
-              }}
-            >
-              下一页
-            </button>
-            <button 
-              onClick={() => paginate(totalPages)} 
-              disabled={currentPage === totalPages}
-              style={{ 
-                padding: '5px 10px', 
-                margin: '0 5px', 
-                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                opacity: currentPage === totalPages ? 0.5 : 1
-              }}
-            >
-              末页
-            </button>
-          </div>
+          <PagerFooter currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
           
           {/* 当前页/总页数显示 */}
-          <div style={{ textAlign: 'center', marginTop: '10px' }}>
-            <span>第 {currentPage} 页 / 共 {totalPages} 页</span>
-          </div>
+          <PagerCurrent currentPage={currentPage} totalPages={totalPages} />
         </>
       )}
     </div>

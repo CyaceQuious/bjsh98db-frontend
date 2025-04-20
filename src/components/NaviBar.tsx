@@ -38,7 +38,7 @@ export default function Navbar() {
         router.pathname === '/' ? 'home' :
         router.pathname.startsWith('/search') ? 'home' : 
         router.pathname.startsWith('/contests') ? 'contests' :
-        router.pathname.startsWith('/group') ? 'contests' :
+        router.pathname.startsWith('/meet') ? 'contests' :
         router.pathname.startsWith('/manage') ? 'manage' :
         router.pathname === '/about' ? 'about' : ''
     ].filter(Boolean);
