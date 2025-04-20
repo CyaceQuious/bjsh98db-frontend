@@ -8,7 +8,7 @@ interface AuthData {
     realName: string; 
     org: string;
     isDepartmentOfficial: boolean; 
-    isContestOfficial: boolean; 
+    isContestOfficial: number[]; 
     isSystemAdmin: boolean; 
 }
 
@@ -20,7 +20,7 @@ const initialState: AuthData = {
     realName: "",
     org: "",
     isDepartmentOfficial: false,
-    isContestOfficial: false,
+    isContestOfficial: [],
     isSystemAdmin: false
 };
 
@@ -49,7 +49,7 @@ export const authSlice = createSlice({
         setIsDepartmentOfficial: (state, action: PayloadAction<boolean>) => {
             state.isDepartmentOfficial = action.payload;
         }, 
-        setIsContestOfficial: (state, action: PayloadAction<boolean>) => {
+        setIsContestOfficial: (state, action: PayloadAction<number[]>) => {
             state.isContestOfficial = action.payload;
         }, 
         setIsSystemAdmin: (state, action: PayloadAction<boolean>) => {
