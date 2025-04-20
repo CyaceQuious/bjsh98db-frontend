@@ -95,6 +95,7 @@ export default function ContestsTable() {
               <tr style={{ backgroundColor: '#f5f5f5' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>比赛名称</th>
+				<th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
               </tr>
             </thead>
             <tbody>
@@ -108,12 +109,13 @@ export default function ContestsTable() {
                     }}
                   >
                     <td style={{ padding: '12px' }}>{contest.mid}</td>
-                    <td style={{ padding: '12px' }}>{
+                    <td style={{ padding: '12px' }}>{contest.name}</td>
+					<td style={{ padding: '12px' }}>{
                       <Link href={{
                         pathname: '/meet',
                         query: { mid: contest.mid }
                       }}>
-                        {contest.name}
+                        进入主页
                       </Link>
                     }</td>
                   </tr>

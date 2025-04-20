@@ -7,6 +7,7 @@ import MeetProjectTable from '../components/MeetProjectTable';
 
 export default function CompetitionTeamScore() {
   const router = useRouter();
+  if (!router.isReady) return <div>Loading...</div>;
   const { mid } = router.query;
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>

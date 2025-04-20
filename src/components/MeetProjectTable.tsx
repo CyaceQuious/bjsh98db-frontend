@@ -51,7 +51,7 @@ export default function MeetProjectTable({mid}: MeetProjectTableProps) {
     } catch (err) {
       alert('An error occurred while fetching projects' + err); 
       setError('An error occurred while fetching projects' + err);
-      console.error('Fetch error:', err);
+      console.log('Fetch error:', err);
     } finally {
       setLoading(false);
     }
@@ -107,6 +107,7 @@ export default function MeetProjectTable({mid}: MeetProjectTableProps) {
               <tr style={{ backgroundColor: '#f5f5f5' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>项目名称</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
               </tr>
             </thead>
             <tbody>
@@ -121,18 +122,21 @@ export default function MeetProjectTable({mid}: MeetProjectTableProps) {
                   >
                     <td style={{ padding: '12px' }}>{index}</td>
                     <td style={{ padding: '12px' }}>{
+                      contest.name
+                    }</td>
+                    <td style={{ padding: '12px' }}>{
                       <Link href={{
                         pathname: '/project',
                         query: { mid: mid, project: contest.name }
                       }}>
-                        {contest.name}
+                        管理成绩
                       </Link>
                     }</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={2} className="py-4 px-4 border-b text-center text-gray-500">
+                  <td colSpan={3} className="py-4 px-4 border-b text-center text-gray-500">
                     No contests available
                   </td>
                 </tr>
