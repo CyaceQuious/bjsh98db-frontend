@@ -58,6 +58,13 @@ export const authSlice = createSlice({
         resetData: (state) => {
             state.userName = "";
             state.session = ""; 
+            state.email = "";
+            state.createTime = "";
+            state.realName = "";
+            state.org = "";
+            state.isDepartmentOfficial = false;
+            state.isContestOfficial = false;
+            state.isSystemAdmin = false;
         },
     },
 });

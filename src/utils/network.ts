@@ -1,8 +1,9 @@
 // 网络请求处理器，为后续鉴权方便考虑
 // 修改自小作业提供的 wrapper
 
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { interfaceToString } from "./types";
+
+import store from "../redux/store";
 
 export enum NetworkErrorType {
     UNAUTHORIZED,
@@ -33,21 +34,37 @@ export class NetworkError extends Error {
 export const request = async (
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE",
-    body?: string, 
-    needAuth?: boolean
+    body?: object | string, 
+    needAuth?: boolean, 
+    body_type?: "json" | "form"
 ) => {
     console.log(`[request] ${method} ${url}`);
     const headers = new Headers();
     if (needAuth === true) {
-        const session = useSelector((state: RootState) => state.auth.session); 
+        const session = store.getState().auth.session; 
         headers.append("Authorization", `${session}`);
     }
+    let body_str: undefined | string = undefined;
     if (body !== undefined) {
-        headers.append("Content-Type", "application/x-www-form-urlencoded");
+        if (body_type === "json") {
+            headers.append("Content-Type", "application/json");
+            if (typeof body === "object") {
+                body_str = JSON.stringify(body);
+            } else {
+                body_str = body;
+            }
+        } else {
+            headers.append("Content-Type", "application/x-www-form-urlencoded");
+            if (typeof body === "object") {
+                body_str = interfaceToString(body);
+            } else {
+                body_str = body;
+            }
+        }
     }
     const response = await fetch(url, {
         method,
-        body: body ? body : undefined,
+        body: body_str, 
         headers
     });
 

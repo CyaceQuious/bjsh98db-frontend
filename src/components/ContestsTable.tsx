@@ -1,14 +1,30 @@
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+
+import { Button, Modal, Input, message  } from 'antd'; 
 
 import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
+import { request } from '../utils/network';
+
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface Contest {
   mid: number;
   name: string;
 }
 
-interface ApiResponse {
+interface RenameRequest {
+  // session: string;
+  mid: number;
+  name: string;
+}
+
+interface RenameResponse {
+  code: number;
+  info: string;
+}
+
+interface ContestListResponse {
   code: number;
   info: string;
   count: number;
@@ -23,11 +39,64 @@ export default function ContestsTable() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+  // 修改比赛名称的模态框
+  const [showModifyModal, setShowModifyModal] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [selectedMid, setSelectedMid] = useState<number | undefined>(undefined);
 
+  const session = useSelector((state: RootState) => state.auth.session);
+  const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+
+  // 修改比赛名称的相关函数
+  const handleRenameClick = (mid: number, currentName: string) => {
+    setSelectedMid(mid);
+    setNewName(currentName);
+    setShowModifyModal(true);
+  };
+  const handleRenameConfirm = async () => {
+    console.log(`修改比赛ID ${selectedMid} 的名称为: ${newName}`);
+    setShowModifyModal(false);
+    putRenameRequest();
+  };
+  const handleRenameCancel = () => {
+    setShowModifyModal(false);
+    setNewName('');
+    setSelectedMid(undefined);
+  };
+  const putRenameRequest = async () => {
+    setLoading(true);
+    console.log(`session = ${session}`)
+    try {
+      const data: RenameResponse = await request(
+        `/api/manage_meet`, 
+        'PUT', 
+        {
+          session: session, 
+          mid: selectedMid, 
+          name: newName
+        } as RenameRequest, 
+        false, 
+        'json'
+      ); 
+      if (data.code === 0) {
+        await fetchContests();
+      } else {
+        setError(data.info || 'Failed to rename project');
+      }
+    } catch (err) {
+      alert('An error occurred while renaming project' + err); 
+      // setError('An error occurred while renaming project' + err);
+      console.log('Put error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 获取比赛列表的相关函数
   const fetchContests = async () => {
 	try {
 	  const response = await fetch('/api/query_meet_list');
-	  const data: ApiResponse = await response.json();
+	  const data: ContestListResponse = await response.json();
 	  
 	  if (data.code === 0) {
 		// Sort by mid in descending order (just in case API doesn't)
@@ -47,6 +116,7 @@ export default function ContestsTable() {
 
   useEffect(() => {
     fetchContests();
+    setError(undefined);
   }, []);
 
   // 计算当前页的数据
@@ -69,6 +139,21 @@ export default function ContestsTable() {
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
         比赛列表
       </h1>
+
+      <Modal
+        title="修改比赛名称"
+        open={showModifyModal}
+        onOk={handleRenameConfirm}
+        onCancel={handleRenameCancel}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Input
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          placeholder="请输入新比赛名称"
+        />
+      </Modal>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
@@ -95,7 +180,7 @@ export default function ContestsTable() {
               <tr style={{ backgroundColor: '#f5f5f5' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>比赛名称</th>
-				<th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
               </tr>
             </thead>
             <tbody>
@@ -110,14 +195,24 @@ export default function ContestsTable() {
                   >
                     <td style={{ padding: '12px' }}>{contest.mid}</td>
                     <td style={{ padding: '12px' }}>{contest.name}</td>
-					<td style={{ padding: '12px' }}>{
-                      <Link href={{
-                        pathname: '/meet',
-                        query: { mid: contest.mid }
-                      }}>
-                        进入主页
-                      </Link>
-                    }</td>
+                    <td style={{ padding: '12px' }}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <Button 
+                          type="link" 
+                          href={`/meet?mid=${contest.mid}`}
+                          style={{ padding: 0 }}
+                        >
+                          进入主页
+                        </Button>
+                        {isSystemAdmin && <Button
+                          type="link"
+                          onClick={() => handleRenameClick(contest.mid, contest.name)}
+                          style={{ padding: 0 }}
+                        >
+                          修改名称
+                        </Button>}
+                      </div>
+                    </td>
                   </tr>
                 ))
               ) : (
