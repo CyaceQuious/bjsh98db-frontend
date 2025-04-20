@@ -1,22 +1,31 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { request } from '../utils/network';
+import { interfaceToString } from '../utils/types';
 
-import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
+import { PagerCurrent, PagerFooter, PagerHeader } from './pager';
 
-interface Contest {
-  mid: number;
+interface Projects {
   name: string;
+}
+
+interface ApiRequest {
+  mid: string; 
 }
 
 interface ApiResponse {
   code: number;
   info: string;
   count: number;
-  results: Contest[];
+  results: Projects[];
 }
 
-export default function ContestsTable() {
-  const [contests, setContests] = useState<Contest[]>([]);
+interface MeetProjectTableProps {
+	mid: string | string[] | undefined; 
+}
+
+export default function MeetProjectTable({mid}: MeetProjectTableProps) {
+  const [projects, setProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
   // 分页状态
@@ -24,35 +33,38 @@ export default function ContestsTable() {
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
 
-  const fetchContests = async () => {
-	try {
-	  const response = await fetch('/api/query_meet_list');
-	  const data: ApiResponse = await response.json();
-	  
-	  if (data.code === 0) {
-		// Sort by mid in descending order (just in case API doesn't)
-		const sortedContests = [...data.results].sort((a, b) => b.mid - a.mid);
-		setContests(sortedContests);
-		setTotalItems(data.count || sortedContests.length);
-	  } else {
-		setError(data.info || 'Failed to fetch contests');
-	  }
-	} catch (err) {
-	  setError('An error occurred while fetching contests');
-	  console.error('Fetch error:', err);
-	} finally {
-	  setLoading(false);
-	}
+  const fetchProjects = async () => {
+    setLoading(true);
+    try {
+      const data: ApiResponse = await request(
+        `/api/query_project_list?${interfaceToString({mid} as ApiRequest)}`, 
+        'GET', 
+        undefined, 
+        false
+      ); 
+      if (data.code === 0) {
+        setProjects(data.results);
+        setTotalItems(data.count || data.results.length);
+      } else {
+        setError(data.info || 'Failed to fetch projects');
+      }
+    } catch (err) {
+      alert('An error occurred while fetching projects' + err); 
+      setError('An error occurred while fetching projects' + err);
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchContests();
+    fetchProjects();
   }, []);
 
   // 计算当前页的数据
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = contests.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = projects.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // 改变页码
@@ -67,7 +79,7 @@ export default function ContestsTable() {
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        比赛列表
+        赛事 #{mid} 全部比赛项目
       </h1>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
@@ -94,24 +106,24 @@ export default function ContestsTable() {
             <thead>
               <tr style={{ backgroundColor: '#f5f5f5' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>比赛名称</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>项目名称</th>
               </tr>
             </thead>
             <tbody>
               {currentItems.length > 0 ? (
-                currentItems.map((contest) => (
+                currentItems.map((contest, index) => (
                   <tr
                     key={contest.name}
                     style={{
                       borderBottom: '1px solid #e0e0e0',
-                      backgroundColor: contest.mid % 2 === 0 ? '#fafafa' : 'white',
+                      backgroundColor: index % 2 === 0 ? '#fafafa' : 'white',
                     }}
                   >
-                    <td style={{ padding: '12px' }}>{contest.mid}</td>
+                    <td style={{ padding: '12px' }}>{index}</td>
                     <td style={{ padding: '12px' }}>{
                       <Link href={{
-                        pathname: '/meet',
-                        query: { mid: contest.mid }
+                        pathname: '/project',
+                        query: { mid: mid, project: contest.name }
                       }}>
                         {contest.name}
                       </Link>

@@ -29,6 +29,7 @@ export class NetworkError extends Error {
     valueOf(): string { return this.message; }
 }
 
+// 因为后端的实现有点奇怪，所以我们这里默认使用表单方式来发送请求体的内容
 export const request = async (
     url: string,
     method: "GET" | "POST" | "PUT" | "DELETE",

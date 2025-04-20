@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import GroupScoreTable from '../components/GroupScoreTable';
+import MeetProjectTable from '../components/MeetProjectTable';
 
 export default function CompetitionTeamScore() {
   const router = useRouter();
@@ -13,11 +14,8 @@ export default function CompetitionTeamScore() {
         <title>比赛团体总分 - 赛事 {mid}</title>
       </Head>
 
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        赛事 #{mid} 团体总分排名
-      </h1>
-
       <GroupScoreTable mid={mid} />
+      <MeetProjectTable mid={mid} />
     </div>
   );
 }
