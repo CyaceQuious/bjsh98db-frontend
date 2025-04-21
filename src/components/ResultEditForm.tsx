@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button, Drawer, Form, Input, InputNumber, message, Spin } from 'antd';
 import type { DrawerProps } from 'antd';
 
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
+
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -48,6 +50,7 @@ interface EntryFormDrawerProps {
   defaultValues?: Partial<EntryFormValues>;
   // 操作模式：新建(false) 或 更新(true)
   isEditMode?: boolean;
+  useGray?: boolean;
   // 提交成功回调
   onSuccess?: (values: EntryFormValues) => void;
 }
@@ -56,6 +59,7 @@ const ResultEditForm = ({
   buttonStyle,
   defaultValues,
   isEditMode = false,
+  useGray = false, 
   onSuccess
 }: EntryFormDrawerProps) => {
   const [form] = Form.useForm();
@@ -119,10 +123,17 @@ const ResultEditForm = ({
     <>
       <Button
         type={isEditMode ? 'link' : 'primary'}
-        style={buttonStyle}
+        style={!useGray ? buttonStyle :
+          {
+            ...buttonStyle,
+            color: '#8c8c8c',
+            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+          }
+        }
         onClick={() => setOpen(true)}
+        icon={isEditMode ? <EditOutlined/>: <PlusOutlined/>}
       >
-        {isEditMode ? '编辑' : '+ 新建条目'}
+        {isEditMode ? '编辑' : '新建比赛成绩'}
       </Button>
 
       <Drawer

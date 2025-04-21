@@ -9,6 +9,7 @@ import { PagerCurrent, PagerFooter, PagerHeader } from './pager';
 
 import SearchContainer from './SearchContainer';
 import { SearchQuery, getEmptyQuery } from '../utils/types';
+import ResultEditForm from './ResultEditForm';
 
 interface Projects {
   name: string;
@@ -115,7 +116,12 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       )}
 
       <Modal
-        title="查看项目成绩"
+        title={
+          <div>
+            查看项目成绩
+            <ResultEditForm useGray={true}/>
+          </div>
+        }
         open={showDetailModal}
         footer={<></>}
         onClose={() => setShowDetailModal(false)}

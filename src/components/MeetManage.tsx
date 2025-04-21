@@ -2,6 +2,8 @@ import { useState} from 'react';
 
 import { Button, Modal, Input, message } from 'antd'; 
 
+import { EditOutlined } from '@ant-design/icons';
+
 import { request } from '../utils/network';
 
 import { useSelector } from "react-redux";
@@ -108,10 +110,11 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         defaultValues={{mid}} 
         onSuccess={() => reload()}
       />
-      {isSystemAdmin && <Button
+      {(isSystemAdmin) && <Button
         type={'primary'}
         style={{ marginLeft: 16 }}
         onClick={() => handleRenameClick(mid, "no name now")}
+        icon={<EditOutlined />}
       >
         修改赛事名称
       </Button>}

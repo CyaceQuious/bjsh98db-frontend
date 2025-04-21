@@ -33,6 +33,7 @@ export default function SearchResultTable({
     const { token } = useToken();
 
     const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+    const allContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial);
 
     // 生成动态列配置
     const baseColumns = ["name", "meet", "projectname", "groupname", "result", "grade", "rank", "score"].map(name => ({
@@ -50,7 +51,7 @@ export default function SearchResultTable({
         fixed: 'right',
         width: 100,
         render: (_, record) => (
-            isSystemAdmin && <ResultEditForm defaultValues={record} isEditMode onSuccess={onContentReFresh}/>
+            (isSystemAdmin || record.mid in allContestOfficial) && <ResultEditForm defaultValues={record} isEditMode onSuccess={onContentReFresh}/>
         )
     };
 

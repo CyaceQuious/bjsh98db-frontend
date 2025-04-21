@@ -24,6 +24,7 @@ export default function CompetitionTeamScore() {
   }
 
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+  const isContestOfficial = useSelector((state: RootState) => midNum in state.auth.isContestOfficial);
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
   const handleRefresh = () => {
@@ -37,7 +38,7 @@ export default function CompetitionTeamScore() {
       <Head>
         <title>比赛团体总分 - 赛事 {midNum}</title>
       </Head>
-      {isSystemAdmin && <MeetManage mid={midNum} reload={handleRefresh}/>}
+      {(isSystemAdmin || isContestOfficial) && <MeetManage mid={midNum} reload={handleRefresh}/>}
       <GroupScoreTable mid={midNum} refreshTrigger={refreshTrigger}/>
       <MeetProjectTable mid={midNum} refreshTrigger={refreshTrigger} onContentRefresh={handleRefresh}/>
     </div>

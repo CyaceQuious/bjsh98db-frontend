@@ -257,17 +257,12 @@ export default function ContestsTable() {
             display: 'flex',
             alignItems: 'center',
             gap: 8,
-            transition: 'all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)',
             // border: '1px solid #d9d9d9',
             // borderRadius: 6,
             backgroundColor: 'rgba(0, 0, 0, 0.02)',
             fontWeight: 500,
           }}
-          icon={<PlusOutlined style={{ 
-            fontSize: 14,
-            transition: 'transform 0.2s',
-            transform: 'scale(0.9)'
-          }} />}
+          icon={<PlusOutlined/>}
         >
           新建比赛
         </Button>}
