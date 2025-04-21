@@ -11,6 +11,9 @@ import SearchContainer from './SearchContainer';
 import { SearchQuery, getEmptyQuery } from '../utils/types';
 import ResultEditForm from './ResultEditForm';
 
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+
 interface Projects {
   name: string;
 }
@@ -45,6 +48,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   // 具体结果对话框
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [query, setQuery] = useState<SearchQuery>(getEmptyQuery());
+
+  const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+  const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(mid));
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -119,10 +125,10 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         title={
           <div>
             查看项目成绩
-            <ResultEditForm useGray={true} frozenItems={["meet", "projectname"]} defaultValues={{...query, mid}} onSuccess={()=> {
+            {(isSystemAdmin || isContestOfficial) && <ResultEditForm useGray={true} frozenItems={["meet", "projectname"]} defaultValues={{...query, mid}} onSuccess={()=> {
               onContentRefresh(); 
               setQuery({...query}); 
-            }}/>
+            }}/>}
           </div>
         }
         open={showDetailModal}
