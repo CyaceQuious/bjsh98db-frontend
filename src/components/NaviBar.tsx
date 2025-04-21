@@ -1,9 +1,7 @@
 import { useRouter } from 'next/router';
 import { Layout, Menu, theme, Modal, notification } from 'antd';
 import type { MenuProps } from 'antd';
-
 import { useState } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { resetData } from '../redux/auth';
@@ -21,11 +19,12 @@ export default function Navbar() {
 
     const dispatch = useDispatch();
     const userName = useSelector((state: RootState) => state.auth.userName);
+    // 从Redux中获取管理员状态
+    const isAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
 
     // 处理登出确认
     const handleLogoutConfirm = () => {
         setIsLogoutConfirmVisible(false);
-        // router.push('/logout');
         api.open({
             message: `用户${userName}成功登出`,
             duration: 3,
@@ -40,30 +39,21 @@ export default function Navbar() {
         router.pathname.startsWith('/contests') ? 'contests' :
         router.pathname.startsWith('/meet') ? 'contests' :
         router.pathname.startsWith('/manage') ? 'manage' :
+        router.pathname.startsWith('/admin/users') ? 'admin-users' : // 新增用户管理页面选中状态
         router.pathname === '/about' ? 'about' : ''
     ].filter(Boolean);
 
-    // 菜单项配置
-    const items: MenuProps['items'] = [
+    // 基础菜单项配置
+    const baseItems: MenuProps['items'] = [
         {
             key: 'home',
             label: '搜索',
             onClick: () => router.push('/'),
         },
-        // {
-        //     key: 'search',
-        //     label: '搜索',
-        //     onClick: () => router.push('/search'),
-        // },
         {
             key: 'contests',
             label: '比赛',
             onClick: () => router.push('/contests'),
-        },
-        {
-            key: 'manage',
-            label: '管理',
-            onClick: () => router.push('/manage'),
         },
         {
             key: 'about',
@@ -72,39 +62,51 @@ export default function Navbar() {
         },
     ];
 
+    // 如果是管理员，添加管理菜单项
+    const items: MenuProps['items'] = [
+        ...baseItems,
+        ...(isAdmin ? [
+            {
+                key: 'admin-users',
+                label: '用户管理',
+                onClick: () => router.push('/manage'),
+            }
+        ] : [])
+    ];
+
     const hideRightItems = ['/login', '/register', '/logout']
-  // 右侧菜单项配置
-  const rightItems: MenuProps['items'] = hideRightItems.includes(router.asPath)
-  ? [] : userName !== ""
-    ? [
-        {
-          key: 'username',
-          label: (
-            <span style={{ cursor: 'default', color: 'inherit' }}>
-              {userName}
-            </span>
-          ),
-        },
-        {
-          key: 'logout',
-          label: '登出',
-          onClick: () => {
-            setIsLogoutConfirmVisible(true);
-          },
-        },
-      ]
-    : [
-        {
-          key: 'login',
-          label: '登录',
-          onClick: () => router.push('/login'),
-        },
-        {
-          key: 'register',
-          label: '注册',
-          onClick: () => router.push('/register'),
-        },
-      ];
+    // 右侧菜单项配置
+    const rightItems: MenuProps['items'] = hideRightItems.includes(router.asPath)
+    ? [] : userName !== ""
+        ? [
+            {
+              key: 'username',
+              label: (
+                <span style={{ cursor: 'default', color: 'inherit' }}>
+                  {userName}
+                </span>
+              ),
+            },
+            {
+              key: 'logout',
+              label: '登出',
+              onClick: () => {
+                setIsLogoutConfirmVisible(true);
+              },
+            },
+          ]
+        : [
+            {
+              key: 'login',
+              label: '登录',
+              onClick: () => router.push('/login'),
+            },
+            {
+              key: 'register',
+              label: '注册',
+              onClick: () => router.push('/register'),
+            },
+          ];
 
     return (
         <Header
@@ -154,7 +156,7 @@ export default function Navbar() {
               // flex: 'none',      // 禁止伸缩
               whiteSpace: 'nowrap', // 防止文字换行
               background: 'transparent',
-              lineHeight: '64px', // 保持与Header高度一致
+              lineHeight: '64px',
               borderBottom: 'none'
             }}
           />
