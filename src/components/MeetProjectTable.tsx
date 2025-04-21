@@ -119,7 +119,10 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         title={
           <div>
             查看项目成绩
-            <ResultEditForm useGray={true}/>
+            <ResultEditForm useGray={true} frozenItems={["meet", "projectname"]} defaultValues={{...query, mid}} onSuccess={()=> {
+              onContentRefresh(); 
+              setQuery({...query}); 
+            }}/>
           </div>
         }
         open={showDetailModal}
