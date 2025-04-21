@@ -242,7 +242,7 @@ export default function ContestsTable() {
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ margin: 0 }}>比赛列表</h1>
-        <Button 
+        {isSystemAdmin && <Button 
           type="link" 
           onClick={() => setIsAddModalOpen(true)}
           style={{ 
@@ -266,7 +266,7 @@ export default function ContestsTable() {
           }} />}
         >
           新建比赛
-        </Button>
+        </Button>}
       </div>
 
       <Modal
