@@ -14,9 +14,13 @@ import { useRouter } from 'next/router';
 interface SearchContainerProps {
     oldQuery?: SearchQuery;
     hiddenResult?: boolean;
+    searchJump: boolean; // 点击搜索后是否跳转
+    onContentRefresh: () => void;
+    frozeNames?: string[]; // 冻结的参数名，这些参数不会出现在搜索框中
+    briefButton?: boolean; // 是则删去清空搜索历史的按钮
 }
 
-export default function SearchContainer({ oldQuery, hiddenResult }: SearchContainerProps) {
+export default function SearchContainer({ oldQuery, hiddenResult, searchJump, onContentRefresh, frozeNames, briefButton }: SearchContainerProps) {
     const router = useRouter();
 
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
@@ -39,7 +43,7 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                 fetchResults(oldQuery);
             }
         }
-    }, [])
+    }, [oldQuery])
 
     // start to search
     const fetchResults = async (curQuery: SearchQuery) => {
@@ -95,7 +99,9 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
         const newQuery = {...query, page: 1, page_size: lastQuery.page_size}; 
         setQuery(newQuery); 
         setLastQuery(newQuery)
-        router.push(`/search?${interfaceToString(newQuery)}`);
+        if (searchJump) {
+            router.push(`/search?${interfaceToString(newQuery)}`);
+        }
         if (hiddenResult === false) {
             fetchResults(newQuery);
         }
@@ -111,9 +117,28 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
         }
         const newQuery: SearchQuery = { ...lastQuery, page, page_size: newPageSize }
         setLastQuery(newQuery);
-        router.push(`/search?${interfaceToString(newQuery)}`);
+        if (searchJump) {
+            router.push(`/search?${interfaceToString(newQuery)}`);
+        }
         fetchResults(newQuery); 
     };
+
+    const allSearchItems = [
+        { key: "name", type: "text" },
+        { key: "groupname", type: "text" },
+        { key: "projectname", type: "text" },
+        { key: "meet", type: "text", isFullLine: true },
+        { key: "ranked", type: "boolean" },
+        { key: "precise", type: "boolean" },
+    ]
+    const searchItems = allSearchItems.filter(item => {
+        if (frozeNames !== undefined) {
+            // console.log(`in check frozekey: ${item.key}`); 
+            return !frozeNames.includes(item.key);
+        } else {
+            return true;
+        }
+    }).map(item => {return{...item, key: item.key as keyof SearchQuery}});
 
     return (
         <div style={{ width: "80%", marginTop: "25px" }}>
@@ -122,14 +147,8 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                 queryTextChange={changeTextQuery}
                 queryBooleanChange={changeBooleanQuery}
                 doSearch={handleSearch}
-                searchItems={[
-                    { key: "name", type: "text" },
-                    { key: "groupname", type: "text" },
-                    { key: "projectname", type: "text" },
-                    { key: "meet", type: "text", isFullLine: true },
-                    { key: "ranked", type: "boolean" },
-                    { key: "precise", type: "boolean" },
-                ]}
+                searchItems={searchItems}
+                briefButton={briefButton === true}
             />
             <div style={{ marginTop: "20px" }}>
                 {hiddenResult ? "" :
@@ -140,6 +159,10 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                         pageSize={lastQuery.page_size}
                         total={total}
                         onPageChange={handlePageChange}
+                        onContentReFresh={()=>{
+                            fetchResults(lastQuery);
+                            onContentRefresh();
+                        }}
                     /> : error}
             </div>
         </div>

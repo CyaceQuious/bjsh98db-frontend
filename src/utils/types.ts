@@ -62,10 +62,7 @@ export interface SearchResultItem {
     result: string; 
     grade: string; 
     rank: string; 
-}
-
-export function getSearchResultDisplayOrder(): string[] {
-    return ["name", "meet", "projectname", "groupname", "result", "grade", "rank"]
+    score: string; 
 }
 
 export interface SearchResult {
@@ -90,7 +87,7 @@ export interface LoginResponse {
     real_name: string; 
     org: string;
     Is_Department_Official: boolean; 
-    Is_Contest_Official: boolean; 
+    Is_Contest_Official: number[]; 
     Is_System_Admin: boolean; 
 }
 
