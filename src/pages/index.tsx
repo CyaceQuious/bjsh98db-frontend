@@ -12,10 +12,7 @@ const WelcomeSearch = () => {
     if (!router.isReady) return <div>Loading...</div>;
     return (
         <div className={styles.container}>
-            <div>
-            <h1>欢迎使用 BJSH98.DB</h1>
-            </div>
-            <SearchContainer hiddenResult={true} onContentRefresh={() => {}}/>
+            <SearchContainer hiddenResult={true} onContentRefresh={() => {}} searchJump={true}/>
             <AboutCard mode='simple'/>
         </div>
     )

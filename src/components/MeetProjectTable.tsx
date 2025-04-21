@@ -123,7 +123,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         onCancel={() => setShowDetailModal(false)}
         width={'90%'}
       >
-        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh}/>
+        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "precise", "ranked"]} searchJump={false} briefButton={true}/>
       </Modal>
 
       {/* 分页控制 - 顶部 */}
@@ -164,12 +164,12 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
                       <Button 
                         type="link" 
                         onClick={() => {
-                          setQuery({projectname: project.name, meet: meetName} as SearchQuery);
+                          setQuery({projectname: project.name, meet: meetName, page: 1, page_size: 10} as SearchQuery);
                           setShowDetailModal(true);
                         }}
                         style={{ padding: 0 }}
                       >
-                        具体成绩
+                        查看成绩
                       </Button>
                       }</td>
                   </tr>

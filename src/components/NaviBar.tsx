@@ -148,7 +148,11 @@ export default function Navbar() {
             mode="horizontal"
             selectedKeys={[]}
             items={rightItems}
+            disabledOverflow={true}
             style={{
+              marginLeft: 'auto', // 自动左外边距推到最右
+              // flex: 'none',      // 禁止伸缩
+              whiteSpace: 'nowrap', // 防止文字换行
               background: 'transparent',
               lineHeight: '64px', // 保持与Header高度一致
               borderBottom: 'none'
