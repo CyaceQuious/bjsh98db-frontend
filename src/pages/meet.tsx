@@ -24,7 +24,7 @@ export default function CompetitionTeamScore() {
   }
 
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
-  const isContestOfficial = useSelector((state: RootState) => midNum in state.auth.isContestOfficial);
+  const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(midNum));
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
   const handleRefresh = () => {
