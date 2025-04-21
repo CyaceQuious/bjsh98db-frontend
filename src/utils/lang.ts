@@ -1,4 +1,5 @@
-import { SearchQuery, SearchResultItem } from "./types";
+import { SearchQuery } from "./types";
+import { SearchResultTableItem } from "../components/SearchResultTable";
 const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     name: "姓名",
     groupname: "代表队",
@@ -14,18 +15,19 @@ export function getQueryItemName(itemName: keyof SearchQuery): string {
     return searchQueryItemNameDictCn[itemName]
 }
 
-const searchResultItemNameDictCn: Record<keyof SearchResultItem, string> = {
+const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, string> = {
     name: "姓名",
     groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
     result: "成绩",
     grade: "运动技术等级",
-    rank: "名次"
+    rank: "名次", 
+    manage: "管理"
 };
 // current language is simplified chinese
-export function getResultItemName(itemName: keyof SearchResultItem): string {
-    return searchResultItemNameDictCn[itemName]
+export function getResultTableItemName(itemName: keyof SearchResultTableItem): string {
+    return searchResultTableItemNameDictCn[itemName]
 }
 
 // current language is simplified chinese

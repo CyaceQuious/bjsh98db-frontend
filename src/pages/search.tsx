@@ -31,7 +31,7 @@ export default function SearchPage() {
 
     return (
         <div className={styles.container}>
-            <SearchContainer oldQuery={curQuery} hiddenResult={false}/>
+            <SearchContainer oldQuery={curQuery} hiddenResult={false} onContentRefresh={() => {}}/>
         </div>
     )
 }

@@ -14,9 +14,10 @@ import { useRouter } from 'next/router';
 interface SearchContainerProps {
     oldQuery?: SearchQuery;
     hiddenResult?: boolean;
+    onContentRefresh: () => void;
 }
 
-export default function SearchContainer({ oldQuery, hiddenResult }: SearchContainerProps) {
+export default function SearchContainer({ oldQuery, hiddenResult, onContentRefresh }: SearchContainerProps) {
     const router = useRouter();
 
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
@@ -140,6 +141,10 @@ export default function SearchContainer({ oldQuery, hiddenResult }: SearchContai
                         pageSize={lastQuery.page_size}
                         total={total}
                         onPageChange={handlePageChange}
+                        onContentReFresh={()=>{
+                            fetchResults(lastQuery);
+                            onContentRefresh();
+                        }}
                     /> : error}
             </div>
         </div>

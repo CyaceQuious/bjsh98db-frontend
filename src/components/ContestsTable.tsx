@@ -10,6 +10,8 @@ import { request } from '../utils/network';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
+import { useRouter } from 'next/router';
+
 interface Contest {
   mid: number;
   name: string;
@@ -56,6 +58,8 @@ interface ContestListResponse {
 }
 
 export default function ContestsTable() {
+  const router = useRouter();
+
   const [contests, setContests] = useState<Contest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -107,7 +111,7 @@ export default function ContestsTable() {
         'json'
       ); 
       if (data.code !== 0) {
-        setError(data.info || 'Failed to rename project');
+        alert(data.info || 'Failed to rename project');
       }
       await fetchContests();
     } catch (err) {
@@ -354,7 +358,7 @@ export default function ContestsTable() {
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <Button 
                           type="link" 
-                          href={`/meet?mid=${contest.mid}`}
+                          onClick={() => router.push(`/meet?mid=${contest.mid}`)}
                           style={{ padding: 0 }}
                         >
                           进入主页

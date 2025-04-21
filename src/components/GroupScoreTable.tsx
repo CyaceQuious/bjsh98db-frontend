@@ -10,10 +10,11 @@ interface TeamScore {
 }
 
 interface TeamScoreTableProps {
-	mid: string | string[] | undefined; 
+	mid: number; 
+  refreshTrigger: any
 }
 
-export default function GroupScoreTable( {mid}: TeamScoreTableProps) {
+export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTableProps) {
   const [teamScores, setTeamScores] = useState<TeamScore[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -47,7 +48,7 @@ export default function GroupScoreTable( {mid}: TeamScoreTableProps) {
   useEffect(() => {
     if (!mid) return;
     fetchData();
-  }, [mid]);
+  }, [mid, refreshTrigger]);
 
   // 计算当前页的数据
   const indexOfLastItem = currentPage * itemsPerPage;

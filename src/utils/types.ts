@@ -64,10 +64,6 @@ export interface SearchResultItem {
     rank: string; 
 }
 
-export function getSearchResultDisplayOrder(): string[] {
-    return ["name", "meet", "projectname", "groupname", "result", "grade", "rank"]
-}
-
 export interface SearchResult {
     code: number;
     info: string;

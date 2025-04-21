@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+
+import { Button } from 'antd';
+
 import { request } from '../utils/network';
 import { interfaceToString } from '../utils/types';
 
@@ -10,7 +13,7 @@ interface Projects {
 }
 
 interface ApiRequest {
-  mid: string; 
+  mid: number; 
 }
 
 interface ApiResponse {
@@ -21,10 +24,11 @@ interface ApiResponse {
 }
 
 interface MeetProjectTableProps {
-	mid: string | string[] | undefined; 
+	mid: number; 
+  refreshTrigger: any; 
 }
 
-export default function MeetProjectTable({mid}: MeetProjectTableProps) {
+export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTableProps) {
   const [projects, setProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -60,6 +64,10 @@ export default function MeetProjectTable({mid}: MeetProjectTableProps) {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [refreshTrigger]);
 
   // 计算当前页的数据
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -120,17 +128,18 @@ export default function MeetProjectTable({mid}: MeetProjectTableProps) {
                       backgroundColor: index % 2 === 0 ? '#fafafa' : 'white',
                     }}
                   >
-                    <td style={{ padding: '12px' }}>{index}</td>
+                    <td style={{ padding: '12px' }}>{index +1+indexOfFirstItem}</td>
                     <td style={{ padding: '12px' }}>{
                       contest.name
                     }</td>
                     <td style={{ padding: '12px' }}>{
-                      <Link href={{
-                        pathname: '/project',
-                        query: { mid, project: contest.name }
-                      }}>
-                        管理成绩
-                      </Link>
+                      <Button 
+                        type="link" 
+                        href={`/project?${interfaceToString({mid, project: contest.name})}`}
+                        style={{ padding: 0 }}
+                      >
+                        具体成绩
+                      </Button>
                     }</td>
                   </tr>
                 ))

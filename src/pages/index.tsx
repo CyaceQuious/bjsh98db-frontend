@@ -15,7 +15,7 @@ const WelcomeSearch = () => {
             <div>
             <h1>欢迎使用 BJSH98.DB</h1>
             </div>
-            <SearchContainer hiddenResult={true}/>
+            <SearchContainer hiddenResult={true} onContentRefresh={() => {}}/>
             <AboutCard mode='simple'/>
         </div>
     )
