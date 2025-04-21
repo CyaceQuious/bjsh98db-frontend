@@ -8,7 +8,7 @@ interface AuthData {
     realName: string; 
     org: string;
     isDepartmentOfficial: boolean; 
-    isContestOfficial: number[]; 
+    isContestOfficial: number[];
     isSystemAdmin: boolean; 
 }
 
@@ -58,6 +58,13 @@ export const authSlice = createSlice({
         resetData: (state) => {
             state.userName = "";
             state.session = ""; 
+            state.email = "";
+            state.createTime = "";
+            state.realName = "";
+            state.org = "";
+            state.isDepartmentOfficial = false;
+            state.isContestOfficial = [];
+            state.isSystemAdmin = false;
         },
     },
 });
