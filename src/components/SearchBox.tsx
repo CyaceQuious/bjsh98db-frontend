@@ -21,9 +21,10 @@ interface SearchBoxProps {
   queryTextChange: (name: keyof SearchQuery, value: string | undefined) => void;
   queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
   doSearch: () => void;
+  briefButton: boolean; // whether only show the 'Search' button
   searchItems: {
     key: keyof SearchQuery;
-    type: 'text' | 'boolean';
+    type: string;
     isFullLine?: boolean;
   }[];
 }
@@ -33,7 +34,8 @@ export default function SearchBox({
   queryTextChange,
   queryBooleanChange,
   doSearch,
-  searchItems
+  searchItems, 
+  briefButton, 
 }: SearchBoxProps) {
   const { token } = useToken();
   const [form] = Form.useForm();
@@ -65,7 +67,7 @@ export default function SearchBox({
         md={item.isFullLine ? 24 : item.type === 'text' ? 12 : 4}
         lg={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
       >
-        <Form.Item name={item.key}>
+        <Form.Item name={item.key} style={{height: '100%', marginTop: token.marginSM, marginBottom: token.marginSM}}>
           {curr.item}
         </Form.Item>
       </Col>
@@ -86,7 +88,7 @@ export default function SearchBox({
         align="middle"
       >
         {allSearchBoxes}
-        <Col
+        {!briefButton && <Col
           xs={24}
           sm={8}
           md={13}
@@ -103,7 +105,7 @@ export default function SearchBox({
           >
             {getSearchHistoryDelete()}
           </Button>
-        </Col>
+        </Col>}
         <Col
           xs={24}
           sm={24}
@@ -111,7 +113,7 @@ export default function SearchBox({
           lg={3}
           style={{
             textAlign: 'right',
-            marginTop: token.marginSM
+            // marginTop: token.marginSM
           }}
         >
           <Button

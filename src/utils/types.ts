@@ -62,10 +62,7 @@ export interface SearchResultItem {
     result: string; 
     grade: string; 
     rank: string; 
-}
-
-export function getSearchResultDisplayOrder(): string[] {
-    return ["name", "meet", "projectname", "groupname", "result", "grade", "rank"]
+    score: string; 
 }
 
 export interface SearchResult {
