@@ -40,9 +40,9 @@ export default function UserManagement() {
   const [contests, setContests] = useState<Contest[]>([]);
   const [contestsLoading, setContestsLoading] = useState(true);
   const [submitStatus, setSubmitStatus] = useState<{
-    type: "success" | "error" | "info" | "warning" | null;
+    type: "success" | "error" | "info" | "warning" | undefined;
     message: string;
-  }>({ type: null, message: "" });
+  }>({ type: undefined, message: "" });
 
   // 获取比赛列表
   useEffect(() => {
@@ -80,12 +80,12 @@ export default function UserManagement() {
   // 检查权限
   if (!isAdmin) {
     router.push("/");
-    return null;
+    return undefined;
   }
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
-    setSubmitStatus({ type: null, message: "" });
+    setSubmitStatus({ type: undefined, message: "" });
     
     try {
       const formData = new URLSearchParams();
