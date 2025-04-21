@@ -12,6 +12,7 @@ import {
   Typography,
   Select,
   Spin,
+  Alert,
 } from "antd";
 
 const { Title } = Typography;
@@ -38,21 +39,36 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(false);
   const [contests, setContests] = useState<Contest[]>([]);
   const [contestsLoading, setContestsLoading] = useState(true);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | "info" | "warning" | null;
+    message: string;
+  }>({ type: null, message: "" });
 
   // 获取比赛列表
   useEffect(() => {
     const fetchContests = async () => {
       try {
+        setContestsLoading(true);
         const response = await fetch("/api/query_meet_list");
         const result = await response.json();
 
         if (result.code === 0 && result.results) {
           setContests(result.results);
+          message.success("比赛列表加载成功");
         } else {
           message.error(`获取比赛列表失败: ${result.info}`);
+          setSubmitStatus({
+            type: "error",
+            message: `获取比赛列表失败: ${result.info}`,
+          });
         }
       } catch (error) {
+        console.error("获取比赛列表失败:", error);
         message.error("获取比赛列表失败，请检查网络连接");
+        setSubmitStatus({
+          type: "error",
+          message: "获取比赛列表失败，请检查网络连接",
+        });
       } finally {
         setContestsLoading(false);
       }
@@ -69,6 +85,8 @@ export default function UserManagement() {
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
+    setSubmitStatus({ type: null, message: "" });
+    
     try {
       const formData = new URLSearchParams();
       // 基础参数
@@ -87,12 +105,9 @@ export default function UserManagement() {
       const contestIds = values.Is_Contest_Official || [];
       if (contestIds.length > 0) {
         contestIds.forEach((id: number) => {
-          formData.append("Is_Contest_Official", id.toString()); // 关键修改点
+          formData.append("Is_Contest_Official", id.toString());
         });
       }
-
-      // 打印实际请求体（调试用）
-      console.log("最终请求体:", formData.toString());
 
       const response = await fetch("/api/users/modify_user_status", {
         method: "POST",
@@ -102,26 +117,33 @@ export default function UserManagement() {
         body: formData.toString(),
       });
 
-      try {
-        const text = await response.clone().text();
-        console.log("Body (raw):", text);
-        console.log("Body (parsed):", JSON.parse(text));
-      } catch (e) {
-        console.error("响应解析错误:", e);
-      }
-      console.groupEnd();
-
-      if (!response.ok) {
-        throw new Error(`HTTP 错误! 状态码: ${response.status}`);
-      }
-
       const result = await response.json();
-      // ...处理业务逻辑...
+
+      if (result.code === 0) {
+        message.success("用户权限修改成功");
+        setSubmitStatus({
+          type: "success",
+          message: `成功修改用户 ${values.user_to_modify} 的权限`,
+        });
+        form.resetFields();
+      } else {
+        message.error(`操作失败: ${result.info}`);
+        setSubmitStatus({
+          type: "error",
+          message: `操作失败: ${result.info}`,
+        });
+      }
     } catch (error) {
       console.error("请求失败:", error);
+      let errorMessage = "操作失败，请重试";
       if (error instanceof Error) {
-        message.error(`操作失败: ${error.message}`);
+        errorMessage = error.message;
       }
+      message.error(errorMessage);
+      setSubmitStatus({
+        type: "error",
+        message: errorMessage,
+      });
     } finally {
       setLoading(false);
     }
@@ -132,7 +154,7 @@ export default function UserManagement() {
       <div
         style={{ display: "flex", justifyContent: "center", padding: "100px" }}
       >
-        <Spin size="large" />
+        <Spin size="large" tip="加载比赛列表中..." />
       </div>
     );
   }
@@ -144,11 +166,24 @@ export default function UserManagement() {
           用户权限管理
         </Title>
 
+        {submitStatus.type && (
+          <Alert
+            type={submitStatus.type}
+            message={submitStatus.message}
+            showIcon
+            closable
+            style={{ marginBottom: 24 }}
+          />
+        )}
+
         <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item
             label="用户名"
             name="user_to_modify"
-            rules={[{ required: true, message: "请输入用户名" }]}
+            rules={[
+              { required: true, message: "请输入用户名" },
+              { min: 3, message: "用户名至少3个字符" },
+            ]}
           >
             <Input placeholder="输入要修改权限的用户名" />
           </Form.Item>
@@ -157,6 +192,7 @@ export default function UserManagement() {
             label="部门管理员"
             name="Is_Department_Official"
             valuePropName="checked"
+            tooltip="授予用户部门管理员权限"
           >
             <Switch />
           </Form.Item>
@@ -165,17 +201,23 @@ export default function UserManagement() {
             label="系统管理员"
             name="Is_System_Admin"
             valuePropName="checked"
+            tooltip="授予用户系统管理员权限"
           >
             <Switch />
           </Form.Item>
 
-          <Form.Item label="比赛管理员权限" name="Is_Contest_Official">
+          <Form.Item 
+            label="比赛管理员权限" 
+            name="Is_Contest_Official"
+            tooltip="选择用户可以管理的比赛"
+          >
             <Select
               mode="multiple"
               placeholder="选择可管理的比赛"
               optionFilterProp="children"
               style={{ width: "100%" }}
               loading={contestsLoading}
+              notFoundContent={contestsLoading ? <Spin size="small" /> : "无比赛数据"}
             >
               {contests.map((contest) => (
                 <Option key={contest.mid} value={contest.mid}>
@@ -191,8 +233,9 @@ export default function UserManagement() {
               htmlType="submit"
               loading={loading}
               style={{ width: "100%" }}
+              disabled={contestsLoading}
             >
-              修改权限
+              {loading ? "处理中..." : "修改权限"}
             </Button>
           </Form.Item>
         </Form>
