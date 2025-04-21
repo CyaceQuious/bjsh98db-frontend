@@ -67,9 +67,19 @@ export default function UserManagement() {
     formData.append("Is_Department_Official", values.Is_Department_Official ? "True" : "False");
     formData.append("Is_System_Admin", values.Is_System_Admin ? "True" : "False");
 
-    // 特殊数组格式处理
+    // 处理比赛ID数组（不带[]后缀）
     const contestIds = values.Is_Contest_Official || [];
-    formData.append("Is_Contest_Official", `[${contestIds.join(",")}]`); // 生成 [201,203] 格式
+    if (contestIds.length > 0) {
+      contestIds.forEach((id: number) => {
+        formData.append("Is_Contest_Official", id.toString()); // 关键修改点
+      });
+    } else {
+      // 根据服务器要求决定是否传空值
+      formData.append("Is_Contest_Official", ""); // 可选：清空原有权限
+    }
+
+    // 打印实际请求体（调试用）
+    console.log("最终请求体:", formData.toString());
 
     const response = await fetch("/api/users/modify_user_status", {
       method: "POST",
@@ -79,28 +89,35 @@ export default function UserManagement() {
       body: formData.toString(),
     });
   
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const result = await response.json();
-  
-      if (result.code === 0) {
-        message.success('用户权限更新成功');
-        form.resetFields();
-      } else {
-        message.error(`更新失败: ${result.info}`);
-      }
-    } catch (error: unknown) {
-      console.error('请求出错:', error);
-      if (error instanceof Error) {
-        message.error(`请求失败: ${error.message}`);
-      } else {
-        message.error('请求失败，未知错误');
-      }
-    } finally {
-      setLoading(false);
+    console.groupCollapsed('[DEBUG] API 响应详情');
+    console.log('URL:', response.url);
+    console.log('状态:', response.status, response.statusText);
+    console.log('Headers:', Object.fromEntries(response.headers.entries()));
+    
+    try {
+      const text = await response.clone().text();
+      console.log('Body (raw):', text);
+      console.log('Body (parsed):', JSON.parse(text));
+    } catch (e) {
+      console.error('响应解析错误:', e);
     }
+    console.groupEnd();
+
+    if (!response.ok) {
+      // console.log('hello world');
+      throw new Error(`HTTP 错误! 状态码: ${response.status}`);
+    }
+
+    const result = await response.json();
+    // ...处理业务逻辑...
+  } catch (error) {
+    console.error('请求失败:', error);
+    if (error instanceof Error) {
+      message.error(`操作失败: ${error.message}`);
+    }
+  } finally {
+    setLoading(false);
+  }
   };
 
   if (contestsLoading) {
