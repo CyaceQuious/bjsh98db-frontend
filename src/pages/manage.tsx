@@ -1,8 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { Card, Form, Input, Button, Switch, message, Typography, Select, Spin } from 'antd';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import {
+  Card,
+  Form,
+  Input,
+  Button,
+  Switch,
+  message,
+  Typography,
+  Select,
+  Spin,
+} from "antd";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -33,16 +43,16 @@ export default function UserManagement() {
   useEffect(() => {
     const fetchContests = async () => {
       try {
-        const response = await fetch('/api/query_meet_list');
+        const response = await fetch("/api/query_meet_list");
         const result = await response.json();
-        
+
         if (result.code === 0 && result.results) {
           setContests(result.results);
         } else {
           message.error(`获取比赛列表失败: ${result.info}`);
         }
       } catch (error) {
-        message.error('获取比赛列表失败，请检查网络连接');
+        message.error("获取比赛列表失败，请检查网络连接");
       } finally {
         setContestsLoading(false);
       }
@@ -53,95 +63,92 @@ export default function UserManagement() {
 
   // 检查权限
   if (!isAdmin) {
-    router.push('/');
+    router.push("/");
     return null;
   }
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
-  try {
-    const formData = new URLSearchParams();
-    // 基础参数
-    formData.append("session", session);
-    formData.append("user_to_modify", values.user_to_modify);
-    formData.append("Is_Department_Official", values.Is_Department_Official ? "True" : "False");
-    formData.append("Is_System_Admin", values.Is_System_Admin ? "True" : "False");
-
-    // 处理比赛ID数组（不带[]后缀）
-    const contestIds = values.Is_Contest_Official || [];
-    if (contestIds.length > 0) {
-      contestIds.forEach((id: number) => {
-        formData.append("Is_Contest_Official", id.toString()); // 关键修改点
-      });
-    } else {
-      // 根据服务器要求决定是否传空值
-      formData.append("Is_Contest_Official", ""); // 可选：清空原有权限
-    }
-
-    // 打印实际请求体（调试用）
-    console.log("最终请求体:", formData.toString());
-
-    const response = await fetch("/api/users/modify_user_status", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData.toString(),
-    });
-  
-    console.groupCollapsed('[DEBUG] API 响应详情');
-    console.log('URL:', response.url);
-    console.log('状态:', response.status, response.statusText);
-    console.log('Headers:', Object.fromEntries(response.headers.entries()));
-    
     try {
-      const text = await response.clone().text();
-      console.log('Body (raw):', text);
-      console.log('Body (parsed):', JSON.parse(text));
-    } catch (e) {
-      console.error('响应解析错误:', e);
-    }
-    console.groupEnd();
+      const formData = new URLSearchParams();
+      // 基础参数
+      formData.append("session", session);
+      formData.append("user_to_modify", values.user_to_modify);
+      formData.append(
+        "Is_Department_Official",
+        values.Is_Department_Official ? "True" : "False"
+      );
+      formData.append(
+        "Is_System_Admin",
+        values.Is_System_Admin ? "True" : "False"
+      );
 
-    if (!response.ok) {
-      // console.log('hello world');
-      throw new Error(`HTTP 错误! 状态码: ${response.status}`);
-    }
+      // 处理比赛ID数组（不带[]后缀）
+      const contestIds = values.Is_Contest_Official || [];
+      if (contestIds.length > 0) {
+        contestIds.forEach((id: number) => {
+          formData.append("Is_Contest_Official", id.toString()); // 关键修改点
+        });
+      }
 
-    const result = await response.json();
-    // ...处理业务逻辑...
-  } catch (error) {
-    console.error('请求失败:', error);
-    if (error instanceof Error) {
-      message.error(`操作失败: ${error.message}`);
+      // 打印实际请求体（调试用）
+      console.log("最终请求体:", formData.toString());
+
+      const response = await fetch("/api/users/modify_user_status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
+      });
+
+      try {
+        const text = await response.clone().text();
+        console.log("Body (raw):", text);
+        console.log("Body (parsed):", JSON.parse(text));
+      } catch (e) {
+        console.error("响应解析错误:", e);
+      }
+      console.groupEnd();
+
+      if (!response.ok) {
+        throw new Error(`HTTP 错误! 状态码: ${response.status}`);
+      }
+
+      const result = await response.json();
+      // ...处理业务逻辑...
+    } catch (error) {
+      console.error("请求失败:", error);
+      if (error instanceof Error) {
+        message.error(`操作失败: ${error.message}`);
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
   };
 
   if (contestsLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "100px" }}
+      >
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <Card>
-        <Title level={3} style={{ marginBottom: '24px' }}>用户权限管理</Title>
-        
-        <Form
-          form={form}
-          onFinish={handleSubmit}
-          layout="vertical"
-        >
+        <Title level={3} style={{ marginBottom: "24px" }}>
+          用户权限管理
+        </Title>
+
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item
             label="用户名"
             name="user_to_modify"
-            rules={[{ required: true, message: '请输入用户名' }]}
+            rules={[{ required: true, message: "请输入用户名" }]}
           >
             <Input placeholder="输入要修改权限的用户名" />
           </Form.Item>
@@ -162,18 +169,15 @@ export default function UserManagement() {
             <Switch />
           </Form.Item>
 
-          <Form.Item
-            label="比赛管理员权限"
-            name="Is_Contest_Official"
-          >
+          <Form.Item label="比赛管理员权限" name="Is_Contest_Official">
             <Select
               mode="multiple"
               placeholder="选择可管理的比赛"
               optionFilterProp="children"
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               loading={contestsLoading}
             >
-              {contests.map(contest => (
+              {contests.map((contest) => (
                 <Option key={contest.mid} value={contest.mid}>
                   {contest.name} (ID: {contest.mid})
                 </Option>
@@ -182,11 +186,11 @@ export default function UserManagement() {
           </Form.Item>
 
           <Form.Item>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
+            <Button
+              type="primary"
+              htmlType="submit"
               loading={loading}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             >
               修改权限
             </Button>
