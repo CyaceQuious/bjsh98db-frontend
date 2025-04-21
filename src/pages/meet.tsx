@@ -8,6 +8,9 @@ import GroupScoreTable from '../components/GroupScoreTable';
 import MeetProjectTable from '../components/MeetProjectTable';
 import MeetManage from '../components/MeetManage';
 
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+
 export default function CompetitionTeamScore() {
   const router = useRouter();
   if (!router.isReady) return <div>Loading...</div>;
@@ -20,6 +23,7 @@ export default function CompetitionTeamScore() {
     midNum = parseInt(mid[0], 10);
   }
 
+  const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
   const handleRefresh = () => {
@@ -33,9 +37,9 @@ export default function CompetitionTeamScore() {
       <Head>
         <title>比赛团体总分 - 赛事 {midNum}</title>
       </Head>
-      <MeetManage mid={midNum} reload={handleRefresh}/>
+      {isSystemAdmin && <MeetManage mid={midNum} reload={handleRefresh}/>}
       <GroupScoreTable mid={midNum} refreshTrigger={refreshTrigger}/>
-      <MeetProjectTable mid={midNum} refreshTrigger={refreshTrigger}/>
+      <MeetProjectTable mid={midNum} refreshTrigger={refreshTrigger} onContentRefresh={handleRefresh}/>
     </div>
   );
 }

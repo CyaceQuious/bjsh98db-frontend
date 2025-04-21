@@ -87,7 +87,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        赛事 #{mid} 管理
+        赛事管理
       </h1>
 
       <Modal

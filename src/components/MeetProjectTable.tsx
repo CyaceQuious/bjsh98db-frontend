@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 
-import { request } from '../utils/network';
+import { getContestName, request } from '../utils/network';
 import { interfaceToString } from '../utils/types';
 
 import { PagerCurrent, PagerFooter, PagerHeader } from './pager';
+
+import SearchContainer from './SearchContainer';
+import { SearchQuery, getEmptyQuery } from '../utils/types';
 
 interface Projects {
   name: string;
@@ -26,16 +29,22 @@ interface ApiResponse {
 interface MeetProjectTableProps {
 	mid: number; 
   refreshTrigger: any; 
+  onContentRefresh: () => any; 
 }
 
-export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTableProps) {
+export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}: MeetProjectTableProps) {
   const [projects, setProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
+
+  const [meetName, setMeetName] = useState<string>('loading');
   // 分页状态
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+  // 具体结果对话框
+  const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
+  const [query, setQuery] = useState<SearchQuery>(getEmptyQuery());
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -61,8 +70,16 @@ export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTable
     }
   };
 
+  const fetchMeetName = async () => {
+    const name = await getContestName(mid);
+    setMeetName(name);
+  }
+
   useEffect(() => {
     fetchProjects();
+    fetchMeetName(); 
+    setShowDetailModal(false); 
+    setQuery(getEmptyQuery());
   }, []);
 
   useEffect(() => {
@@ -87,7 +104,7 @@ export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTable
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        赛事 #{mid} 全部比赛项目
+        {meetName} 全部比赛项目
       </h1>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
@@ -97,6 +114,17 @@ export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTable
           错误: {error}
         </div>
       )}
+
+      <Modal
+        title="查看项目成绩"
+        open={showDetailModal}
+        footer={null}
+        onClose={() => setShowDetailModal(false)}
+        onCancel={() => setShowDetailModal(false)}
+        width={'90%'}
+      >
+        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh}/>
+      </Modal>
 
       {/* 分页控制 - 顶部 */}
       <PagerHeader itemsPerPage={itemsPerPage} totalItems={totalItems} handleItemsPerPageChange={handleItemsPerPageChange}/>
@@ -120,9 +148,9 @@ export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTable
             </thead>
             <tbody>
               {currentItems.length > 0 ? (
-                currentItems.map((contest, index) => (
+                currentItems.map((project, index) => (
                   <tr
-                    key={contest.name}
+                    key={project.name}
                     style={{
                       borderBottom: '1px solid #e0e0e0',
                       backgroundColor: index % 2 === 0 ? '#fafafa' : 'white',
@@ -130,17 +158,20 @@ export default function MeetProjectTable({mid, refreshTrigger}: MeetProjectTable
                   >
                     <td style={{ padding: '12px' }}>{index +1+indexOfFirstItem}</td>
                     <td style={{ padding: '12px' }}>{
-                      contest.name
+                      project.name
                     }</td>
                     <td style={{ padding: '12px' }}>{
                       <Button 
                         type="link" 
-                        href={`/project?${interfaceToString({mid, project: contest.name})}`}
+                        onClick={() => {
+                          setQuery({projectname: project.name, meet: meetName} as SearchQuery);
+                          setShowDetailModal(true);
+                        }}
                         style={{ padding: 0 }}
                       >
                         具体成绩
                       </Button>
-                    }</td>
+                      }</td>
                   </tr>
                 ))
               ) : (

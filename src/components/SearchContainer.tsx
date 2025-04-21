@@ -14,10 +14,11 @@ import { useRouter } from 'next/router';
 interface SearchContainerProps {
     oldQuery?: SearchQuery;
     hiddenResult?: boolean;
+    searchJump?: boolean; // 点击搜索后是否跳转
     onContentRefresh: () => void;
 }
 
-export default function SearchContainer({ oldQuery, hiddenResult, onContentRefresh }: SearchContainerProps) {
+export default function SearchContainer({ oldQuery, hiddenResult, searchJump, onContentRefresh }: SearchContainerProps) {
     const router = useRouter();
 
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
@@ -96,7 +97,9 @@ export default function SearchContainer({ oldQuery, hiddenResult, onContentRefre
         const newQuery = {...query, page: 1, page_size: lastQuery.page_size}; 
         setQuery(newQuery); 
         setLastQuery(newQuery)
-        router.push(`/search?${interfaceToString(newQuery)}`);
+        if (searchJump) {
+            router.push(`/search?${interfaceToString(newQuery)}`);
+        }
         if (hiddenResult === false) {
             fetchResults(newQuery);
         }
@@ -112,7 +115,9 @@ export default function SearchContainer({ oldQuery, hiddenResult, onContentRefre
         }
         const newQuery: SearchQuery = { ...lastQuery, page, page_size: newPageSize }
         setLastQuery(newQuery);
-        router.push(`/search?${interfaceToString(newQuery)}`);
+        if (searchJump) {
+            router.push(`/search?${interfaceToString(newQuery)}`);
+        }
         fetchResults(newQuery); 
     };
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
 
+import { getContestName } from '../utils/network';
 
 interface TeamScore {
   team: string;
@@ -18,10 +19,17 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   const [teamScores, setTeamScores] = useState<TeamScore[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const [meetName, setMeetName] = useState<string>('loading');
   // 分页状态
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+
+  const fetchMeetName = async () => {
+    const name = await getContestName(mid);
+    setMeetName(name);
+  }
 
   const fetchData = async () => {
 	try {
@@ -48,6 +56,7 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   useEffect(() => {
     if (!mid) return;
     fetchData();
+    fetchMeetName(); 
   }, [mid, refreshTrigger]);
 
   // 计算当前页的数据
@@ -68,7 +77,7 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        赛事 #{mid} 团体总分排名
+        {meetName} 团体总分排名
       </h1>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
