@@ -35,7 +35,7 @@ export default function SearchResultTable({
     const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
 
     // 生成动态列配置
-    const baseColumns = ["name", "meet", "projectname", "groupname", "result", "grade", "rank"].map(name => ({
+    const baseColumns = ["name", "meet", "projectname", "groupname", "result", "grade", "rank", "score"].map(name => ({
         title: getResultTableItemName(name as keyof SearchResultTableItem),
         dataIndex: name,
         key: name,

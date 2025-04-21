@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 
 import { Button, Modal } from 'antd';
 
@@ -118,7 +117,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       <Modal
         title="查看项目成绩"
         open={showDetailModal}
-        footer={null}
+        footer={<></>}
         onClose={() => setShowDetailModal(false)}
         onCancel={() => setShowDetailModal(false)}
         width={'90%'}

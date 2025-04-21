@@ -23,6 +23,7 @@ const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, strin
     result: "成绩",
     grade: "运动技术等级",
     rank: "名次", 
+    score: "得分", 
     manage: "管理"
 };
 // current language is simplified chinese

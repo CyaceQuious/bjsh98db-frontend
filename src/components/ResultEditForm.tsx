@@ -83,14 +83,17 @@ const ResultEditForm = ({
   const handleSubmit = async (values: EntryFormValues) => {
     setLoading(true);
     console.log('Form Values:', values);
-    if (values.rank === null) {values.rank = undefined; }
-    if (values.score === null) {values.score = undefined; }
+    const cleanedValues = {
+      ...values,
+      rank: values.rank ?? undefined,
+      score: values.score ?? undefined
+    };
     try {
       const data: ResultChangeResponse = await request(
       `/api/manege_result`, 
       isEditMode ? 'PUT' : 'POST', 
       {
-        ...values, 
+        ...cleanedValues, 
         session, 
       } as ResultChangeRequest, 
       false, 
@@ -101,7 +104,7 @@ const ResultEditForm = ({
       }
       message.success(isEditMode ? '更新成功' : '创建成功');
       setOpen(false);
-      onSuccess?.(values);
+      onSuccess?.(cleanedValues);
     } catch (err) {
       message.error('操作失败，请重试');
       console.log('API Error:', err);

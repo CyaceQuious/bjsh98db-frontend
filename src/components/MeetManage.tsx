@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 
-import { Button, Modal, Input, message, Form } from 'antd'; 
+import { Button, Modal, Input, message } from 'antd'; 
 
-import { PlusOutlined } from '@ant-design/icons';
-
-import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
 import { request } from '../utils/network';
 
 import { useSelector } from "react-redux";
@@ -29,7 +26,7 @@ interface RenameResponse {
 }
 
 const MeetManage = ({mid, reload}: MeetManageProps) => {
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   // 修改比赛名称
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [newName, setNewName] = useState('');
@@ -55,7 +52,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     setSelectedMid(undefined);
   };
   const putRenameRequest = async () => {
-    setLoading(true);
+    // setLoading(true);
     console.log(`session = ${session}`)
     try {
       const data: RenameResponse = await request(
@@ -80,7 +77,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       // setError('An error occurred while renaming project' + err);
       console.log('Put error:', err);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
