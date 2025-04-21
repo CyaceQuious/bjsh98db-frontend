@@ -1,10 +1,10 @@
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 
 import { Button, Modal, Input, message } from 'antd'; 
 
 import { EditOutlined } from '@ant-design/icons';
 
-import { request } from '../utils/network';
+import { getContestName, request } from '../utils/network';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -34,8 +34,15 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   const [newName, setNewName] = useState('');
   const [selectedMid, setSelectedMid] = useState<number | undefined>(undefined);
 
+
+  const [meetName, setMeetName] = useState<string>('loading');
   const session = useSelector((state: RootState) => state.auth.session);
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+
+  const fetchMeetName = async () => {
+    const name = await getContestName(mid);
+    setMeetName(name);
+  }; 
 
   // 修改比赛名称的相关函数
   const handleRenameClick = (mid: number, currentName: string) => {
@@ -74,6 +81,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       message.success('修改赛事名称成功');
       // await fetchContests();
       reload();
+      fetchMeetName(); // 重新获取比赛名称
     } catch (err) {
       alert('An error occurred while renaming project' + err); 
       // setError('An error occurred while renaming project' + err);
@@ -82,6 +90,10 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       // setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchMeetName();
+  })
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
@@ -107,8 +119,9 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       <div>
       <ResultEditForm 
         buttonStyle={{ marginLeft: 16 }}
-        defaultValues={{mid}} 
+        defaultValues={{mid, meet: meetName}} 
         onSuccess={() => reload()}
+        frozenItems={["meet", "mid"]}
       />
       {(isSystemAdmin) && <Button
         type={'primary'}
