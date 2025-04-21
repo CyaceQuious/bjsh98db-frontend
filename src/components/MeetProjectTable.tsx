@@ -127,7 +127,7 @@ export default function MeetProjectTable({mid}: MeetProjectTableProps) {
                     <td style={{ padding: '12px' }}>{
                       <Link href={{
                         pathname: '/project',
-                        query: { mid: mid, project: contest.name }
+                        query: { mid, project: contest.name }
                       }}>
                         管理成绩
                       </Link>

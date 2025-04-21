@@ -99,15 +99,14 @@ export default function ContestsTable() {
         `/api/manage_meet`, 
         'PUT', 
         {
-          session: session, 
+          session, 
           mid: selectedMid, 
           name: newName
         } as RenameRequest, 
         false, 
         'json'
       ); 
-      if (data.code === 0) {
-      } else {
+      if (data.code !== 0) {
         setError(data.info || 'Failed to rename project');
       }
       await fetchContests();
@@ -172,14 +171,13 @@ export default function ContestsTable() {
         `/api/manage_meet`, 
         'DELETE', 
         {
-          session: session, 
-          mid: mid, 
+          session, 
+          mid, 
         } as DeleteRequest, 
         false, 
         'json'
       ); 
-      if (data.code === 0) {
-      } else {
+      if (data.code !== 0) {
         alert(data.info || 'Failed to delete project');
       }
       await fetchContests();
@@ -204,15 +202,13 @@ export default function ContestsTable() {
         `/api/manage_meet`, 
         'POST', 
         {
-          session: session, 
+          session, 
           name: newContestName, 
         } as NewMeetRequest, 
         false, 
         'json'
       );
-      if (data.code === 0) {
-        
-      } else {
+      if (data.code !== 0) {
         alert(data.info || 'Failed to create project');
       }
       message.success(`比赛 ${newContestName} 创建成功, ID为: ${data.mid}`);

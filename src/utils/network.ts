@@ -36,7 +36,7 @@ export const request = async (
     method: "GET" | "POST" | "PUT" | "DELETE",
     body?: object | string, 
     needAuth?: boolean, 
-    body_type?: "json" | "form"
+    bodyType?: "json" | "form"
 ) => {
     console.log(`[request] ${method} ${url}`);
     const headers = new Headers();
@@ -44,9 +44,9 @@ export const request = async (
         const session = store.getState().auth.session; 
         headers.append("Authorization", `${session}`);
     }
-    let body_str: undefined | string = undefined;
+    let body_str: undefined | string;
     if (body !== undefined) {
-        if (body_type === "json") {
+        if (bodyType === "json") {
             headers.append("Content-Type", "application/json");
             if (typeof body === "object") {
                 body_str = JSON.stringify(body);
