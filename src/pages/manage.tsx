@@ -77,16 +77,22 @@ export default function UserManagement() {
     fetchContests();
   }, []);
 
-  // 检查权限
+  // 检查权限（放入 useEffect，避免 SSR 阶段触发）
+  useEffect(() => {
+    if (!isAdmin) {
+      router.push("/");
+    }
+  }, [isAdmin, router]);
+
+  // SSR 阶段避免渲染
   if (!isAdmin) {
-    router.push("/");
     return undefined;
   }
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
     setSubmitStatus({ type: undefined, message: "" });
-    
+
     try {
       const formData = new URLSearchParams();
       // 基础参数
@@ -206,8 +212,8 @@ export default function UserManagement() {
             <Switch />
           </Form.Item>
 
-          <Form.Item 
-            label="比赛管理员权限" 
+          <Form.Item
+            label="比赛管理员权限"
             name="Is_Contest_Official"
             tooltip="选择用户可以管理的比赛"
           >
@@ -217,7 +223,9 @@ export default function UserManagement() {
               optionFilterProp="children"
               style={{ width: "100%" }}
               loading={contestsLoading}
-              notFoundContent={contestsLoading ? <Spin size="small" /> : "无比赛数据"}
+              notFoundContent={
+                contestsLoading ? <Spin size="small" /> : "无比赛数据"
+              }
             >
               {contests.map((contest) => (
                 <Option key={contest.mid} value={contest.mid}>
