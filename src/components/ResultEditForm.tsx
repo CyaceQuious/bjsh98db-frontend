@@ -19,6 +19,7 @@ import { request } from '../utils/network';
 // "score": 9.0
 interface ResultChangeRequest {
   session: string;
+  meet: string;
   mid: number;
   projectname: string;
   name: string;
@@ -35,6 +36,7 @@ interface ResultChangeResponse {
 
 interface EntryFormValues {
   mid: number;
+  meet: string;
   projectname: string;
   name: string;
   groupname: string;
@@ -51,6 +53,7 @@ interface EntryFormDrawerProps {
   // 操作模式：新建(false) 或 更新(true)
   isEditMode?: boolean;
   useGray?: boolean;
+  frozenItems: string[]; 
   // 提交成功回调
   onSuccess?: (values: EntryFormValues) => void;
 }
@@ -60,6 +63,7 @@ const ResultEditForm = ({
   defaultValues,
   isEditMode = false,
   useGray = false, 
+  frozenItems = [], 
   onSuccess
 }: EntryFormDrawerProps) => {
   const [form] = Form.useForm();
@@ -88,7 +92,8 @@ const ResultEditForm = ({
     setLoading(true);
     console.log('Form Values:', values);
     const cleanedValues = {
-      ...values,
+      ...defaultValues, 
+      ...values, 
       rank: values.rank ?? undefined,
       score: values.score ?? undefined
     };
@@ -110,14 +115,14 @@ const ResultEditForm = ({
       setOpen(false);
       onSuccess?.(cleanedValues);
     } catch (err) {
-      message.error('操作失败，请重试');
+      message.warning('操作失败，请重试: ' + err);
       console.log('API Error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-
+  console.log(`frozen items: ${frozenItems}`)
 
   return (
     <>
@@ -163,11 +168,11 @@ const ResultEditForm = ({
             initialValues={defaultValues}
           >
             <Form.Item
-              label="赛事编号"
-              name="mid"
-              rules={[{ required: true, message: '赛事编号' }]}
+              label="赛事名称"
+              name="meet"
+              rules={[{ required: true, message: '赛事名称' }]}
             >
-              <Input placeholder="例：203" disabled/>
+              <Input placeholder="例：某某小马杯，但是要全称" disabled={frozenItems.includes("meet")}/>
             </Form.Item>
 
             <Form.Item
@@ -175,7 +180,7 @@ const ResultEditForm = ({
               name="projectname"
               rules={[{ required: true, message: '请输入项目名称' }]}
             >
-              <Input placeholder="例：男子跳高" />
+              <Input placeholder="例：男子跳高" disabled={frozenItems.includes("projectname")}/>
             </Form.Item>
 
             <Form.Item
@@ -183,7 +188,7 @@ const ResultEditForm = ({
               name="name"
               rules={[{ required: true, message: '请输入姓名' }]}
             >
-              <Input placeholder="例：张三" />
+              <Input placeholder="例：张三" disabled={frozenItems.includes("name")}/>
             </Form.Item>
 
             <Form.Item
@@ -191,7 +196,7 @@ const ResultEditForm = ({
               name="groupname"
               rules={[{ required: true, message: '请输入团体名称' }]}
             >
-              <Input placeholder="例：电子系" />
+              <Input placeholder="例：电子系" disabled={frozenItems.includes("groupname")}/>
             </Form.Item>
 
             <Form.Item
@@ -199,7 +204,7 @@ const ResultEditForm = ({
               name="result"
               rules={[{ required: true, message: '请输入比赛结果' }]}
             >
-              <Input placeholder="例：1.95m" />
+              <Input placeholder="例：1.95m" disabled={frozenItems.includes("result")}/>
             </Form.Item>
 
             <Form.Item
@@ -207,7 +212,7 @@ const ResultEditForm = ({
               name="rank"
               rules={[{ required: false, message: '请输入排名' }]}
             >
-              <InputNumber min={1} />
+              <InputNumber min={1} disabled={frozenItems.includes("rank")}/>
             </Form.Item>
 
             <Form.Item
@@ -215,7 +220,7 @@ const ResultEditForm = ({
               name="score"
               rules={[{ required: false, message: '请输入得分' }]}
             >
-              <InputNumber step={0.1} />
+              <InputNumber step={0.1} disabled={frozenItems.includes("score")}/>
             </Form.Item>
           </Form>
         </Spin>
