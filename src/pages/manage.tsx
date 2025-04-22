@@ -188,7 +188,6 @@ export default function UserManagement() {
             name="user_to_modify"
             rules={[
               { required: true, message: "请输入用户名" },
-              { min: 3, message: "用户名至少3个字符" },
             ]}
           >
             <Input placeholder="输入要修改权限的用户名" />
