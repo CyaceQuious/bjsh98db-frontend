@@ -54,7 +54,7 @@ export default function UserManagement() {
 
         if (result.code === 0 && result.results) {
           setContests(result.results);
-          message.success("比赛列表加载成功");
+          //message.success("比赛列表加载成功");
         } else {
           message.error(`获取比赛列表失败: ${result.info}`);
           setSubmitStatus({
