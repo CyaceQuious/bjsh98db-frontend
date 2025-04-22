@@ -1,26 +1,57 @@
-// 组件：基本文本搜索框
+import { AutoComplete, Space, Typography } from 'antd';
 import { SearchQuery } from "../utils/types";
-import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";  
+import { getQueryItemName, getSearchBoxPlaceHolder } from "../utils/lang";
+import { HistoryOutlined } from '@ant-design/icons';
+
+import useSearchHistory from '../hook/useSearchHistory';
+
+const { Text } = Typography;
 
 interface SearchTextBoxProps {
-    name: keyof SearchQuery; // 搜索框名称
-    query: string; // 搜索框中内容
-    textChange: (name: keyof SearchQuery, value: string) => void;
+    name: keyof SearchQuery;
+    query: string;
+    textChange: (name: keyof SearchQuery, value: string | undefined) => void;
 }
 
-export default function SearchTextBox({ name, query, textChange}: SearchTextBoxProps) {
-    return (
-        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", margin: "3px"}}>
-            <div style={{width: "20%"}}>
-                <p>{getQueryItemName(name)}: </p>
-            </div>
-            <input
-                type="text"
+export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
+    const {history, addHistory, clearHistory} = useSearchHistory(name); 
+    return {
+        item: (
+        <Space.Compact
+            direction="horizontal"
+            style={{ 
+                width: '100%', 
+                margin: '4px 0', 
+                alignItems: 'center'
+            }}
+        >
+            <Text strong style={{
+                padding: '0 8px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100px'
+            }}>
+                {getQueryItemName(name)}:
+            </Text>
+            <AutoComplete
+                allowClear
+                options={history.map(item => ({
+                    value: item.query,
+                    label: (
+                      <Space>
+                        <HistoryOutlined />
+                        <span>{item.query}</span>
+                      </Space>
+                    )
+                  }))}
                 value={query}
-                onChange={(e) => textChange(name, e.target.value)}
+                style={{textAlign: "left"}}
+                onChange={(e) => textChange(name, e)}
                 placeholder={getSearchBoxPlaceHolder()}
-                style={{width: "80%"}}
             />
-        </div>
-    );
+        </Space.Compact>
+        ), 
+        callFunc: ()=>{addHistory(query)}, 
+        clearFunc: ()=>{clearHistory()}
+    };
 }

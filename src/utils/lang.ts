@@ -1,28 +1,34 @@
-import { SearchQuery, SearchResultItem } from "./types";
+import { SearchQuery } from "./types";
+import { SearchResultTableItem } from "../components/SearchResultTable";
 const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     name: "姓名",
-    groupname: "代表队", 
+    groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
-    precise: "精确搜索", 
-    ranked: "只显示前八名"
+    precise: "精确搜索",
+    ranked: "只显示前八名", 
+    page: "", 
+    page_size: ""
 };
 // current language is simplified chinese
 export function getQueryItemName(itemName: keyof SearchQuery): string {
     return searchQueryItemNameDictCn[itemName]
 }
 
-const searchResultItemNameDictCn: Record<keyof SearchResultItem, string> = {
+const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, string> = {
     name: "姓名",
-    groupname: "代表队", 
+    groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
-    result: "成绩", 
-    grade: "运动成绩等级"
+    result: "成绩",
+    grade: "运动技术等级",
+    rank: "名次", 
+    score: "得分", 
+    manage: "管理"
 };
 // current language is simplified chinese
-export function getResultItemName(itemName: keyof SearchResultItem): string {
-    return searchResultItemNameDictCn[itemName]
+export function getResultTableItemName(itemName: keyof SearchResultTableItem): string {
+    return searchResultTableItemNameDictCn[itemName]
 }
 
 // current language is simplified chinese
@@ -36,10 +42,14 @@ export function getSearchButtonText(): string {
 }
 
 const navBarItemDictCn: Record<"homepage" | "search", string> = {
-    homepage: "主页", 
+    homepage: "主页",
     search: "搜索"
 };
 // current language is simplified chinese
 export function getNavBarItem(name: "homepage" | "search"): string {
     return navBarItemDictCn[name]
+}
+
+export function getSearchHistoryDelete(): string {
+    return "清除搜索历史"
 }

@@ -10,6 +10,7 @@
 /coverage
 /.coverage
 /test-report.xml
+/reports/*
 
 # next.js
 /.next/
@@ -40,3 +41,7 @@ next-env.d.ts
 
 # database
 db.sqlite
+
+# czy other
+frontend.zip
+make_zip.sh

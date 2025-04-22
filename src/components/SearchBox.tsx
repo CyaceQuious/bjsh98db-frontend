@@ -1,62 +1,135 @@
-// 组件：完整搜索框
-// 包含若干 SearchTextBox
-// 
-
+import {
+  Button,
+  Form,
+  Row,
+  Col,
+  theme
+} from 'antd';
+import { useState } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import type { FormProps } from 'antd';
+import SearchTextBox from "./SearchTextBox";
 import { SearchQuery } from "../utils/types";
-import SearchTextBox from "./SearchTextBox"
-import SearchBooleanBox from "./SearchBooleanBox";
-import { getSearchButtonText } from "../utils/lang";
+import { getSearchButtonText, getSearchHistoryDelete } from "../utils/lang";
+import SearchBooleanBox from './SearchBooleanBox';
+import { DeleteOutlined } from '@ant-design/icons';
+
+const { useToken } = theme;
 
 interface SearchBoxProps {
-    query: SearchQuery; // 搜索框中内容
-    queryTextChange: (name: keyof SearchQuery, value: string) => void;
-    queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void; 
-    doSearch: () => void; 
+  query: SearchQuery;
+  queryTextChange: (name: keyof SearchQuery, value: string | undefined) => void;
+  queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
+  doSearch: () => void;
+  briefButton: boolean; // whether only show the 'Search' button
+  searchItems: {
+    key: keyof SearchQuery;
+    type: string;
+    isFullLine?: boolean;
+  }[];
 }
 
-export default function SearchBox({ query, queryTextChange, queryBooleanChange, doSearch}: SearchBoxProps) {
-    const listname: string[] = Object.keys(query);
+export default function SearchBox({
+  query,
+  queryTextChange,
+  queryBooleanChange,
+  doSearch,
+  searchItems, 
+  briefButton, 
+}: SearchBoxProps) {
+  const { token } = useToken();
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
-    // decode all queries into Boxes
-    const searchTextBoxes = [];
-    const searchBooleanBoxes = []; 
-    for (let i = 0; i<listname.length; i++) {
-        const curValue: string | boolean | undefined = query[listname[i] as keyof SearchQuery]
-        if (typeof curValue === "string") {
-            searchTextBoxes.push((
-                <div key={i}>
-                <SearchTextBox 
-                    name={listname[i] as keyof SearchQuery} 
-                    query={curValue}
-                    textChange={queryTextChange}
-                />
-                </div>
-            ))
-        } else if (typeof curValue === "boolean") {
-            searchBooleanBoxes.push((
-                <div key={i}>
-                <SearchBooleanBox 
-                    name={listname[i] as keyof SearchQuery} 
-                    query={curValue}
-                    booleanChange={queryBooleanChange}
-                />
-                </div>
-            ))
-        }
+  const allSearchBoxes: any[] = [];
+  const allFunctionCallOnQuery: any[] = [];
+  const allFunctionDeleteHistory: any[] = [];
+
+  const handleSearch: FormProps['onFinish'] = async () => {
+    try {
+      setLoading(true);
+      allFunctionCallOnQuery.forEach((item) => { item() });
+      await doSearch();
+    } finally {
+      setLoading(false);
     }
-    return (
-        <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ display: "flex", flexDirection: "column", width: "80%"}}>
-                <div style={{ display: "flex", flexDirection: "column"}}>
-                    {searchTextBoxes}
-                </div>
-                <div style={{ display: "flex", flexDirection: "row"}}>
-                    {searchBooleanBoxes}
-                </div>
-            </div>
-            <button onClick={()=>doSearch()} style={{marginLeft: "10px", width: "60px", height: "30px", alignSelf: "center"}}>
-                {getSearchButtonText()}
-            </button>
-        </div>
-    );
+  };
+
+  searchItems.forEach((item) => {
+    const curr = item.type === 'text' ?
+      SearchTextBox({ name: item.key, query: query[item.key] as string, textChange: queryTextChange }) :
+      SearchBooleanBox({ name: item.key, query: query[item.key] as boolean, booleanChange: queryBooleanChange });
+    allSearchBoxes.push((
+      <Col
+        key={item.key.toString()}
+        xs={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
+        sm={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
+        md={item.isFullLine ? 24 : item.type === 'text' ? 12 : 4}
+        lg={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
+      >
+        <Form.Item name={item.key} style={{height: '100%', marginTop: token.marginSM, marginBottom: token.marginSM}}>
+          {curr.item}
+        </Form.Item>
+      </Col>
+    ));
+    allFunctionCallOnQuery.push(curr.callFunc);
+    allFunctionDeleteHistory.push(curr.clearFunc);
+  })
+
+  return (
+    <Form
+      form={form}
+      onFinish={handleSearch}
+      initialValues={query}
+      autoComplete="off"
+    >
+      <Row
+        gutter={[token.marginSM, token.marginSM]}
+        align="middle"
+      >
+        {allSearchBoxes}
+        {!briefButton && <Col
+          xs={24}
+          sm={8}
+          md={13}
+          lg={13}
+          style={{
+            textAlign: 'right',
+            marginTop: token.marginSM
+          }}
+        >
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() => allFunctionDeleteHistory.forEach((item) => item())}
+            disabled={history.length === 0}
+          >
+            {getSearchHistoryDelete()}
+          </Button>
+        </Col>}
+        <Col
+          xs={24}
+          sm={24}
+          md={3}
+          lg={3}
+          style={{
+            textAlign: 'right',
+            // marginTop: token.marginSM
+          }}
+        >
+          <Button
+            type="primary"
+            icon={<SearchOutlined />}
+            htmlType="submit"
+            loading={loading}
+            style={{
+              width: 120,
+              height: token.controlHeightLG
+            }}
+          >
+            {getSearchButtonText()}
+          </Button>
+        </Col>
+      </Row>
+    </Form>
+  );
 }

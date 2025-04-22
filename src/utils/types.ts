@@ -4,7 +4,9 @@ export interface SearchQuery {
     projectname?: string; 
     groupname?: string; 
     ranked?: boolean; 
-    precise?: boolean; 
+    precise?: boolean;
+    page: number;
+    page_size: number;
 }
 
 export function getEmptyQuery():SearchQuery {
@@ -15,18 +17,28 @@ export function getEmptyQuery():SearchQuery {
         groupname: "", 
         ranked: false, 
         precise: false, 
+        page: 1, 
+        page_size: 10
     }
 }
 
-export function searchQueryToString(params: SearchQuery): string {
+export function interfaceToString(params: object, skipKeys: string[] = []): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
+        if (key in skipKeys) {
+            return; 
+        }
         if (value !== undefined && value !== "" && typeof value === "string") {
-            searchParams.append(key, value.toString());
+            value.split(/[\s,，;；]+/).filter(Boolean).forEach(item => {
+                searchParams.append(key, item); 
+            });
         }
         if (value === true) {
-            searchParams.append(key, value)
+            searchParams.append(key, value); 
+        }
+        if (value !== undefined && typeof value === "number") {
+            searchParams.append(key, value.toString()); 
         }
     });
 
@@ -49,15 +61,68 @@ export interface SearchResultItem {
     groupname: string; 
     result: string; 
     grade: string; 
-}
-
-export function getSearchResultDisplayOrder(): string[] {
-    return ["name", "meet", "projectname", "groupname", "result", "grade"]
+    rank: string; 
+    score: string; 
 }
 
 export interface SearchResult {
     code: number;
     info: string;
     count: number;
+    total_pages: number;
+    current_page: number;
     results: SearchResultItem[]; 
 }
+
+export interface LoginRequest {
+    username: string; 
+    password: string; 
+}
+
+export interface LoginResponse {
+    session: string; 
+    username: string;
+    email: string; 
+    create_time: string; 
+    real_name: string; 
+    org: string;
+    Is_Department_Official: boolean; 
+    Is_Contest_Official: number[]; 
+    Is_System_Admin: boolean; 
+}
+
+export interface RegisterRequest {
+    username: string; 
+    password: string; 
+}
+
+export interface RegisterResponse {
+    username: string;
+}
+
+export interface Meet {
+    name: string;
+    mid: number;
+}
+  
+export interface MeetsApiResponse {
+    code: number;
+    info: string;
+    count: number;
+    results: Meet[];
+}
+
+export interface TeamScoreResponse {
+    code: number;
+    info: string;
+    results: TeamScore[];
+  }
+  
+  export interface TeamScore {
+    team: string;
+    total_score: number;
+  }
+  
+  export interface TeamScoreRequest {
+    mid: number;
+  }
