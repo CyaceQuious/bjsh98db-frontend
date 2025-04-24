@@ -2,8 +2,6 @@ FROM node:22 AS builder
 
 WORKDIR /build
 
-ENV BACKEND_URL https://dev-backend-bjsh98db.app.spring25a.secoder.net/:path*
-
 RUN corepack enable pnpm
 
 COPY package.json pnpm-lock.yaml ./

@@ -53,6 +53,8 @@ style-test:
 
 deploy:
   stage: deploy
+  variables:
+    BACKEND_URL: https://backend-bjsh98db.app.spring25a.secoder.net/:path*
   script:
     - export API_SERVER=https://deployer.spring25a.secoder.net/api
     - deployer dyno replace frontend $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG gitlab-ci-token $REGISTRY_PWD
