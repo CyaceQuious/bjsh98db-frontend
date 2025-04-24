@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { Button, Modal, Input, message, Form } from 'antd'; 
 
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 
 import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
 import { request } from '../utils/network';
@@ -48,6 +48,16 @@ interface NewMeetResponse {
   code: number;
   info: string;
   mid: number; 
+}
+
+interface SyncMeetRequest {
+  session: string;
+}
+
+interface SyncMeetResponse {
+  code: number;
+  info: string;
+  update_meet_num: any; 
 }
 
 interface ContestListResponse {
@@ -227,6 +237,36 @@ export default function ContestsTable() {
     }
   }
 
+  // 同步比赛相关函数
+  const handleSyncMeet = async () => {
+    console.log('同步比赛列表');
+    await putSyncMeetRequest();
+  };
+  const putSyncMeetRequest = async () => {
+    setLoading(true);
+    try {
+      const data: SyncMeetResponse = await request(
+        `/api/update_new_meet_from_online`, 
+        'PUT', 
+        {
+          session
+        } as SyncMeetRequest, 
+        false, 
+        'json'
+      );
+      if (data.code !== 0) {
+        alert(data.info || 'Failed to create project');
+      }
+      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num}`);
+      await fetchContests();
+    } catch (err) {
+      message.error('比赛同步失败: ' + err);
+      console.log('Put error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // 计算当前页的数据
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -265,6 +305,26 @@ export default function ContestsTable() {
           icon={<PlusOutlined/>}
         >
           新建比赛
+        </Button>}
+        {isSystemAdmin && <Button 
+          type="link" 
+          onClick={() => handleSyncMeet()}
+          style={{ 
+            color: '#8c8c8c',
+            fontSize: '16px',
+            padding: '0 12px',
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            // border: '1px solid #d9d9d9',
+            // borderRadius: 6,
+            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+            fontWeight: 500,
+          }}
+          icon={<CloudDownloadOutlined/>}
+        >
+          同步比赛列表
         </Button>}
       </div>
 
