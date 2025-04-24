@@ -158,6 +158,13 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         />
       </Modal>
 
+      <div>
+      <ResultEditForm 
+        buttonStyle={{ marginLeft: 16 }}
+        defaultValues={{mid, meet: meetName}} 
+        onSuccess={() => reload()}
+        frozenItems={["meet", "mid"]}
+      />
       <Button
         type={'primary'}
         style={{ marginLeft: 16 }}
@@ -166,14 +173,6 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       >
         同步赛事成绩
       </Button>
-
-      <div>
-      <ResultEditForm 
-        buttonStyle={{ marginLeft: 16 }}
-        defaultValues={{mid, meet: meetName}} 
-        onSuccess={() => reload()}
-        frozenItems={["meet", "mid"]}
-      />
       {(isSystemAdmin) && <Button
         type={'primary'}
         style={{ marginLeft: 16 }}
