@@ -1,8 +1,9 @@
 import Head from "next/head";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import store from "../redux/store";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "../redux/store"; // 确保从 store 导出 persistor
 
 import Navbar from "../components/NaviBar";
 
@@ -26,7 +27,9 @@ const App = ({ Component, pageProps }: AppProps) => {
 export default function AppWrapper(props: AppProps) {
     return (
         <Provider store={store}>
-            <App {...props} />
+            <PersistGate loading={null} persistor={persistor}>
+                <App {...props} />
+            </PersistGate>
         </Provider>
     );
 }
