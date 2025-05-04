@@ -27,7 +27,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 export default function AppWrapper(props: AppProps) {
     return (
         <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
+            <PersistGate loading={undefined} persistor={persistor}>
                 <App {...props} />
             </PersistGate>
         </Provider>
