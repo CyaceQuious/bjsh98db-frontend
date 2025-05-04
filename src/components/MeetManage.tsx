@@ -44,7 +44,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [newName, setNewName] = useState('');
   const [selectedMid, setSelectedMid] = useState<number | undefined>(undefined);
-
+  const [syncing, setSyncing] = useState<boolean>(false);
 
   const [meetName, setMeetName] = useState<string>('loading');
   const session = useSelector((state: RootState) => state.auth.session);
@@ -108,9 +108,10 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     await putSyncMeetRequest();
   };
   const putSyncMeetRequest = async () => {
+    setSyncing(true);
     try {
       const data: SyncMeetResponse = await request(
-        `/api/update_new_meet_from_online`, 
+        `/api/update_new_result_from_online`, 
         'PUT', 
         {
           session, 
@@ -122,7 +123,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       if (data.code !== 0) {
         alert(data.info || 'Failed to sync project');
       }
-      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num}`);
+      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num.length??0 !== 0 ? data.update_meet_num : "无任何内容更新"}`);
       reload();
       fetchMeetName(); // 重新获取比赛名称
     } catch (err) {
@@ -130,6 +131,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       console.log('Put error:', err);
     } finally {
       // setLoading(false);
+      setSyncing(false);
     }
   }
 
@@ -169,6 +171,8 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         type={'primary'}
         style={{ marginLeft: 16 }}
         onClick={() => handleSyncMeet()}
+        disabled={syncing}
+        loading={syncing}
         icon={<CloudDownloadOutlined />}
       >
         同步赛事成绩

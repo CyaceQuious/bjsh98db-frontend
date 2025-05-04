@@ -73,6 +73,7 @@ export default function ContestsTable() {
   const [contests, setContests] = useState<Contest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
+  const [syncing, setSyncing] = useState<boolean>(false);
   // 分页状态
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
@@ -106,7 +107,6 @@ export default function ContestsTable() {
     setSelectedMid(undefined);
   };
   const putRenameRequest = async () => {
-    setLoading(true);
     console.log(`session = ${session}`)
     try {
       const data: RenameResponse = await request(
@@ -123,18 +123,18 @@ export default function ContestsTable() {
       if (data.code !== 0) {
         alert(data.info || 'Failed to rename project');
       }
-      await fetchContests();
     } catch (err) {
       alert('An error occurred while renaming project' + err); 
       // setError('An error occurred while renaming project' + err);
       console.log('Put error:', err);
     } finally {
-      setLoading(false);
+      await fetchContests();
     }
   };
 
   // 获取比赛列表的相关函数
   const fetchContests = async () => {
+    setLoading(true);
     try {
       const response = await fetch('/api/query_meet_list');
       const data: ContestListResponse = await response.json();
@@ -179,7 +179,6 @@ export default function ContestsTable() {
     });
   };
   const deleteMeetRequest = async (mid: number) => {
-    setLoading(true);
     try {
       const data: DeleteResponse = await request(
         `/api/manage_meet`, 
@@ -194,13 +193,12 @@ export default function ContestsTable() {
       if (data.code !== 0) {
         alert(data.info || 'Failed to delete project');
       }
-      await fetchContests();
     } catch (err) {
       alert('An error occurred while deleting project' + err); 
       // setError('An error occurred while renaming project' + err);
       console.log('Put error:', err);
     } finally {
-      setLoading(false);
+      await fetchContests();
     }
   }
 
@@ -210,7 +208,6 @@ export default function ContestsTable() {
     await postNewMeetRequest();
   };
   const postNewMeetRequest = async () => {
-    setLoading(true);
     try {
       const data: NewMeetResponse = await request(
         `/api/manage_meet`, 
@@ -228,12 +225,11 @@ export default function ContestsTable() {
       message.success(`比赛 ${newContestName} 创建成功, ID为: ${data.mid}`);
       setIsAddModalOpen(false);
       setNewContestName('');
-      await fetchContests();
     } catch (err) {
       message.error('创建比赛失败: ' + err);
       console.log('Put error:', err);
     } finally {
-      setLoading(false);
+      await fetchContests();
     }
   }
 
@@ -243,7 +239,9 @@ export default function ContestsTable() {
     await putSyncMeetRequest();
   };
   const putSyncMeetRequest = async () => {
-    setLoading(true);
+    setSyncing(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 300000); // 5min超时
     try {
       const data: SyncMeetResponse = await request(
         `/api/update_new_meet_from_online`, 
@@ -257,13 +255,15 @@ export default function ContestsTable() {
       if (data.code !== 0) {
         alert(data.info || 'Failed to create project');
       }
-      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num}`);
-      await fetchContests();
+      console.log(data.update_meet_num.length)
+      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num.length??0 !== 0 ? data.update_meet_num : "无任何内容更新"}`);
     } catch (err) {
       message.error('比赛同步失败: ' + err);
       console.log('Put error:', err);
     } finally {
-      setLoading(false);
+      clearTimeout(timeoutId);
+      setSyncing(false);
+      await fetchContests();
     }
   }
 
@@ -309,6 +309,8 @@ export default function ContestsTable() {
         {isSystemAdmin && <Button 
           type="link" 
           onClick={() => handleSyncMeet()}
+          disabled={syncing}
+          loading={syncing}
           style={{ 
             color: '#8c8c8c',
             fontSize: '16px',
