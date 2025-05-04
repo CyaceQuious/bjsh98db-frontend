@@ -194,10 +194,10 @@ export default function UserManagement() {
           </Form.Item>
 
           <Form.Item
-            label="部门管理员"
+            label="体干"
             name="Is_Department_Official"
             valuePropName="checked"
-            tooltip="授予用户部门管理员权限"
+            tooltip="授予用户体干权限"
           >
             <Switch />
           </Form.Item>
@@ -212,7 +212,7 @@ export default function UserManagement() {
           </Form.Item>
 
           <Form.Item
-            label="比赛管理员权限"
+            label="比赛官员权限"
             name="Is_Contest_Official"
             tooltip="选择用户可以管理的比赛"
           >
