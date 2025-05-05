@@ -99,7 +99,7 @@ const ResultEditForm = ({
     };
     try {
       const data: ResultChangeResponse = await request(
-      `/api/manege_result`, 
+      `/api/manage_result`, 
       isEditMode ? 'PUT' : 'POST', 
       {
         ...cleanedValues, 
