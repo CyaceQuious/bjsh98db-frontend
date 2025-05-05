@@ -256,7 +256,7 @@ export default function ContestsTable() {
         alert(data.info || 'Failed to create project');
       }
       console.log(data.update_meet_num.length)
-      message.success(`比赛同步成功, 更新内容: ${Object.keys(data.update_meet_num).length??0 !== 0 ? Object.entries(data.update_meet_num) : "无任何内容更新"}`);
+      message.success(`比赛同步成功, 更新比赛数: ${Object.keys(data.update_meet_num).length}`);
     } catch (err) {
       message.error('比赛同步失败: ' + err);
       console.log('Put error:', err);
