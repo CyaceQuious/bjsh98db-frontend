@@ -123,7 +123,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       if (data.code !== 0) {
         alert(data.info || 'Failed to sync project');
       }
-      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num.length??0 !== 0 ? data.update_meet_num : "无任何内容更新"}`);
+      message.success(`比赛同步成功, 更新条目数: ${Object.values(data.update_meet_num)}`);
       reload();
       fetchMeetName(); // 重新获取比赛名称
     } catch (err) {
