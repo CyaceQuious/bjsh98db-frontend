@@ -74,7 +74,7 @@ export default function SearchResultTable({
     const deleteMeetRequest = async (values: DeleteRequest) => {
         try {
             const data: DeleteResponse = await request(
-                `/api/manege_result`, 
+                `/api/manage_result`, 
                 'DELETE', 
                 {
                     ...values, 
