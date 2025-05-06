@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antd';
 import { SearchResultItem } from "../utils/types";
 import { getResultTableItemName } from "../utils/lang";
 import ResultEditForm from './ResultEditForm';
+import Link from 'next/link'; // 添加 Link 组件
 
 import { request } from "../utils/network";
 
@@ -100,7 +101,29 @@ export default function SearchResultTable({
         dataIndex: name,
         key: name,
         ellipsis: true,
-        render: (value: any) => value?.toString() || '-'
+        // 在 SearchResultTable.tsx 中
+        render: (value: any) => {
+            if (name === 'name') {
+            return (
+                <Link
+                href={{
+                    pathname: '/player',
+                    query: { name: value } // 直接传递名称，无需编码
+                }}
+                passHref
+                >
+                <span style={{ 
+                    color: token.colorPrimary,
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                }}>
+                    {value?.toString() || '-'}
+                </span>
+                </Link>
+            );
+            }
+            return value?.toString() || '-';
+        }
     }));
 
     let columns: TableColumnsType<any> = [...baseColumns];
