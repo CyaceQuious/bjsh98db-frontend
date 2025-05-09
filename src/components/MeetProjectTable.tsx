@@ -8,6 +8,8 @@ import ResultEditForm from './ResultEditForm';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
+import ProjectEditForm from './ProjectEditForm';
+
 interface Projects {
   name: string;
   leixing: string; 
@@ -81,6 +83,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       title: '操作',
       key: 'action',
       render: (text: any, record: Projects) => (
+        <>
         <Button 
           type="link" 
           onClick={() => {
@@ -98,6 +101,27 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         >
           查看成绩
         </Button>
+        <ProjectEditForm 
+          defaultValues={{
+            mid,
+            meet: meetName,
+            name: record.name,
+            leixing: record.leixing,
+            zubie: record.zubie,
+            xingbie: record.xingbie,
+            new_name: record.name,
+            new_leixing: record.leixing,
+            new_zubie: record.zubie,
+            new_xingbie: record.xingbie,
+          }}
+          isEditMode
+          onSuccess={onContentRefresh}
+          frozenItems={[
+            "meet", "mid", 
+            "name", "leixing", "zubie", "xingbie", 
+          ]}
+        />
+        </>
       ),
     },
   ], [projects]); // 当 projects 变化时重新生成列配置
@@ -142,7 +166,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   }, [refreshTrigger]);
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
         {meetName} 全部比赛项目
       </h1>

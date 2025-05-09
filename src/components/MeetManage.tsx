@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import ResultEditForm from "./ResultEditForm";
+import ProjectEditForm from './ProjectEditForm';
 
 interface MeetManageProps {
 	mid: number; 
@@ -164,6 +165,12 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       <ResultEditForm 
         buttonStyle={{ marginLeft: 16 }}
         defaultValues={{mid, meet: meetName}} 
+        onSuccess={() => reload()}
+        frozenItems={["meet", "mid"]}
+      />
+      <ProjectEditForm
+        buttonStyle={{ marginLeft: 16 }}
+        defaultValues={{mid, meet: meetName}}
         onSuccess={() => reload()}
         frozenItems={["meet", "mid"]}
       />
