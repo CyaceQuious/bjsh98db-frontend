@@ -9,6 +9,9 @@ import { request } from "../utils/network"
 import { useEffect, useState } from "react";
 import { FAILURE_PREFIX, SEARCH_ERROR } from "../constants/string";
 
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+
 import { useRouter } from 'next/router';
 
 interface SearchContainerProps {
@@ -23,6 +26,7 @@ interface SearchContainerProps {
 export default function SearchContainer({ oldQuery, hiddenResult, searchJump, onContentRefresh, frozeNames, briefButton }: SearchContainerProps) {
     const router = useRouter();
 
+    const session = useSelector((state: RootState) => state.auth.session);
     const [query, setQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
     const [lastQuery, setLastQuery] = useState<SearchQuery>(oldQuery ?? getEmptyQuery());
     const [results, setResults] = useState<SearchResultItem[]>([]);
@@ -48,6 +52,9 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
     // start to search
     const fetchResults = async (curQuery: SearchQuery) => {
         setIsLoading(true);
+        if (session !== undefined && session !== "") {
+            curQuery.session = session;
+        }
         console.log('start to search'); 
         console.log(curQuery); 
         request(

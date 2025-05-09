@@ -25,6 +25,7 @@ export default function SearchPage() {
             precise: query.precise ? Boolean(query.precise) : false,
             page: query.page ? Number(query.page): 1, 
             page_size: query.page_size ? Number(query.page_size): 10, 
+            star: query.star ? Boolean(query.star): false,
         } as SearchQuery;
     };
 
