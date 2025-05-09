@@ -44,33 +44,38 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   }
 
   const fetchData = async () => {
-	try {
-    setLoading(true);
-    // 创建URL参数对象
-    const params = new URLSearchParams({
-      mid: mid.toString(),
-    });
-    
-    // 添加过滤参数（空值不添加）
-    if (zubie) params.append('zubie', zubie);
-    if (xingbie) params.append('xingbie', xingbie);
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        mid: mid.toString(),
+      });
+      
+      // 添加过滤参数（空值不添加）
+      if (zubie) {
+        params.append('zubie', zubie);
+        zubieHistory.addHistory(zubie); 
+      }
+      if (xingbie) {
+        params.append('xingbie', xingbie);
+        xingbieHistory.addHistory(xingbie);
+      }
 
-    const response = await fetch(`/api/query_team_score?${params.toString()}`);
+      const response = await fetch(`/api/query_team_score?${params.toString()}`);
 
-	  const data = await response.json();
+      const data = await response.json();
 
-	  if (data.code !== 0) {
-		throw new Error(data.info || 'Failed to fetch team scores');
-	  }
+      if (data.code !== 0) {
+      throw new Error(data.info || 'Failed to fetch team scores');
+      }
 
-	  setTeamScores(data.results || []);
-	  setError('');
-	} catch (err) {
-	  setError(err instanceof Error ? err.message : 'Unknown error occurred');
-	  setTeamScores([]);
-	} finally {
-	  setLoading(false);
-	}
+      setTeamScores(data.results || []);
+      setError('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      setTeamScores([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
