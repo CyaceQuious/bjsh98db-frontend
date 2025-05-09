@@ -189,9 +189,9 @@ const ProjectEditForm = ({
             </Form.Item>
 
             <Form.Item
-              label="项目类型"
+              label="项目阶段"
               name="leixing"
-              rules={[{ required: true, message: '请输入项目类型' }]}
+              rules={[{ required: true, message: '请输入项目阶段' }]}
             >
               <Input placeholder="例：决赛" disabled={frozenItems.includes("leixing")}/>
             </Form.Item>
@@ -222,9 +222,9 @@ const ProjectEditForm = ({
             </Form.Item>
 
             <Form.Item
-              label="新项目类型"
+              label="新项目阶段"
               name="new_leixing"
-              rules={[{ required: true, message: '请输入项目类型' }]}
+              rules={[{ required: true, message: '请输入项目阶段' }]}
             >
               <Input placeholder="例：决赛" disabled={frozenItems.includes("new_leixing")}/>
             </Form.Item>
