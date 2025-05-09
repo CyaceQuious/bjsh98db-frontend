@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Button, Modal, Form, message, Spin } from 'antd';
+import { Button, Modal, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -21,7 +20,7 @@ interface DeleteResponse {
 }
 
 interface ProjectDelFormProps {
-  values: Object; 
+  values: object; 
   // 触发按钮的样式
   buttonStyle?: React.CSSProperties;
   // 提交成功回调

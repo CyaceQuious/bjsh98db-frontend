@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Drawer, Form, Input, InputNumber, message, Spin } from 'antd';
+import { Button, Drawer, Form, Input, message, Spin } from 'antd';
 import type { DrawerProps } from 'antd';
 
 import { PlusOutlined, EditOutlined } from '@ant-design/icons';
