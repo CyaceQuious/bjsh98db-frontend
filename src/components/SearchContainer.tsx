@@ -145,7 +145,7 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
     }).map(item => {return{...item, key: item.key as keyof SearchQuery}});
 
     return (
-        <div style={{ width: "80%", marginTop: "25px" }}>
+        <div style={{ width: "100%", marginTop: "25px" }}>
             <SearchBox
                 query={query}
                 queryTextChange={changeTextQuery}

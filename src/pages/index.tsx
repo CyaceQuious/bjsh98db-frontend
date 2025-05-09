@@ -12,8 +12,10 @@ const WelcomeSearch = () => {
     if (!router.isReady) return <div>Loading...</div>;
     return (
         <div className={styles.container}>
+            <div style={{width: '80%'}}>
             <SearchContainer hiddenResult={true} onContentRefresh={() => {}} searchJump={true}/>
             <AboutCard mode='simple'/>
+            </div>
         </div>
     )
 };

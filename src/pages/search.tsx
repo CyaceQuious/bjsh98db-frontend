@@ -34,7 +34,9 @@ export default function SearchPage() {
 
     return (
         <div className={styles.container}>
+            <div style={{width: '80%'}}>
             <SearchContainer oldQuery={curQuery} hiddenResult={false} onContentRefresh={() => {}} searchJump={true}/>
+            </div>
         </div>
     )
 }

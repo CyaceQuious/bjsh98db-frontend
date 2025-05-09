@@ -1,16 +1,10 @@
-import { useState, useEffect } from 'react';
-
-import { Button, Modal } from 'antd';
-
+import { useState, useEffect, useMemo } from 'react';
+import { Button, Modal, Table } from 'antd';
 import { getContestName, request } from '../utils/network';
 import { interfaceToString } from '../utils/types';
-
-import { PagerCurrent, PagerFooter, PagerHeader } from './pager';
-
 import SearchContainer from './SearchContainer';
 import { SearchQuery, getEmptyQuery } from '../utils/types';
 import ResultEditForm from './ResultEditForm';
-
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -33,7 +27,7 @@ interface ApiResponse {
 }
 
 interface MeetProjectTableProps {
-	mid: number; 
+  mid: number; 
   refreshTrigger: any; 
   onContentRefresh: () => any; 
 }
@@ -44,16 +38,69 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   const [error, setError] = useState<string | undefined>(undefined);
 
   const [meetName, setMeetName] = useState<string>('loading');
-  // 分页状态
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [totalItems, setTotalItems] = useState<number>(0);
   // 具体结果对话框
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [query, setQuery] = useState<SearchQuery>(getEmptyQuery());
 
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
   const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(mid));
+
+  const columns = useMemo(() => [
+    { title: '项目名称', dataIndex: 'name', key: 'name' },
+    { 
+      title: '类型',
+      dataIndex: 'leixing',
+      key: 'leixing',
+      filters: Array.from(new Set(projects.map(p => p.leixing))).map(value => ({
+        text: value,
+        value
+      })),
+      onFilter: (value: any, record: Projects) => record.leixing === value,
+    },
+    {
+      title: '组别',
+      dataIndex: 'zubie',
+      key: 'zubie',
+      filters: Array.from(new Set(projects.map(p => p.zubie))).map(value => ({
+        text: value,
+        value
+      })),
+      onFilter: (value, record) => record.zubie === value,
+    },
+    {
+      title: '性别',
+      dataIndex: 'xingbie',
+      key: 'xingbie',
+      filters: Array.from(new Set(projects.map(p => p.xingbie))).map(value => ({
+        text: value,
+        value
+      })),
+      onFilter: (value, record) => record.xingbie === value,
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (text: any, record: Projects) => (
+        <Button 
+          type="link" 
+          onClick={() => {
+            setQuery({
+              projectname: record.name,
+              leixing: record.leixing,
+              zubie: record.zubie,
+              xingbie: record.xingbie,
+              meet: meetName,
+              page: 1,
+              page_size: 10
+            });
+            setShowDetailModal(true);
+          }}
+        >
+          查看成绩
+        </Button>
+      ),
+    },
+  ], [projects]); // 当 projects 变化时重新生成列配置
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -66,7 +113,6 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       ); 
       if (data.code === 0) {
         setProjects(data.results);
-        setTotalItems(data.count || data.results.length);
       } else {
         setError(data.info || 'Failed to fetch projects');
       }
@@ -94,21 +140,6 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   useEffect(() => {
     fetchProjects();
   }, [refreshTrigger]);
-
-  // 计算当前页的数据
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = projects.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  // 改变页码
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // 改变每页显示数量
-  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1); // 重置到第一页
-  };
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
@@ -143,82 +174,18 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true}/>
       </Modal>
 
-      {/* 分页控制 - 顶部 */}
-      <PagerHeader itemsPerPage={itemsPerPage} totalItems={totalItems} handleItemsPerPageChange={handleItemsPerPageChange}/>
-
       {!loading && !error && (
-        <>
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              marginTop: '20px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            }}
-          >
-            <thead>
-              <tr style={{ backgroundColor: '#f5f5f5' }}>
-                <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>项目名称</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>类型</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>组别</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>性别</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.length > 0 ? (
-                currentItems.map((project, index) => (
-                  <tr
-                    key={project.name}
-                    style={{
-                      borderBottom: '1px solid #e0e0e0',
-                      backgroundColor: index % 2 === 0 ? '#fafafa' : 'white',
-                    }}
-                  >
-                    <td style={{ padding: '12px' }}>{index +1+indexOfFirstItem}</td>
-                    <td style={{ padding: '12px' }}>{
-                      project.name
-                    }</td>
-                    <td style={{ padding: '12px' }}>{
-                      project.leixing
-                    }</td>
-                    <td style={{ padding: '12px' }}>{
-                      project.zubie
-                    }</td>
-                    <td style={{ padding: '12px' }}>{
-                      project.xingbie
-                    }</td>
-                    <td style={{ padding: '12px' }}>{
-                      <Button 
-                        type="link" 
-                        onClick={() => {
-                          setQuery({projectname: project.name, leixing: project.leixing, zubie: project.zubie, xingbie: project.xingbie, meet: meetName, page: 1, page_size: 10} as SearchQuery);
-                          setShowDetailModal(true);
-                        }}
-                        style={{ padding: 0 }}
-                      >
-                        查看成绩
-                      </Button>
-                      }</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={6} className="py-4 px-4 border-b text-center text-gray-500">
-                    No contests available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          {/* 分页控制 - 底部 */}
-          <PagerFooter currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-          
-          {/* 当前页/总页数显示 */}
-          <PagerCurrent currentPage={currentPage} totalPages={totalPages} />
-        </>
+        <Table
+          columns={columns}
+          dataSource={projects}
+          pagination={{
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            showTotal: (total) => `共 ${total} 项`,
+          }}
+          bordered
+          style={{ marginTop: 20 }}
+        />
       )}
     </div>
   );

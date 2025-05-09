@@ -1,7 +1,10 @@
 
 import { useEffect, useState } from 'react';
 
-import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
+import { Space, AutoComplete, Button, Form, Table } from 'antd';
+
+import { SearchOutlined, HistoryOutlined } from '@ant-design/icons';
+import useSearchHistory from '../hook/useSearchHistory';
 
 import { getContestName } from '../utils/network';
 
@@ -16,15 +19,24 @@ interface TeamScoreTableProps {
 }
 
 export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTableProps) {
+  const zubieHistory = useSearchHistory('zubie'); 
+  const xingbieHistory = useSearchHistory('xingbie');
+  const [form] = Form.useForm();
+
   const [teamScores, setTeamScores] = useState<TeamScore[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   const [meetName, setMeetName] = useState<string>('loading');
   // 分页状态
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [totalItems, setTotalItems] = useState<number>(0);
+
+  const [zubie, setZubie] = useState<string>('');
+  const [xingbie, setXingbie] = useState<string>('');
+
+  const handleSearch = () => {
+    fetchData(); // 触发数据更新
+  };
 
   const fetchMeetName = async () => {
     const name = await getContestName(mid);
@@ -33,8 +45,17 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
 
   const fetchData = async () => {
 	try {
-	  setLoading(true);
-	  const response = await fetch(`/api/query_team_score?mid=${mid}`);
+    setLoading(true);
+    // 创建URL参数对象
+    const params = new URLSearchParams({
+      mid: mid.toString(),
+    });
+    
+    // 添加过滤参数（空值不添加）
+    if (zubie) params.append('zubie', zubie);
+    if (xingbie) params.append('xingbie', xingbie);
+
+    const response = await fetch(`/api/query_team_score?${params.toString()}`);
 
 	  const data = await response.json();
 
@@ -43,7 +64,6 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
 	  }
 
 	  setTeamScores(data.results || []);
-	  setTotalItems(data.count || data.results.length);
 	  setError('');
 	} catch (err) {
 	  setError(err instanceof Error ? err.message : 'Unknown error occurred');
@@ -56,23 +76,27 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   useEffect(() => {
     if (!mid) return;
     fetchData();
-    fetchMeetName(); 
+    fetchMeetName();
   }, [mid, refreshTrigger]);
 
-  // 计算当前页的数据
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = teamScores.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  // 改变页码
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // 改变每页显示数量
-  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1); // 重置到第一页
-  };
+  const columns = [
+    {
+      title: '排名',
+      key: 'rank',
+      render: (a: any, b: any, index: any) => (currentPage - 1) * itemsPerPage + index + 1,
+    },
+    {
+      title: '团体名称',
+      dataIndex: 'team',
+      key: 'team',
+    },
+    {
+      title: '总分',
+      dataIndex: 'total_score',
+      key: 'total_score',
+      render: (text: number) => text.toFixed(1),
+    },
+  ];
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
@@ -87,57 +111,79 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
           错误: {error}
         </div>
       )}
-	
-	  {/* 分页控制 - 顶部 */}
-	  <PagerHeader itemsPerPage={itemsPerPage} totalItems={totalItems} handleItemsPerPageChange={handleItemsPerPageChange}/>
+
+      <Form
+        form={form}
+        onFinish={handleSearch}
+        autoComplete="off"
+      >
+        <AutoComplete
+          options={zubieHistory.history.map(item => ({
+            value: item.query,
+            label: (
+              <Space>
+                <HistoryOutlined />
+                <span>{item.query}</span>
+              </Space>
+            )
+          }))}
+          placeholder="输入组别，留空不指定"
+          value={zubie}
+          onChange={(e) => setZubie(e)}
+          // onSearch={handleSearch}
+          allowClear
+          style={{ width: 200 }}
+        />
+        <AutoComplete
+          options={xingbieHistory.history.map(item => ({
+            value: item.query,
+            label: (
+              <Space>
+                <HistoryOutlined />
+                <span>{item.query}</span>
+              </Space>
+            )
+          }))}
+          placeholder="输入性别，留空不指定"
+          value={xingbie}
+          onChange={(e) => setXingbie(e)}
+          // onSearch={handleSearch}
+          allowClear
+          style={{ width: 200 }}
+        />
+          <Button
+            type="primary"
+            icon={<SearchOutlined />}
+            htmlType="submit"
+            loading={loading}
+          >
+            搜索
+          </Button>
+      </Form>
 
       {!loading && !error && (
-		<>
-        <table
-          style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            marginTop: '20px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          }}
-        >
-          <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
-              <th style={{ padding: '12px', textAlign: 'left' }}>排名</th>
-              <th style={{ padding: '12px', textAlign: 'left' }}>团体名称</th>
-              <th style={{ padding: '12px', textAlign: 'left' }}>总分</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.length > 0 ? 
-            (currentItems.map((team, index) => (
-              <tr
-                key={team.team}
-                style={{
-                  borderBottom: '1px solid #e0e0e0',
-                  backgroundColor: index % 2 === 0 ? '#fafafa' : 'white',
-                }}
-              >
-                <td style={{ padding: '12px' }}>{index + 1 + indexOfFirstItem}</td>
-                <td style={{ padding: '12px' }}>{team.team}</td>
-                <td style={{ padding: '12px' }}>{team.total_score.toFixed(1)}</td>
-              </tr>
-            ))) : (
-              <tr>
-                <td colSpan={3} className="py-4 px-4 border-b text-center text-gray-500">
-                  暂无数据
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
-          {/* 分页控制 - 底部 */}
-          <PagerFooter currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-          
-          {/* 当前页/总页数显示 */}
-          <PagerCurrent currentPage={currentPage} totalPages={totalPages} />
-		</>
+        <Table
+        columns={columns}
+        dataSource={teamScores}
+        rowKey="team"
+        pagination={{
+          current: currentPage,
+          pageSize: itemsPerPage,
+          total: teamScores.length,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50', '100'],
+          onChange: (page, newPageSize) => {
+            setCurrentPage(page);
+            if (newPageSize) setItemsPerPage(newPageSize);
+          },
+          onShowSizeChange: (current, size) => {
+            setItemsPerPage(size);
+            setCurrentPage(1);
+          },
+        }}
+        style={{ marginTop: 20 }}
+        locale={{ emptyText: '暂无数据' }}
+      />
       )}
     </div>
   );
