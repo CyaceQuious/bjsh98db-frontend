@@ -53,7 +53,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       key: 'leixing',
       filters: Array.from(new Set(projects.map(p => p.leixing))).map(value => ({
         text: value,
-        value: value
+        value
       })),
       onFilter: (value: any, record: Projects) => record.leixing === value,
     },
@@ -63,7 +63,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       key: 'zubie',
       filters: Array.from(new Set(projects.map(p => p.zubie))).map(value => ({
         text: value,
-        value: value
+        value
       })),
       onFilter: (value, record) => record.zubie === value,
     },
@@ -73,7 +73,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       key: 'xingbie',
       filters: Array.from(new Set(projects.map(p => p.xingbie))).map(value => ({
         text: value,
-        value: value
+        value
       })),
       onFilter: (value, record) => record.xingbie === value,
     },

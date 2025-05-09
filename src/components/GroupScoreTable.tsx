@@ -30,7 +30,6 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   // 分页状态
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [totalItems, setTotalItems] = useState<number>(0);
 
   const [zubie, setZubie] = useState<string>('');
   const [xingbie, setXingbie] = useState<string>('');
