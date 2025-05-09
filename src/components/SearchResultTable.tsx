@@ -1,14 +1,10 @@
 // SearchResultTable.tsx
-import { Table, theme, Button, Modal, message } from 'antd';
+import { Table, theme } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { SearchResultItem } from "../utils/types";
 import { getResultTableItemName } from "../utils/lang";
 import ResultEditForm from './ResultEditForm';
-
-import { request } from "../utils/network";
-
-import { DeleteOutlined } from '@ant-design/icons';
-
+import ResultDelForm from './ResultDelForm';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -26,22 +22,6 @@ export interface SearchResultTableItem extends SearchResultItem {
     manage?: React.ReactNode; // 添加管理列类型
 }
 
-interface DeleteRequest {
-    session: string;
-    mid: number;
-    name: string;
-    projectname: string;
-    leixing: string; 
-    zubie: string;
-    xingbie: string;
-    groupname: string;
-}
-
-interface DeleteResponse {
-    code: number;
-    info: string;
-}
-
 export default function SearchResultTable({
     results,
     currentPage, // 当前第几页
@@ -51,51 +31,8 @@ export default function SearchResultTable({
     onContentReFresh
 }: SearchResultTableProps) {
     const { token } = useToken();
-
-    const session = useSelector((state: RootState) => state.auth.session);
     const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
     const allContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial);
-
-    // 删除比赛相关函数
-    const handleDeleteClick = (values: DeleteRequest) => {
-        Modal.confirm({
-        title: `确认删除该条成绩？`,
-        content: '此操作不可撤销，请谨慎操作！',
-        okText: '确认删除',
-        okType: 'danger',
-        cancelText: '取消',
-        onOk() {
-            console.log(`删除成绩记录: ${values}`);
-            deleteMeetRequest(values); 
-            message.success(`删除操作已提交`);
-        },
-        onCancel() {
-            message.info('已取消删除');
-        },
-        });
-    };
-    const deleteMeetRequest = async (values: DeleteRequest) => {
-        try {
-            const data: DeleteResponse = await request(
-                `/api/manage_result`, 
-                'DELETE', 
-                {
-                    ...values, 
-                    session, 
-                } as DeleteRequest, 
-                false, 
-                'json'
-            ); 
-            if (data.code !== 0) {
-                message.warning(data.info || 'Failed to delete');
-            }
-        } catch (err) {
-            message.warning('An error occurred while deleting' + err); 
-            console.log('Put error:', err);
-        } finally {
-            onContentReFresh();
-        }
-    }
 
     // 生成动态列配置
     const baseColumns = ["name", "meet", "zubie", "projectname", "xingbie", "leixing","groupname", "result", "grade", "rank", "score"].map(name => ({
@@ -117,14 +54,7 @@ export default function SearchResultTable({
             render: (_, record) => (
                 (isSystemAdmin || allContestOfficial.includes(record.mid)) && <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <ResultEditForm defaultValues={record} isEditMode onSuccess={onContentReFresh} frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie", "name", "groupname"]}/>
-                    <Button
-                        type="link"
-                        onClick={() => handleDeleteClick({...record} as DeleteRequest)}
-                        style={{ padding: 0 }}
-                        icon={<DeleteOutlined />}
-                    >
-                        删除
-                    </Button>
+                    <ResultDelForm values={record} onSuccess={onContentReFresh} />
                 </div>
             )
         };
