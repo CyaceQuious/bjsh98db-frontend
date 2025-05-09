@@ -185,7 +185,7 @@ const ProjectEditForm = ({
               name="name"
               rules={[{ required: true, message: '请输入项目名称' }]}
             >
-              <Input placeholder="例：跳高" disabled={frozenItems.includes("projectname")}/>
+              <Input placeholder="例：跳高" disabled={frozenItems.includes("name")}/>
             </Form.Item>
 
             <Form.Item

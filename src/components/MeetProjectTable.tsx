@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import ProjectEditForm from './ProjectEditForm';
+import ProjectDelForm from './ProjectDelForm';
 
 interface Projects {
   name: string;
@@ -120,6 +121,13 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
             "meet", "mid", 
             "name", "leixing", "zubie", "xingbie", 
           ]}
+        />
+        <ProjectDelForm
+          values={{
+            ...record,
+            mid
+          }}
+          onSuccess={onContentRefresh}
         />
         </>
       ),

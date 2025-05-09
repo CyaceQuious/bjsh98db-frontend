@@ -10,11 +10,9 @@ interface DeleteRequest {
   session: string;
   mid: number;
   name: string;
-  projectname: string;
   leixing: string;
   zubie: string;
   xingbie: string;
-  groupname: string;
 }
 
 interface DeleteResponse {
@@ -22,7 +20,7 @@ interface DeleteResponse {
   info: string;
 }
 
-interface ResultDelFormProps {
+interface ProjectDelFormProps {
   values: Object; 
   // 触发按钮的样式
   buttonStyle?: React.CSSProperties;
@@ -30,23 +28,23 @@ interface ResultDelFormProps {
   onSuccess: () => void;
 }
 
-const ResultDelForm = ({
+const ProjectDelForm = ({
   values,
   buttonStyle,
   onSuccess,
-}: ResultDelFormProps) => {
+}: ProjectDelFormProps) => {
   const session = useSelector((state: RootState) => state.auth.session);
 
   // 删除比赛相关函数
   const handleDeleteClick = (values: DeleteRequest) => {
     Modal.confirm({
-      title: `确认删除该条成绩？`,
+      title: `确认删除该项目？`,
       content: '此操作不可撤销，请谨慎操作！',
       okText: '确认删除',
       okType: 'danger',
       cancelText: '取消',
       onOk() {
-        console.log(`删除成绩记录: ${values}`);
+        console.log(`删除比赛项目: ${values}`);
         deleteMeetRequest(values);
         message.success(`删除操作已提交`);
       },
@@ -58,7 +56,7 @@ const ResultDelForm = ({
   const deleteMeetRequest = async (values: DeleteRequest) => {
     try {
       const data: DeleteResponse = await request(
-        `/api/manage_result`,
+        `/api/manage_project`,
         'DELETE',
         {
           ...values,
@@ -92,4 +90,4 @@ const ResultDelForm = ({
   );
 };
 
-export default ResultDelForm;
+export default ProjectDelForm;
