@@ -190,9 +190,9 @@ const ResultEditForm = ({
             </Form.Item>
 
             <Form.Item
-              label="项目类型"
+              label="项目阶段"
               name="leixing"
-              rules={[{ required: true, message: '请输入项目类型' }]}
+              rules={[{ required: true, message: '请输入项目阶段' }]}
             >
               <Input placeholder="例：决赛" disabled={frozenItems.includes("leixing")}/>
             </Form.Item>
@@ -200,7 +200,7 @@ const ResultEditForm = ({
             <Form.Item
               label="组别"
               name="zubie"
-              rules={[{ required: true, message: '请输入项目名称' }]}
+              rules={[{ required: true, message: '请输入项目组别' }]}
             >
               <Input placeholder="例：甲组" disabled={frozenItems.includes("zubie")}/>
             </Form.Item>
