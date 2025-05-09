@@ -22,6 +22,9 @@ interface ResultChangeRequest {
   meet: string;
   mid: number;
   projectname: string;
+  xingbie: string;
+  zubie: string;
+  leixing: string;
   name: string;
   groupname: string;
   result: string;
@@ -38,6 +41,9 @@ interface EntryFormValues {
   mid: number;
   meet: string;
   projectname: string;
+  xingbie: string;
+  zubie: string;
+  leixing: string;
   name: string;
   groupname: string;
   result: string;
@@ -180,7 +186,31 @@ const ResultEditForm = ({
               name="projectname"
               rules={[{ required: true, message: '请输入项目名称' }]}
             >
-              <Input placeholder="例：男子跳高" disabled={frozenItems.includes("projectname")}/>
+              <Input placeholder="例：跳高" disabled={frozenItems.includes("projectname")}/>
+            </Form.Item>
+
+            <Form.Item
+              label="项目类型"
+              name="leixing"
+              rules={[{ required: true, message: '请输入项目类型' }]}
+            >
+              <Input placeholder="例：决赛" disabled={frozenItems.includes("leixing")}/>
+            </Form.Item>
+
+            <Form.Item
+              label="组别"
+              name="zubie"
+              rules={[{ required: true, message: '请输入项目名称' }]}
+            >
+              <Input placeholder="例：甲组" disabled={frozenItems.includes("zubie")}/>
+            </Form.Item>
+
+            <Form.Item
+              label="性别"
+              name="xingbie"
+              rules={[{ required: true, message: '请输入性别' }]}
+            >
+              <Input placeholder="例：男子/女子/混合" disabled={frozenItems.includes("xingbie")}/>
             </Form.Item>
 
             <Form.Item

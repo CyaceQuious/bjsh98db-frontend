@@ -31,6 +31,9 @@ interface DeleteRequest {
     mid: number;
     name: string;
     projectname: string;
+    leixing: string; 
+    zubie: string;
+    xingbie: string;
     groupname: string;
 }
 
@@ -113,7 +116,7 @@ export default function SearchResultTable({
             width: 100,
             render: (_, record) => (
                 (isSystemAdmin || allContestOfficial.includes(record.mid)) && <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <ResultEditForm defaultValues={record} isEditMode onSuccess={onContentReFresh} frozenItems={["meet", "projectname", "name", "groupname"]}/>
+                    <ResultEditForm defaultValues={record} isEditMode onSuccess={onContentReFresh} frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie", "name", "groupname"]}/>
                     <Button
                         type="link"
                         onClick={() => handleDeleteClick({...record} as DeleteRequest)}
