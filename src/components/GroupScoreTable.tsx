@@ -1,7 +1,13 @@
 
 import { useEffect, useState } from 'react';
 
+import { Space, AutoComplete, Button, Form } from 'antd';
+
+import { SearchOutlined, HistoryOutlined } from '@ant-design/icons';
+
 import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
+
+import useSearchHistory from '../hook/useSearchHistory';
 
 import { getContestName } from '../utils/network';
 
@@ -16,6 +22,10 @@ interface TeamScoreTableProps {
 }
 
 export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTableProps) {
+  const zubieHistory = useSearchHistory('zubie'); 
+  const xingbieHistory = useSearchHistory('xingbie');
+  const [form] = Form.useForm();
+
   const [teamScores, setTeamScores] = useState<TeamScore[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,6 +36,15 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
 
+  const [zubie, setZubie] = useState<string>('');
+  const [xingbie, setXingbie] = useState<string>('');
+
+  // 新增搜索处理函数
+  const handleSearch = () => {
+    setCurrentPage(1); // 重置到第一页
+    fetchData(); // 触发数据更新
+  };
+
   const fetchMeetName = async () => {
     const name = await getContestName(mid);
     setMeetName(name);
@@ -33,8 +52,17 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
 
   const fetchData = async () => {
 	try {
-	  setLoading(true);
-	  const response = await fetch(`/api/query_team_score?mid=${mid}`);
+    setLoading(true);
+    // 创建URL参数对象
+    const params = new URLSearchParams({
+      mid: mid.toString(),
+    });
+    
+    // 添加过滤参数（空值不添加）
+    if (zubie) params.append('zubie', zubie);
+    if (xingbie) params.append('xingbie', xingbie);
+
+    const response = await fetch(`/api/query_team_score?${params.toString()}`);
 
 	  const data = await response.json();
 
@@ -87,7 +115,56 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
           错误: {error}
         </div>
       )}
-	
+
+      <Form
+        form={form}
+        onFinish={handleSearch}
+        autoComplete="off"
+      >
+        <AutoComplete
+          options={zubieHistory.history.map(item => ({
+            value: item.query,
+            label: (
+              <Space>
+                <HistoryOutlined />
+                <span>{item.query}</span>
+              </Space>
+            )
+          }))}
+          placeholder="输入组别，留空不指定"
+          value={zubie}
+          onChange={(e) => setZubie(e)}
+          // onSearch={handleSearch}
+          allowClear
+          style={{ width: 200 }}
+        />
+        <AutoComplete
+          options={xingbieHistory.history.map(item => ({
+            value: item.query,
+            label: (
+              <Space>
+                <HistoryOutlined />
+                <span>{item.query}</span>
+              </Space>
+            )
+          }))}
+          placeholder="输入性别，留空不指定"
+          value={xingbie}
+          onChange={(e) => setXingbie(e)}
+          // onSearch={handleSearch}
+          allowClear
+          style={{ width: 200 }}
+        />
+          <Button
+            type="primary"
+            icon={<SearchOutlined />}
+            htmlType="submit"
+            loading={loading}
+          >
+            搜索
+          </Button>
+      </Form>
+
 	  {/* 分页控制 - 顶部 */}
 	  <PagerHeader itemsPerPage={itemsPerPage} totalItems={totalItems} handleItemsPerPageChange={handleItemsPerPageChange}/>
 
