@@ -2,11 +2,16 @@ export interface SearchQuery {
     name?: string; 
     meet?: string; 
     projectname?: string; 
+    leixing?: string; 
+    xingbie?: string; 
+    zubie?: string; 
     groupname?: string; 
     ranked?: boolean; 
     precise?: boolean;
     page: number;
     page_size: number;
+    star?: boolean; 
+    session?: string; 
 }
 
 export function getEmptyQuery():SearchQuery {
@@ -14,11 +19,16 @@ export function getEmptyQuery():SearchQuery {
         name: "", 
         meet: "", 
         projectname: "", 
+        leixing: "", 
+        xingbie: "",
+        zubie: "",
         groupname: "", 
         ranked: false, 
         precise: false, 
         page: 1, 
-        page_size: 10
+        page_size: 10, 
+        star: false,
+        session: "",
     }
 }
 
@@ -58,6 +68,9 @@ export interface SearchResultItem {
     name: string; 
     meet: string; 
     projectname: string; 
+    xingbie: string; 
+    zubie: string;
+    leixing: string;
     groupname: string; 
     result: string; 
     grade: string; 

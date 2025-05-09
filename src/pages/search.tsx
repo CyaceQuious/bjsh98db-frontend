@@ -16,6 +16,9 @@ export default function SearchPage() {
         return {
             name: query.name ? String(query.name) : "",
             projectname: query.projectname ? String(query.projectname) : "", 
+            xingbie: query.xingbie ? String(query.xingbie) : "",
+            zubie: query.zubie ? String(query.zubie) : "",
+            leixing: query.leixing ? String(query.leixing) : "",
             meet: query.meet ? String(query.meet) : "",
             groupname: query.groupname ? String(query.groupname) : "",
             ranked: query.ranked ? Boolean(query.ranked) : false,

@@ -95,7 +95,7 @@ export default function SearchResultTable({
     }
 
     // 生成动态列配置
-    const baseColumns = ["name", "meet", "projectname", "groupname", "result", "grade", "rank", "score"].map(name => ({
+    const baseColumns = ["name", "meet", "zubie", "projectname", "xingbie", "leixing","groupname", "result", "grade", "rank", "score"].map(name => ({
         title: getResultTableItemName(name as keyof SearchResultTableItem),
         dataIndex: name,
         key: name,
