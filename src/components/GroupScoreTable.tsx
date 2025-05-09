@@ -104,7 +104,7 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
         {meetName} 团体总分排名
       </h1>
