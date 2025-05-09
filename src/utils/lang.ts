@@ -41,11 +41,11 @@ export function getResultTableItemName(itemName: keyof SearchResultTableItem): s
 
 // current language is simplified chinese
 export function getSearchBoxPlaceHolder(name: string): string {
-    if (name == "leixing") {
+    if (name === "leixing") {
         return "请输入阶段，留空代表不指定。例：决赛"
-    } else if (name == "xingbie") {
+    } else if (name === "xingbie") {
         return "请输入性别，留空代表不指定。例：男子"
-    } else if (name == "zubie") {
+    } else if (name === "zubie") {
         return "请输入组别，留空代表不指定。例：甲组"
     }
     return "请输入搜索内容，留空代表不指定"
