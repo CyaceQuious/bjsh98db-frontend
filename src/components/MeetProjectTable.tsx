@@ -16,6 +16,9 @@ import { RootState } from "../redux/store";
 
 interface Projects {
   name: string;
+  leixing: string; 
+  zubie: string;
+  xingbie: string;
 }
 
 interface ApiRequest {
@@ -137,7 +140,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         onCancel={() => setShowDetailModal(false)}
         width={'90%'}
       >
-        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "precise", "ranked"]} searchJump={false} briefButton={true}/>
+        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true}/>
       </Modal>
 
       {/* 分页控制 - 顶部 */}
@@ -157,6 +160,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
               <tr style={{ backgroundColor: '#f5f5f5' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>项目名称</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>类型</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>组别</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>性别</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
               </tr>
             </thead>
@@ -175,10 +181,19 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
                       project.name
                     }</td>
                     <td style={{ padding: '12px' }}>{
+                      project.leixing
+                    }</td>
+                    <td style={{ padding: '12px' }}>{
+                      project.zubie
+                    }</td>
+                    <td style={{ padding: '12px' }}>{
+                      project.xingbie
+                    }</td>
+                    <td style={{ padding: '12px' }}>{
                       <Button 
                         type="link" 
                         onClick={() => {
-                          setQuery({projectname: project.name, meet: meetName, page: 1, page_size: 10} as SearchQuery);
+                          setQuery({projectname: project.name, leixing: project.leixing, zubie: project.zubie, xingbie: project.xingbie, meet: meetName, page: 1, page_size: 10} as SearchQuery);
                           setShowDetailModal(true);
                         }}
                         style={{ padding: 0 }}
@@ -190,7 +205,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-4 px-4 border-b text-center text-gray-500">
+                  <td colSpan={6} className="py-4 px-4 border-b text-center text-gray-500">
                     No contests available
                   </td>
                 </tr>

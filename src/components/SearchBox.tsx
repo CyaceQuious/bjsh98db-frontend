@@ -91,8 +91,8 @@ export default function SearchBox({
         {!briefButton && <Col
           xs={24}
           sm={8}
-          md={13}
-          lg={13}
+          md={9}
+          lg={9}
           style={{
             textAlign: 'right',
             marginTop: token.marginSM

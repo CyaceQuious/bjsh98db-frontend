@@ -5,10 +5,15 @@ const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
+    xingbie: "性别", 
+    zubie: "组别", 
+    leixing: "类型", 
     precise: "精确搜索",
     ranked: "只显示前八名", 
     page: "", 
-    page_size: ""
+    page_size: "", 
+    star: "只显示关注选手",
+    session: "",
 };
 // current language is simplified chinese
 export function getQueryItemName(itemName: keyof SearchQuery): string {
@@ -20,6 +25,9 @@ const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, strin
     groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
+    xingbie: "性别",
+    zubie: "组别",
+    leixing: "类型",
     result: "成绩",
     grade: "运动技术等级",
     rank: "名次", 

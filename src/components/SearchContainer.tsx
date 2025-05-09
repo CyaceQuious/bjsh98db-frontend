@@ -102,7 +102,7 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
         if (searchJump) {
             router.push(`/search?${interfaceToString(newQuery)}`);
         }
-        if (hiddenResult === false) {
+        else if (hiddenResult === false) {
             fetchResults(newQuery);
         }
     }
@@ -127,9 +127,13 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
         { key: "name", type: "text" },
         { key: "groupname", type: "text" },
         { key: "projectname", type: "text" },
+        { key: "xingbie", type: "text" },
+        { key: "zubie", type: "text" },
+        { key: "leixing", type: "text" },
         { key: "meet", type: "text", isFullLine: true },
         { key: "ranked", type: "boolean" },
         { key: "precise", type: "boolean" },
+        { key: "star", type: "boolean" },
     ]
     const searchItems = allSearchItems.filter(item => {
         if (frozeNames !== undefined) {
