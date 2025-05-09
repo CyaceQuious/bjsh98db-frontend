@@ -67,7 +67,7 @@ interface EntryFormDrawerProps {
 const ResultEditForm = ({
   buttonStyle,
   defaultValues,
-  isEditMode = false,
+  isEditMode = false, // 新建条目 / 编辑条目
   useGray = false, 
   frozenItems = [], 
   onSuccess
