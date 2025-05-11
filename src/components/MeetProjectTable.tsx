@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Modal, Table } from 'antd';
 import { getContestName, request } from '../utils/network';
 import { interfaceToString } from '../utils/types';
@@ -48,7 +48,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
   const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(mid));
 
-  const columns = useMemo(() => [
+  const columns = [
     { title: '项目名称', dataIndex: 'name', key: 'name' },
     { 
       title: '类型',
@@ -68,7 +68,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         text: value,
         value
       })),
-      onFilter: (value, record) => record.zubie === value,
+      onFilter: (value: any, record: Projects) => record.zubie === value,
     },
     {
       title: '性别',
@@ -78,7 +78,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         text: value,
         value
       })),
-      onFilter: (value, record) => record.xingbie === value,
+      onFilter: (value: any, record: Projects) => record.xingbie === value,
     },
     {
       title: '操作',
@@ -139,7 +139,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         </>
       ),
     },
-  ], [projects]); // 当 projects 变化时重新生成列配置
+  ]; // 总是同步最新状态
 
   const fetchProjects = async () => {
     setLoading(true);
