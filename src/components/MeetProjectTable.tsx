@@ -38,6 +38,7 @@ interface MeetProjectTableProps {
 export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}: MeetProjectTableProps) {
   const [projects, setProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [nameLoading, setNameLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | undefined>(undefined);
 
   const [meetName, setMeetName] = useState<string>('loading');
@@ -158,8 +159,10 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   };
 
   const fetchMeetName = async () => {
+    setNameLoading(true);
     const name = await getContestName(mid);
     setMeetName(name);
+    setNameLoading(false);
   }
 
   useEffect(() => {
@@ -179,7 +182,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         {meetName} 全部比赛项目
       </h1>
 
-      {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
+      {(loading||nameLoading) && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
       {error && (
         <div style={{ color: 'red', textAlign: 'center', margin: '20px 0' }}>
@@ -206,7 +209,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true}/>
       </Modal>
 
-      {!loading && !error && (
+      {!loading && !error && !nameLoading && (
         <Table
           columns={columns}
           dataSource={projects}
