@@ -96,7 +96,8 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
                 xingbie: record.xingbie,
                 meet: meetName,
                 page: 1,
-                page_size: 10
+                page_size: 10,
+                precise: true
               });
               setShowDetailModal(true);
             }}
