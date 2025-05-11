@@ -89,9 +89,6 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
           <Button 
             type="link" 
             onClick={() => {
-
-              console.log("Current meetName:", meetName);
-              
               setQuery({
                 projectname: record.name,
                 leixing: record.leixing,
