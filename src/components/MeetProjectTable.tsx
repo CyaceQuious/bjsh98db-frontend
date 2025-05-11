@@ -85,23 +85,30 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       key: 'action',
       render: (text: any, record: Projects) => (
         <>
-        <Button 
-          type="link" 
-          onClick={() => {
-            setQuery({
-              projectname: record.name,
-              leixing: record.leixing,
-              zubie: record.zubie,
-              xingbie: record.xingbie,
-              meet: meetName,
-              page: 1,
-              page_size: 10
-            });
-            setShowDetailModal(true);
-          }}
-        >
-          查看成绩
-        </Button>
+        {meetName !== "loading" ? (
+          <Button 
+            type="link" 
+            onClick={() => {
+
+              console.log("Current meetName:", meetName);
+              
+              setQuery({
+                projectname: record.name,
+                leixing: record.leixing,
+                zubie: record.zubie,
+                xingbie: record.xingbie,
+                meet: meetName,
+                page: 1,
+                page_size: 10
+              });
+              setShowDetailModal(true);
+            }}
+          >
+            查看成绩
+          </Button>
+        ) : (
+          <span>加载中...</span>
+        )}
         <ProjectEditForm 
           defaultValues={{
             mid,
