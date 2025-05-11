@@ -79,7 +79,7 @@ const UserProfilePage = () => {
   const handleEditSubmit = async (values: { email: string }) => {
     try {
       setSubmitting(true);
-      const response = await fetch('/api/users/modify_profile', {
+      const response = await fetch('/api/users/modify_user_profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

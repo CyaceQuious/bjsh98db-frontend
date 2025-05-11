@@ -6,8 +6,8 @@ import { Table, Spin, message } from 'antd';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 
 interface EventResult {
-  result: string | null;
-  grade: string | null;
+  result: string | undefined;
+  grade: string | undefined;
 }
 
 interface PlayerData {
@@ -23,10 +23,10 @@ const PlayerPage = () => {
   const { name } = router.query;
   const session = useSelector((state: RootState) => state.auth.session);
   
-  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
+  const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [isStarred, setIsStarred] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
   
   // 获取选手数据 - GET方法
   useEffect(() => {
