@@ -40,7 +40,7 @@ interface SyncMeetResponse {
 }
 
 const MeetManage = ({mid, reload}: MeetManageProps) => {
-  // const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   // 修改比赛名称
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [newName, setNewName] = useState('');
@@ -52,8 +52,10 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
 
   const fetchMeetName = async () => {
+    setLoading(true);
     const name = await getContestName(mid);
     setMeetName(name);
+    setLoading(false);
   }; 
 
   // 修改比赛名称的相关函数
@@ -63,6 +65,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     setShowModifyModal(true);
   };
   const handleRenameConfirm = async () => {
+    setLoading(true);
     console.log(`修改比赛ID ${selectedMid} 的名称为: ${newName}`);
     setShowModifyModal(false);
     putRenameRequest();
@@ -138,7 +141,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
 
   useEffect(() => {
     fetchMeetName();
-  })
+  }, [])
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
@@ -161,7 +164,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         />
       </Modal>
 
-      <div>
+      {!loading && <div>
       <ResultEditForm 
         buttonStyle={{ marginLeft: 16 }}
         defaultValues={{mid, meet: meetName}} 
@@ -192,7 +195,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       >
         修改赛事名称
       </Button>}
-      </div>
+      </div>}
 	</div>
   )
 }
