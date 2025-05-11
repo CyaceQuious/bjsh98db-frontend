@@ -1,221 +1,200 @@
-// pages/player.tsx
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { useRouter } from 'next/router';
+import { Table, Spin, message } from 'antd';
+import { StarFilled, StarOutlined } from '@ant-design/icons';
 
-interface UserData {
-  username: string;
-  email: string;
-  create_time: string;
-  Is_Department_Official: boolean;
-  Is_Contest_Official: string[];
-  Is_System_Admin: boolean;
-  star_list: string[];
+interface EventResult {
+  result: string | null;
+  grade: string | null;
 }
 
-interface ApiResponse {
-  code: number;
-  info: string;
-  data: UserData;
+interface PlayerData {
+  [eventName: string]: EventResult;
+}
+
+interface UserProfile {
+  star_list: string[];
 }
 
 const PlayerPage = () => {
   const router = useRouter();
   const { name } = router.query;
-  const [isStarred, setIsStarred] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const session = useSelector((state: RootState) => state.auth.session);
-
-  const fetchWithErrorHandling = async (url: string, options: RequestInit) => {
-    try {
-      const response = await fetch(url, options);
-      
-      // First check if response is HTML
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('text/html')) {
-        throw new Error('Server returned HTML instead of JSON');
-      }
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.info || 'Request failed');
-      }
-      
-      return data;
-    } catch (err) {
-      console.error('API Error:', err);
-      throw err;
-    }
-  };
-
-  /*useEffect(() => {
-    const checkIfStarred = async () => {
-      if (!name || typeof name !== 'string' || !session) return;
-      
+  
+  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isStarred, setIsStarred] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  
+  // 获取选手数据 - GET方法
+  useEffect(() => {
+    if (!name) return;
+    
+    const fetchPlayerData = async () => {
       try {
-        const params = new URLSearchParams();
-        params.append('session', session);
-
-        const data: ApiResponse = await fetchWithErrorHandling('/users/get_star_list', {
-          method: 'POST',
+        const url = new URL('/api/query_personal_web', window.location.origin);
+        url.searchParams.append('name', name as string);
+        
+        const response = await fetch(url.toString(), {
+          method: 'GET',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           },
-          body: params,
         });
-
-        setIsStarred(data.data.star_list.includes(name));
-      } catch (err) {
-        console.error('Error checking star status:', err);
-        setError('Failed to load star status. Please try again.');
+        
+        const data = await response.json();
+        
+        if (data.code === 0) {
+          setPlayerData(data.results);
+        } else {
+          message.error(data.info);
+        }
+      } catch (error) {
+        message.error('获取选手数据失败');
+      } finally {
+        setLoading(false);
       }
     };
-
-    checkIfStarred();
-  }, [name, session]);*/
-
+    
+    fetchPlayerData();
+  }, [name]);
+  
+  // 获取用户信息 - GET方法
+  useEffect(() => {
+    if (!session) return;
+    
+    const fetchUserProfile = async () => {
+      try {
+        const url = new URL('/api/users/get_user_profile', window.location.origin);
+        url.searchParams.append('session', session);
+        
+        const response = await fetch(url.toString(), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        const data = await response.json();
+        
+        if (data.code === 0) {
+          setUserProfile(data.data);
+          setIsStarred(data.data.star_list.includes(name as string));
+        }
+      } catch (error) {
+        console.error('获取用户信息失败', error);
+      }
+    };
+    
+    fetchUserProfile();
+  }, [session, name]);
+  
+  // 处理关注/取消关注 - POST方法
   const handleStarClick = async () => {
-    if (!name || typeof name !== 'string') {
-      setError('Player name is required');
-      return;
-    }
-
     if (!session) {
-      setError('Please log in to follow players');
+      message.warning('请先登录');
       return;
     }
     
-    setLoading(true);
-    setError('');
-
     try {
       const endpoint = isStarred ? '/api/users/delete_star' : '/api/users/add_star';
-      const params = new URLSearchParams();
-      params.append('session', session);
-      params.append('athlete_name', name);
-
-      const data: ApiResponse = await fetchWithErrorHandling(endpoint, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: params,
+        body: new URLSearchParams({
+          session,
+          athlete_name: name as string
+        })
       });
-
-      setIsStarred(!isStarred);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Operation failed');
-    } finally {
-      setLoading(false);
+      
+      const data = await response.json();
+      
+      if (data.code === 0) {
+        setIsStarred(!isStarred);
+        message.success(isStarred ? '已取消关注' : '关注成功');
+        setUserProfile(data.data);
+      } else {
+        message.error(data.info);
+      }
+    } catch (error) {
+      message.error('操作失败');
     }
   };
-
-  if (!name) {
-    return <div className="loading">Loading player information...</div>;
-  }
-
+  
+  // 准备表格数据
+  const tableData = playerData 
+    ? Object.entries(playerData).map(([eventName, data]) => ({
+        key: eventName,
+        eventName,
+        result: data.result || '暂无成绩',
+        grade: data.grade || '暂无等级'
+      }))
+    : [];
+  
+  const columns = [
+    {
+      title: '项目名称',
+      dataIndex: 'eventName',
+      key: 'eventName',
+    },
+    {
+      title: '最好成绩(PB)',
+      dataIndex: 'result',
+      key: 'result',
+    },
+    {
+      title: '等级',
+      dataIndex: 'grade',
+      key: 'grade',
+    },
+  ];
+  
   return (
-    <div className="player-container">
-      <h1>Player: {decodeURIComponent(name as string)}</h1>
-      
-      <div className="star-container">
-        <button 
+    <div className="player-page">
+      <div className="player-header">
+        <h1>{name}</h1>
+        <div 
+          className="star-button" 
           onClick={handleStarClick}
-          disabled={loading}
-          aria-label={isStarred ? 'Unfollow player' : 'Follow player'}
-          className="star-button"
+          style={{ cursor: 'pointer', fontSize: '24px' }}
         >
-          {loading ? (
-            <span className="loading-spinner">⌛</span>
-          ) : isStarred ? (
-            <span className="star starred">★</span>
+          {isStarred ? (
+            <StarFilled style={{ color: '#ffcc00' }} />
           ) : (
-            <span className="star">☆</span>
+            <StarOutlined />
           )}
-        </button>
-        <span className="star-label">
-          {loading ? 'Processing...' : isStarred ? 'Following' : 'Follow'}
-        </span>
-      </div>
-
-      {error && (
-        <div className="error-message">
-          ⚠️ {error}
-          <button onClick={() => setError('')} className="dismiss-button">
-            ×
-          </button>
         </div>
+      </div>
+      
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <Spin size="large" />
+        </div>
+      ) : (
+        <Table 
+          dataSource={tableData} 
+          columns={columns} 
+          pagination={false}
+          style={{ marginTop: '20px' }}
+          bordered
+        />
       )}
-
+      
       <style jsx>{`
-        .player-container {
-          max-width: 800px;
-          margin: 2rem auto;
-          padding: 1.5rem;
-          text-align: center;
+        .player-page {
+          max-width: 1000px;
+          margin: 0 auto;
+          padding: 20px;
         }
-        
-        .star-container {
-          margin: 2rem 0;
+        .player-header {
           display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 0.5rem;
-        }
-        
-        .star-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0;
-        }
-        
-        .star {
-          font-size: 2.5rem;
-          color: #ccc;
-          transition: all 0.2s;
-        }
-        
-        .star:hover {
-          transform: scale(1.2);
-        }
-        
-        .starred {
-          color: gold;
-        }
-        
-        .loading-spinner {
-          display: inline-block;
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        .error-message {
-          color: #dc3545;
-          background: #f8d7da;
-          padding: 0.75rem;
-          border-radius: 4px;
-          margin: 1rem auto;
-          max-width: 400px;
-          display: flex;
           justify-content: space-between;
-          align-items: center;
-        }
-        
-        .dismiss-button {
-          background: none;
-          border: none;
-          color: inherit;
-          font-size: 1.2rem;
-          cursor: pointer;
-          padding: 0 0.5rem;
+          margin-bottom: 20px;
         }
       `}</style>
     </div>
