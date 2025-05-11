@@ -89,6 +89,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         <Button 
           type="link" 
           onClick={() => {
+
+            console.log("Current meetName:", meetName);
+
             setQuery({
               projectname: record.name,
               leixing: record.leixing,
@@ -162,6 +165,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
     setNameLoading(true);
     const name = await getContestName(mid);
     setMeetName(name);
+
+    console.log("Meet name fetched:", name, meetName);
+
     setNameLoading(false);
   }
 
