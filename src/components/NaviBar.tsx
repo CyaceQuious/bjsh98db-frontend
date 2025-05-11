@@ -84,7 +84,7 @@ export default function Navbar() {
               key: 'username',
               label: (
                 <span style={{ cursor: 'default', color: 'inherit' }}>
-                  <Link href="/user/profile" className="...">
+                  <Link href="/profile" className="...">
                     {userName}
                   </Link>
                 </span>
