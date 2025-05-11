@@ -19,7 +19,7 @@ interface UserProfile {
 const UserProfilePage = () => {
   const router = useRouter();
   const session = useSelector((state: RootState) => state.auth.session);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
