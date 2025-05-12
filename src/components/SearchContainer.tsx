@@ -15,12 +15,12 @@ import { RootState } from "../redux/store";
 import { useRouter } from 'next/router';
 
 interface SearchContainerProps {
-    oldQuery?: SearchQuery;
-    hiddenResult?: boolean;
-    searchJump: boolean; // 点击搜索后是否跳转
-    onContentRefresh: () => void;
-    frozeNames?: string[]; // 冻结的参数名，这些参数不会出现在搜索框中
-    briefButton?: boolean; // 是则删去清空搜索历史的按钮
+    oldQuery?: SearchQuery; // 提供的初始查询参数。默认为空。
+    hiddenResult?: boolean; // 是否隐藏搜索结果的表格。目前只在index启用以满足页面布局要求。默认为false
+    searchJump: boolean; // 点击搜索后是否跳转，即是否更新当前页面的url（应该在index和search页面启用，其他作为页面内嵌组件的情况下禁用）
+    onContentRefresh: () => void; // 当比赛项目被修改之后，会被调用的函数（比如可以用于通知其他组件刷新内容）
+    frozeNames?: string[]; // 冻结的参数名，这些参数不会允许用户改动，也不会对用户显示。默认不冻结。
+    briefButton?: boolean; // 是则删去清空搜索历史的按钮，用于精简页面。默认为false
 }
 
 export default function SearchContainer({ oldQuery, hiddenResult, searchJump, onContentRefresh, frozeNames, briefButton }: SearchContainerProps) {
