@@ -178,7 +178,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
       }
       visible={visible}
       onCancel={onClose}
-      footer={undefined}
+      footer={false}
       width={800}
     >
       {loading ? (
