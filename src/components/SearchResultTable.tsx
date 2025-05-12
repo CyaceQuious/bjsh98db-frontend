@@ -4,7 +4,6 @@ import type { TableColumnsType } from 'antd';
 import { SearchResultItem } from "../utils/types";
 import { getResultTableItemName } from "../utils/lang";
 import ResultEditForm from './ResultEditForm';
-import Link from 'next/link'; // 添加 Link 组件
 import ResultDelForm from './ResultDelForm';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";

@@ -13,9 +13,9 @@ interface PlayerData {
   [eventName: string]: EventResult;
 }
 
-interface UserProfile {
-  star_list: string[];
-}
+// interface UserProfile {
+//   star_list: string[];
+// }
 
 interface PlayerModalProps {
   visible: boolean;
@@ -29,7 +29,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
   const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [isStarred, setIsStarred] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
+  // const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
   
   // 获取选手数据 - GET方法
   useEffect(() => {
@@ -55,7 +55,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
           message.error(data.info);
         }
       } catch (error) {
-        message.error('获取选手数据失败');
+        message.error(`获取选手数据失败: ${error}`);
       } finally {
         setLoading(false);
       }
@@ -85,7 +85,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
         const data = await response.json();
         
         if (data.code === 0) {
-          setUserProfile(data.data);
+          // setUserProfile(data.data);
           setIsStarred(data.data.star_list.includes(name));
         }
       } catch (error) {
@@ -121,12 +121,12 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
       if (data.code === 0) {
         setIsStarred(!isStarred);
         message.success(isStarred ? '已取消关注' : '关注成功');
-        setUserProfile(data.data);
+        // setUserProfile(data.data);
       } else {
         message.error(data.info);
       }
     } catch (error) {
-      message.error('操作失败');
+      message.error(`操作失败: ${error}`);
     }
   };
   
