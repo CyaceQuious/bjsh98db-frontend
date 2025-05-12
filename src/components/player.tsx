@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { useRouter } from 'next/router';
-import { Table, Spin, message } from 'antd';
+import { Table, Spin, message, Modal } from 'antd';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 
 interface EventResult {
@@ -18,9 +17,13 @@ interface UserProfile {
   star_list: string[];
 }
 
-const PlayerPage = () => {
-  const router = useRouter();
-  const { name } = router.query;
+interface PlayerModalProps {
+  visible: boolean;
+  name: string;
+  onClose: () => void;
+}
+
+const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
   const session = useSelector((state: RootState) => state.auth.session);
   
   const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
@@ -58,12 +61,14 @@ const PlayerPage = () => {
       }
     };
     
-    fetchPlayerData();
-  }, [name]);
+    if (visible) {
+      fetchPlayerData();
+    }
+  }, [name, visible]);
   
   // 获取用户信息 - GET方法
   useEffect(() => {
-    if (!session) return;
+    if (!session || !visible) return;
     
     const fetchUserProfile = async () => {
       try {
@@ -89,7 +94,7 @@ const PlayerPage = () => {
     };
     
     fetchUserProfile();
-  }, [session, name]);
+  }, [session, name, visible]);
   
   // 处理关注/取消关注 - POST方法
   const handleStarClick = async () => {
@@ -154,22 +159,28 @@ const PlayerPage = () => {
   ];
   
   return (
-    <div className="player-page">
-      <div className="player-header">
-        <h1>{name}</h1>
-        <div 
-          className="star-button" 
-          onClick={handleStarClick}
-          style={{ cursor: 'pointer', fontSize: '24px' }}
-        >
-          {isStarred ? (
-            <StarFilled style={{ color: '#ffcc00' }} />
-          ) : (
-            <StarOutlined />
-          )}
+    <Modal
+      title={
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span>{name}</span>
+          <div 
+            className="star-button" 
+            onClick={handleStarClick}
+            style={{ cursor: 'pointer', fontSize: '24px', marginLeft: '16px' }}
+          >
+            {isStarred ? (
+              <StarFilled style={{ color: '#ffcc00' }} />
+            ) : (
+              <StarOutlined />
+            )}
+          </div>
         </div>
-      </div>
-      
+      }
+      visible={visible}
+      onCancel={onClose}
+      footer={null}
+      width={800}
+    >
       {loading ? (
         <div style={{ textAlign: 'center', padding: '50px' }}>
           <Spin size="large" />
@@ -179,26 +190,11 @@ const PlayerPage = () => {
           dataSource={tableData} 
           columns={columns} 
           pagination={false}
-          style={{ marginTop: '20px' }}
           bordered
         />
       )}
-      
-      <style jsx>{`
-        .player-page {
-          max-width: 1000px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .player-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 20px;
-        }
-      `}</style>
-    </div>
+    </Modal>
   );
 };
 
-export default PlayerPage;
+export default PlayerModal;

@@ -8,6 +8,9 @@ import Link from 'next/link'; // 添加 Link 组件
 import ResultDelForm from './ResultDelForm';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import PlayerModal from './player';
+import { useState } from 'react';
+
 
 const { useToken } = theme;
 interface SearchResultTableProps {
@@ -34,6 +37,13 @@ export default function SearchResultTable({
     const { token } = useToken();
     const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
     const allContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedPlayer, setSelectedPlayer] = useState('');
+
+    const handlePlayerClick = (name: string) => {
+        setSelectedPlayer(name);
+        setModalVisible(true);
+    };
 
     // 生成动态列配置
     const baseColumns = ["name", "meet", "zubie", "projectname", "xingbie", "leixing","groupname", "result", "grade", "rank", "score"].map(name => ({
@@ -42,24 +52,29 @@ export default function SearchResultTable({
         key: name,
         ellipsis: true,
         // 在 SearchResultTable.tsx 中
+        
         render: (value: any) => {
             if (name === 'name') {
             return (
-                <Link
-                href={{
-                    pathname: '/player',
-                    query: { name: value } // 直接传递名称，无需编码
-                }}
-                passHref
-                >
-                <span style={{ 
+                <div>
+                {/* 原来的Link替换为点击事件 */}
+                <span 
+                    onClick={() => handlePlayerClick(value?.toString())}
+                    style={{ 
                     color: token.colorPrimary,
                     cursor: 'pointer',
                     textDecoration: 'underline'
-                }}>
+                    }}
+                >
                     {value?.toString() || '-'}
                 </span>
-                </Link>
+
+                <PlayerModal 
+                    visible={modalVisible} 
+                    name={selectedPlayer} 
+                    onClose={() => setModalVisible(false)} 
+                />
+                </div>
             );
             }
             return value?.toString() || '-';
