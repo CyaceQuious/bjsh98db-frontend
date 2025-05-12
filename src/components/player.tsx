@@ -38,7 +38,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
     const fetchPlayerData = async () => {
       try {
         const url = new URL('/api/query_personal_web', window.location.origin);
-        url.searchParams.append('name', name as string);
+        url.searchParams.append('name', name);
         
         const response = await fetch(url.toString(), {
           method: 'GET',
@@ -86,7 +86,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
         
         if (data.code === 0) {
           setUserProfile(data.data);
-          setIsStarred(data.data.star_list.includes(name as string));
+          setIsStarred(data.data.star_list.includes(name));
         }
       } catch (error) {
         console.error('获取用户信息失败', error);
@@ -112,7 +112,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
         },
         body: new URLSearchParams({
           session,
-          athlete_name: name as string
+          athlete_name: name
         })
       });
       
@@ -178,7 +178,7 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
       }
       visible={visible}
       onCancel={onClose}
-      footer={null}
+      footer={undefined}
       width={800}
     >
       {loading ? (
