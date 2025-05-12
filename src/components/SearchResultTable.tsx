@@ -4,7 +4,6 @@ import type { TableColumnsType } from 'antd';
 import { SearchResultItem } from "../utils/types";
 import { getResultTableItemName } from "../utils/lang";
 import ResultEditForm from './ResultEditForm';
-import Link from 'next/link'; // 添加 Link 组件
 import ResultDelForm from './ResultDelForm';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -68,12 +67,6 @@ export default function SearchResultTable({
                 >
                     {value?.toString() || '-'}
                 </span>
-
-                <PlayerModal 
-                    visible={modalVisible} 
-                    name={selectedPlayer} 
-                    onClose={() => setModalVisible(false)} 
-                />
                 </div>
             );
             }
@@ -108,7 +101,12 @@ export default function SearchResultTable({
         rank: r.rank ?? '-'
     }));
 
-    return (
+    return (<>
+        <PlayerModal 
+            visible={modalVisible} 
+            name={selectedPlayer} 
+            onClose={() => setModalVisible(false)} 
+        />
         <Table
             columns={columns}
             dataSource={dataSource}
@@ -132,5 +130,5 @@ export default function SearchResultTable({
                 showTotal: total => `共 ${total} 条`,
             }}
         />
-    );
+    </>);
 }
