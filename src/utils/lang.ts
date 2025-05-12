@@ -12,7 +12,7 @@ const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     ranked: "只显示前八名", 
     page: "", 
     page_size: "", 
-    star: "只显示关注选手",
+    star: "只显示我的关注",
     session: "",
 };
 // current language is simplified chinese
@@ -39,16 +39,24 @@ export function getResultTableItemName(itemName: keyof SearchResultTableItem): s
     return searchResultTableItemNameDictCn[itemName]
 }
 
+const searchQueryPlaceHolderDictCn: Record<keyof SearchQuery, string> = {
+    name: "留空代表不指定。例：张三",
+    groupname: "留空代表不指定。例：清华",
+    meet: "留空代表不指定。例：	2024,马约翰杯",
+    projectname: "留空代表不指定。例：跳高",
+    xingbie: "留空代表不指定。例：男子",
+    zubie: "留空代表不指定。例：甲组",
+    leixing: "留空代表不指定。例：决赛",
+    precise: "",
+    ranked: "", 
+    page: "", 
+    page_size: "", 
+    star: "",
+    session: "",
+};
 // current language is simplified chinese
 export function getSearchBoxPlaceHolder(name: string): string {
-    if (name === "leixing") {
-        return "请输入阶段，留空代表不指定。例：决赛"
-    } else if (name === "xingbie") {
-        return "请输入性别，留空代表不指定。例：男子"
-    } else if (name === "zubie") {
-        return "请输入组别，留空代表不指定。例：甲组"
-    }
-    return "请输入搜索内容，留空代表不指定"
+    return searchQueryPlaceHolderDictCn[name as keyof SearchQuery]; 
 }
 
 // current language is simplified chinese

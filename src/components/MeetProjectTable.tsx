@@ -196,7 +196,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         title={
           <div>
             查看项目成绩
-            {(isSystemAdmin || isContestOfficial) && <ResultEditForm useGray={true} frozenItems={["meet", "projectname"]} defaultValues={{...query, mid}} onSuccess={()=> {
+            {(isSystemAdmin || isContestOfficial) && <ResultEditForm useGray={true} frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]} defaultValues={{...query, mid}} onSuccess={()=> {
               onContentRefresh(); 
               setQuery({...query}); 
             }}/>}
