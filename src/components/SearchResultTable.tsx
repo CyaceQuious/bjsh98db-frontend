@@ -68,12 +68,6 @@ export default function SearchResultTable({
                 >
                     {value?.toString() || '-'}
                 </span>
-
-                <PlayerModal 
-                    visible={modalVisible} 
-                    name={selectedPlayer} 
-                    onClose={() => setModalVisible(false)} 
-                />
                 </div>
             );
             }
@@ -108,7 +102,12 @@ export default function SearchResultTable({
         rank: r.rank ?? '-'
     }));
 
-    return (
+    return (<>
+        <PlayerModal 
+            visible={modalVisible} 
+            name={selectedPlayer} 
+            onClose={() => setModalVisible(false)} 
+        />
         <Table
             columns={columns}
             dataSource={dataSource}
@@ -132,5 +131,5 @@ export default function SearchResultTable({
                 showTotal: total => `共 ${total} 条`,
             }}
         />
-    );
+    </>);
 }
