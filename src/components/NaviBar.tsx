@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { resetData } from '../redux/auth';
+import Link from 'next/link';
 
 const { Header } = Layout;
 
@@ -83,7 +84,9 @@ export default function Navbar() {
               key: 'username',
               label: (
                 <span style={{ cursor: 'default', color: 'inherit' }}>
-                  {userName}
+                  <Link href="/profile" className="...">
+                    {userName}
+                  </Link>
                 </span>
               ),
             },

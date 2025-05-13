@@ -5,10 +5,15 @@ const searchQueryItemNameDictCn: Record<keyof SearchQuery, string> = {
     groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
+    xingbie: "性别", 
+    zubie: "组别", 
+    leixing: "类型", 
     precise: "精确搜索",
     ranked: "只显示前八名", 
     page: "", 
-    page_size: ""
+    page_size: "", 
+    star: "只显示我的关注",
+    session: "",
 };
 // current language is simplified chinese
 export function getQueryItemName(itemName: keyof SearchQuery): string {
@@ -20,6 +25,9 @@ const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, strin
     groupname: "代表队",
     meet: "运动会",
     projectname: "比赛项目",
+    xingbie: "性别",
+    zubie: "组别",
+    leixing: "项目阶段",
     result: "成绩",
     grade: "运动技术等级",
     rank: "名次", 
@@ -31,9 +39,24 @@ export function getResultTableItemName(itemName: keyof SearchResultTableItem): s
     return searchResultTableItemNameDictCn[itemName]
 }
 
+const searchQueryPlaceHolderDictCn: Record<keyof SearchQuery, string> = {
+    name: "留空代表不指定。例：张三",
+    groupname: "留空代表不指定。例：清华",
+    meet: "留空代表不指定。例：	2024,马约翰杯",
+    projectname: "留空代表不指定。例：跳高",
+    xingbie: "留空代表不指定。例：男子",
+    zubie: "留空代表不指定。例：甲组",
+    leixing: "留空代表不指定。例：决赛",
+    precise: "",
+    ranked: "", 
+    page: "", 
+    page_size: "", 
+    star: "",
+    session: "",
+};
 // current language is simplified chinese
-export function getSearchBoxPlaceHolder(): string {
-    return "请输入搜索内容，留空代表不指定"
+export function getSearchBoxPlaceHolder(name: string): string {
+    return searchQueryPlaceHolderDictCn[name as keyof SearchQuery]; 
 }
 
 // current language is simplified chinese

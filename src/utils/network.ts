@@ -145,15 +145,12 @@ export const request = async (
 };
 
 export async function getContestName(mid: number) {
-    const data = await request(`/api/query_meet_list`, "GET", undefined, false, undefined);
-    console.log(data.results);
-    for (const item of data.results) {
-        console.log(item.mid, mid);
-        if (item.mid === mid) {
-            console.log(item.name);
-            return item.name;
-        }
+    try {
+        const data = await request(`/api/query_meet_name?mid=${mid}`, "GET", undefined, false, undefined);
+        console.log(data.name);
+        return data.name;
+    } catch {
+        console.log("meet query error");
+        return "meet_query_error";
     }
-    console.log("meet not found");
-    return "meet_not_found";
 }

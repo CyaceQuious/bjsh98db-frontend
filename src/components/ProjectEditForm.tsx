@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Drawer, Form, Input, InputNumber, message, Spin } from 'antd';
+import { Button, Drawer, Form, Input, message, Spin } from 'antd';
 import type { DrawerProps } from 'antd';
 
 import { PlusOutlined, EditOutlined } from '@ant-design/icons';
@@ -11,28 +11,28 @@ import { request } from '../utils/network';
 
 // "session": "lox53dvn9k6vma13vkmn4feuvi5vepun",
 // "mid": 3,
-// "projectname": "男子跳高",
-// "name": "张三",
-// "groupname": "电子系",
-// "result": "1.95m",
-// "rank": 1,
-// "score": 9.0
-interface ResultChangeRequest {
+// "name": "100米",
+// "xingbie":"男子",
+// "zubie":"甲组",
+// "leixing":"决赛",
+// "new_name": "200米决赛",
+// "new_xingbie":"男子",
+// "new_zubie":"甲组",
+// "new_leixing":"决赛",
+interface ProjectChangeRequest {
   session: string;
-  meet: string;
   mid: number;
-  projectname: string;
+  name: string;
   xingbie: string;
   zubie: string;
   leixing: string;
-  name: string;
-  groupname: string;
-  result: string;
-  rank?: number;
-  score?: number;
+  new_name?: string;
+  new_xingbie?: string;
+  new_zubie?: string;
+  new_leixing?: string;
 }
 
-interface ResultChangeResponse {
+interface ProjectChangeResponse {
 	code: number;
 	info: string;
 }
@@ -40,15 +40,16 @@ interface ResultChangeResponse {
 interface EntryFormValues {
   mid: number;
   meet: string;
-  projectname: string;
+
+  name: string;
   xingbie: string;
   zubie: string;
   leixing: string;
-  name: string;
-  groupname: string;
-  result: string;
-  rank?: number;
-  score?: number;
+
+  new_name?: string;
+  new_xingbie?: string;
+  new_zubie?: string;
+  new_leixing?: string;
 }
 
 interface EntryFormDrawerProps {
@@ -64,7 +65,7 @@ interface EntryFormDrawerProps {
   onSuccess?: (values: EntryFormValues) => void;
 }
 
-const ResultEditForm = ({
+const ProjectEditForm = ({
   buttonStyle,
   defaultValues,
   isEditMode = false, // 新建条目 / 编辑条目
@@ -100,19 +101,17 @@ const ResultEditForm = ({
     const cleanedValues = {
       ...defaultValues, 
       ...values, 
-      rank: values.rank ?? undefined,
-      score: values.score ?? undefined
     };
     try {
-      const data: ResultChangeResponse = await request(
-      `/api/manage_result`, 
-      isEditMode ? 'PUT' : 'POST', 
-      {
-        ...cleanedValues, 
-        session, 
-      } as ResultChangeRequest, 
-      false, 
-      'json'
+      const data: ProjectChangeResponse = await request(
+        `/api/manage_project`, 
+        isEditMode ? 'PUT' : 'POST', 
+        {
+          ...cleanedValues, 
+          session, 
+        } as ProjectChangeRequest, 
+        false, 
+        'json'
       );
       if (data.code !== 0) {
         alert(data.info || 'Failed to change result');
@@ -144,7 +143,7 @@ const ResultEditForm = ({
         onClick={() => setOpen(true)}
         icon={isEditMode ? <EditOutlined/>: <PlusOutlined/>}
       >
-        {isEditMode ? '编辑' : '新建比赛成绩'}
+        {isEditMode ? '编辑' : '新建比赛项目'}
       </Button>
 
       <Drawer
@@ -183,10 +182,10 @@ const ResultEditForm = ({
 
             <Form.Item
               label="项目名称"
-              name="projectname"
+              name="name"
               rules={[{ required: true, message: '请输入项目名称' }]}
             >
-              <Input placeholder="例：跳高" disabled={frozenItems.includes("projectname")}/>
+              <Input placeholder="例：跳高" disabled={frozenItems.includes("name")}/>
             </Form.Item>
 
             <Form.Item
@@ -200,7 +199,7 @@ const ResultEditForm = ({
             <Form.Item
               label="组别"
               name="zubie"
-              rules={[{ required: true, message: '请输入项目组别' }]}
+              rules={[{ required: true, message: '请输入组别' }]}
             >
               <Input placeholder="例：甲组" disabled={frozenItems.includes("zubie")}/>
             </Form.Item>
@@ -213,45 +212,39 @@ const ResultEditForm = ({
               <Input placeholder="例：男子/女子/混合" disabled={frozenItems.includes("xingbie")}/>
             </Form.Item>
 
+            {isEditMode && <>
             <Form.Item
-              label="参赛者姓名"
-              name="name"
-              rules={[{ required: true, message: '请输入姓名' }]}
+              label="新项目名称"
+              name="new_name"
+              rules={[{ required: true, message: '请输入项目名称' }]}
             >
-              <Input placeholder="例：张三" disabled={frozenItems.includes("name")}/>
+              <Input placeholder="例：跳高" disabled={frozenItems.includes("new_name")}/>
             </Form.Item>
 
             <Form.Item
-              label="所属团体"
-              name="groupname"
-              rules={[{ required: true, message: '请输入团体名称' }]}
+              label="新项目阶段"
+              name="new_leixing"
+              rules={[{ required: true, message: '请输入项目阶段' }]}
             >
-              <Input placeholder="例：电子系" disabled={frozenItems.includes("groupname")}/>
+              <Input placeholder="例：决赛" disabled={frozenItems.includes("new_leixing")}/>
             </Form.Item>
 
             <Form.Item
-              label="比赛结果"
-              name="result"
-              rules={[{ required: true, message: '请输入比赛结果' }]}
+              label="新组别"
+              name="new_zubie"
+              rules={[{ required: true, message: '请输入组别' }]}
             >
-              <Input placeholder="例：1.95m" disabled={frozenItems.includes("result")}/>
+              <Input placeholder="例：甲组" disabled={frozenItems.includes("new_zubie")}/>
             </Form.Item>
 
             <Form.Item
-              label="排名"
-              name="rank"
-              rules={[{ required: false, message: '请输入排名' }]}
+              label="新性别"
+              name="new_xingbie"
+              rules={[{ required: true, message: '请输入性别' }]}
             >
-              <InputNumber min={1} disabled={frozenItems.includes("rank")}/>
+              <Input placeholder="例：男子/女子/混合" disabled={frozenItems.includes("new_xingbie")}/>
             </Form.Item>
-
-            <Form.Item
-              label="得分"
-              name="score"
-              rules={[{ required: false, message: '请输入得分' }]}
-            >
-              <InputNumber step={0.1} disabled={frozenItems.includes("score")}/>
-            </Form.Item>
+            </>}
           </Form>
         </Spin>
       </Drawer>
@@ -259,4 +252,4 @@ const ResultEditForm = ({
   );
 };
 
-export default ResultEditForm;
+export default ProjectEditForm;

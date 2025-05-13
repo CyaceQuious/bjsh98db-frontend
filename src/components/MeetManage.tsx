@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import ResultEditForm from "./ResultEditForm";
+import ProjectEditForm from './ProjectEditForm';
 
 interface MeetManageProps {
 	mid: number; 
@@ -39,20 +40,22 @@ interface SyncMeetResponse {
 }
 
 const MeetManage = ({mid, reload}: MeetManageProps) => {
-  // const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   // 修改比赛名称
   const [showModifyModal, setShowModifyModal] = useState(false);
   const [newName, setNewName] = useState('');
   const [selectedMid, setSelectedMid] = useState<number | undefined>(undefined);
-
+  const [syncing, setSyncing] = useState<boolean>(false);
 
   const [meetName, setMeetName] = useState<string>('loading');
   const session = useSelector((state: RootState) => state.auth.session);
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
 
   const fetchMeetName = async () => {
+    setLoading(true);
     const name = await getContestName(mid);
     setMeetName(name);
+    setLoading(false);
   }; 
 
   // 修改比赛名称的相关函数
@@ -62,6 +65,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     setShowModifyModal(true);
   };
   const handleRenameConfirm = async () => {
+    setLoading(true);
     console.log(`修改比赛ID ${selectedMid} 的名称为: ${newName}`);
     setShowModifyModal(false);
     putRenameRequest();
@@ -108,9 +112,10 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     await putSyncMeetRequest();
   };
   const putSyncMeetRequest = async () => {
+    setSyncing(true);
     try {
       const data: SyncMeetResponse = await request(
-        `/api/update_new_meet_from_online`, 
+        `/api/update_new_result_from_online`, 
         'PUT', 
         {
           session, 
@@ -122,7 +127,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       if (data.code !== 0) {
         alert(data.info || 'Failed to sync project');
       }
-      message.success(`比赛同步成功, 更新内容: ${data.update_meet_num}`);
+      message.success(`比赛同步成功, 更新条目数: ${Object.values(data.update_meet_num)}`);
       reload();
       fetchMeetName(); // 重新获取比赛名称
     } catch (err) {
@@ -130,12 +135,13 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       console.log('Put error:', err);
     } finally {
       // setLoading(false);
+      setSyncing(false);
     }
   }
 
   useEffect(() => {
     fetchMeetName();
-  })
+  }, [])
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
@@ -158,10 +164,16 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         />
       </Modal>
 
-      <div>
+      {!loading && <div>
       <ResultEditForm 
         buttonStyle={{ marginLeft: 16 }}
         defaultValues={{mid, meet: meetName}} 
+        onSuccess={() => reload()}
+        frozenItems={["meet", "mid"]}
+      />
+      <ProjectEditForm
+        buttonStyle={{ marginLeft: 16 }}
+        defaultValues={{mid, meet: meetName}}
         onSuccess={() => reload()}
         frozenItems={["meet", "mid"]}
       />
@@ -169,6 +181,8 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         type={'primary'}
         style={{ marginLeft: 16 }}
         onClick={() => handleSyncMeet()}
+        disabled={syncing}
+        loading={syncing}
         icon={<CloudDownloadOutlined />}
       >
         同步赛事成绩
@@ -181,7 +195,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       >
         修改赛事名称
       </Button>}
-      </div>
+      </div>}
 	</div>
   )
 }

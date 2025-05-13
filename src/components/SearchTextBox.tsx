@@ -47,7 +47,7 @@ export default function SearchTextBox({ name, query, textChange }: SearchTextBox
                 value={query}
                 style={{textAlign: "left"}}
                 onChange={(e) => textChange(name, e)}
-                placeholder={getSearchBoxPlaceHolder()}
+                placeholder={getSearchBoxPlaceHolder(name)}
             />
         </Space.Compact>
         ), 
