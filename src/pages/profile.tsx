@@ -3,31 +3,31 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Button, Form, Input, Modal, message, Card, List, Tag, Space } from 'antd';
-import type { FormInstance } from 'antd/es/form';
-
-interface UserProfile {
-  username: string;
-  email: string;
-  create_time: string;
-  Is_Department_Official: boolean;
-  Is_Contest_Official: string[];
-  Is_System_Admin: boolean;
-  star_list: string[];
-}
+import { Button, Modal, message, Card, Space, Badge, List, Tag } from 'antd';
+import AuthStatus from '../components/AuthStatus';
+import AuthRequests from '../components/AuthRequests';
+import ProfileForm from '../components/ProfileForm';
+import PasswordForm from '../components/PasswordForm';
+import AuthApplicationForm from '../components/AuthApplicationForm';
+import AuthReviewModal from '../components/AuthReviewModal';
+import { UserProfile, AuthRequest } from '../utils/types';
 
 const UserProfilePage = () => {
   const router = useRouter();
   const session = useSelector((state: RootState) => state.auth.session);
+  const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
   const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [authModalVisible, setAuthModalVisible] = useState(false);
+  const [authReviewModalVisible, setAuthReviewModalVisible] = useState(false);
+  const [currentAuthRequest, setCurrentAuthRequest] = useState<AuthRequest | null>(null);
   const [unstarLoading, setUnstarLoading] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
-  const formRef = React.createRef<FormInstance>();
-  const passwordFormRef = React.createRef<FormInstance>();
-  const { confirm } = Modal;
+  const [authRequests, setAuthRequests] = useState<AuthRequest[]>([]);
+  const [receivedAuthRequests, setReceivedAuthRequests] = useState<AuthRequest[]>([]);
+  const [hasUnreadAuth, setHasUnreadAuth] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -36,44 +36,85 @@ const UserProfilePage = () => {
       return;
     }
     fetchUserProfile();
-  }, [session]);
+    fetchAuthRequests();
+    if (isDepartmentOfficial) {
+      fetchReceivedAuthRequests();
+    }
+  }, [session, isDepartmentOfficial]);
 
   const fetchUserProfile = async () => {
-  try {
-    setLoading(true);
-    const response = await fetch(`/api/users/get_user_profile?session=${encodeURIComponent(session)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    const data = await response.json();
-
-    if (data.code === 0) {
-      setProfile(data.data);
-    } else {
-      message.error(data.info || '获取用户信息失败');
-    }
-  } catch (error) {
-    console.error('获取用户信息错误:', error);
-    if (error instanceof Error) {
-      message.error(`获取用户信息失败: ${error.message}`);
-    } else {
-      message.error('获取用户信息失败: 未知错误');
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const handleEditProfile = () => {
-    if (profile) {
-      formRef.current?.setFieldsValue({
-        email: profile.email,
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/users/get_user_profile?session=${encodeURIComponent(session)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       });
+
+      const data = await response.json();
+
+      if (data.code === 0) {
+        setProfile(data.data);
+      } else {
+        message.error(data.info || '获取用户信息失败');
+      }
+    } catch (error) {
+      console.error('获取用户信息错误:', error);
+      if (error instanceof Error) {
+        message.error(`获取用户信息失败: ${error.message}`);
+      } else {
+        message.error('获取用户信息失败: 未知错误');
+      }
+    } finally {
+      setLoading(false);
     }
-    setEditModalVisible(true);
+  };
+
+  const fetchAuthRequests = async () => {
+    try {
+      const response = await fetch(`/api/message/get_auth_sent?session=${encodeURIComponent(session)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.code === 0) {
+        setAuthRequests(data.data.AuthRequests || []);
+      } else {
+        message.error(data.info || '获取认证请求失败');
+      }
+    } catch (error) {
+      console.error('获取认证请求错误:', error);
+      message.error('获取认证请求失败');
+    }
+  };
+
+  const fetchReceivedAuthRequests = async () => {
+    try {
+      const response = await fetch(`/api/message/get_auth_received?session=${encodeURIComponent(session)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.code === 0) {
+        setReceivedAuthRequests(data.data.AuthRequests || []);
+        const hasPending = data.data.AuthRequests?.some((req: AuthRequest) => req.status === 0);
+        setHasUnreadAuth(hasPending);
+      } else {
+        message.error(data.info || '获取收到的认证请求失败');
+      }
+    } catch (error) {
+      console.error('获取收到的认证请求错误:', error);
+      message.error('获取收到的认证请求失败');
+    }
   };
 
   const handleEditSubmit = async (values: { email: string }) => {
@@ -155,7 +196,7 @@ const UserProfilePage = () => {
   };
 
   const handleUnstar = async (athleteName: string) => {
-    confirm({
+    Modal.confirm({
       title: '确认取消关注',
       content: `确定要取消关注 ${athleteName} 吗？`,
       okText: '确定',
@@ -198,6 +239,73 @@ const UserProfilePage = () => {
     });
   };
 
+  const handleApplyAuth = async (values: { real_name: string; invited_reviewer: string }) => {
+    try {
+      setSubmitting(true);
+      const response = await fetch('/api/message/apply_auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          session,
+          real_name: values.real_name,
+          invited_reviewer: values.invited_reviewer,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.code === 0) {
+        message.success('认证申请已提交');
+        setAuthModalVisible(false);
+        fetchAuthRequests();
+      } else {
+        message.error(data.info || '提交认证申请失败');
+      }
+    } catch (error) {
+      console.error('提交认证申请错误:', error);
+      message.error('提交认证申请失败');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleReviewAuth = async (status: number, reject_reason?: string) => {
+    if (!currentAuthRequest) return;
+
+    try {
+      setSubmitting(true);
+      const response = await fetch('/api/message/authenticate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          session,
+          message_id: currentAuthRequest.message_id.toString(),
+          status: status.toString(),
+          reject_reason: reject_reason || '',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.code === 0) {
+        message.success(status === 1 ? '已通过认证' : '已拒绝认证');
+        setAuthReviewModalVisible(false);
+        fetchReceivedAuthRequests();
+      } else {
+        message.error(data.info || '处理认证请求失败');
+      }
+    } catch (error) {
+      console.error('处理认证请求错误:', error);
+      message.error('处理认证请求失败');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">加载中...</div>;
   }
@@ -216,15 +324,22 @@ const UserProfilePage = () => {
         title="个人资料"
         extra={
           <Space>
-            <Button type="primary" onClick={handleEditProfile}>
-              编辑资料
-            </Button>
+            <Badge dot={hasUnreadAuth}>
+              <Button type="primary" onClick={() => setEditModalVisible(true)}>
+                编辑资料
+              </Button>
+            </Badge>
             <Button onClick={() => setPasswordModalVisible(true)}>
               修改密码
             </Button>
           </Space>
         }
       >
+        <AuthStatus 
+          authRequests={authRequests} 
+          onApplyAuth={() => setAuthModalVisible(true)} 
+        />
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 className="text-lg font-semibold">基本信息</h3>
@@ -246,7 +361,7 @@ const UserProfilePage = () => {
             <h3 className="text-lg font-semibold">角色信息</h3>
             <div className="space-y-2 mt-2">
               <p>
-                <span className="font-medium">部门官方:</span>{' '}
+                <span className="font-medium">体干:</span>{' '}
                 {profile.Is_Department_Official ? (
                   <Tag color="green">是</Tag>
                 ) : (
@@ -263,7 +378,7 @@ const UserProfilePage = () => {
               </p>
               {profile.Is_Contest_Official.length > 0 && (
                 <p>
-                  <span className="font-medium">比赛官方:</span>{' '}
+                  <span className="font-medium">比赛官员:</span>{' '}
                   {profile.Is_Contest_Official.map((contest) => (
                     <Tag key={contest} color="blue">
                       {contest}
@@ -304,91 +419,48 @@ const UserProfilePage = () => {
             <p className="mt-2 text-gray-500">暂无关注</p>
           )}
         </div>
+
+        <AuthRequests
+          authRequests={authRequests}
+          isDepartmentOfficial={isDepartmentOfficial}
+          receivedAuthRequests={receivedAuthRequests}
+          onReviewRequest={(request) => {
+            setCurrentAuthRequest(request);
+            setAuthReviewModalVisible(true);
+          }}
+        />
       </Card>
 
-      {/* 编辑资料模态框 */}
-      <Modal
-        title="编辑资料"
-        open={editModalVisible}
+      <ProfileForm
+        visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
-        onOk={() => formRef.current?.submit()}
-        confirmLoading={submitting}
-        destroyOnClose
-      >
-        <Form 
-          ref={formRef} 
-          onFinish={handleEditSubmit} 
-          layout="vertical"
-          initialValues={{ email: profile.email }}
-        >
-          <Form.Item
-            name="email"
-            label="邮箱"
-            rules={[
-              { required: true, message: '请输入邮箱地址' },
-              { type: 'email', message: '请输入有效的邮箱地址' },
-            ]}
-          >
-            <Input placeholder="请输入您的邮箱" />
-          </Form.Item>
-        </Form>
-      </Modal>
+        profile={profile}
+        onSubmit={handleEditSubmit}
+        submitting={submitting}
+      />
 
-      {/* 修改密码模态框 */}
-      <Modal
-        title="修改密码"
-        open={passwordModalVisible}
+      <PasswordForm
+        visible={passwordModalVisible}
         onCancel={() => setPasswordModalVisible(false)}
-        onOk={() => passwordFormRef.current?.submit()}
-        confirmLoading={submitting}
-        destroyOnClose
-      >
-        <Form
-          ref={passwordFormRef}
-          onFinish={handlePasswordSubmit}
-          layout="vertical"
-        >
-          <Form.Item
-            name="old_password"
-            label="旧密码"
-            rules={[{ required: true, message: '请输入旧密码' }]}
-          >
-            <Input.Password placeholder="请输入当前密码" />
-          </Form.Item>
-          
-          <Form.Item
-            name="new_password"
-            label="新密码"
-            rules={[
-              { required: true, message: '请输入新密码' },
-              { min: 6, message: '密码至少6位' },
-            ]}
-            hasFeedback
-          >
-            <Input.Password placeholder="请输入新密码" />
-          </Form.Item>
-          
-          <Form.Item
-            name="confirm_password"
-            label="确认新密码"
-            dependencies={['new_password']}
-            rules={[
-              { required: true, message: '请确认新密码' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('new_password') === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error('两次输入的密码不一致'));
-                },
-              }),
-            ]}
-            hasFeedback
-          >
-            <Input.Password placeholder="请再次输入新密码" />
-          </Form.Item>
-        </Form>
-      </Modal>
+        onSubmit={handlePasswordSubmit}
+        submitting={submitting}
+      />
+
+      <AuthApplicationForm
+        visible={authModalVisible}
+        onCancel={() => setAuthModalVisible(false)}
+        onSubmit={handleApplyAuth}
+        submitting={submitting}
+      />
+
+      <AuthReviewModal
+        visible={authReviewModalVisible}
+        request={currentAuthRequest}
+        onCancel={() => setAuthReviewModalVisible(false)}
+        onApprove={() => handleReviewAuth(1)}
+        onReject={(reason) => handleReviewAuth(2, reason)}
+        submitting={submitting}
+      />
     </div>
   );
 };
