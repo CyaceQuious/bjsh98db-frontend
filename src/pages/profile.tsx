@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Button, Modal, message, Card, Space, Badge, List, Tag } from 'antd';
+import { Button, Modal, message, Card, Space, List, Tag } from 'antd';
 import AuthStatus from '../components/AuthStatus';
 import AuthRequests from '../components/AuthRequests';
 import ProfileForm from '../components/ProfileForm';
@@ -83,7 +83,7 @@ const UserProfilePage = () => {
       const data = await response.json();
 
       if (data.code === 0) {
-        setAuthRequests(data.data.AuthRequests || []);
+        setAuthRequests(data.data.auth_requests || []);
       } else {
         message.error(data.info || '获取认证请求失败');
       }
@@ -103,13 +103,21 @@ const UserProfilePage = () => {
       });
 
       const data = await response.json();
+      console.log('API Response:', data); // 调试用
 
       if (data.code === 0) {
-        setReceivedAuthRequests(data.data.AuthRequests || []);
-        const hasPending = data.data.AuthRequests?.some((req: AuthRequest) => req.status === 0);
-        setHasUnreadAuth(hasPending);
-      } else {
-        message.error(data.info || '获取收到的认证请求失败');
+        const allRequests = data.data.auth_requests || [];
+        console.log('所有请求:', allRequests); // 调试
+        
+        // 设置所有请求（包括已通过的）
+        setReceivedAuthRequests(allRequests);
+        
+        // 仅当有status=0的请求时才显示小红点
+        const hasPending = allRequests.some((req: AuthRequest) => req.status === 0);
+        
+        // 调试：检查通过的请求
+        const approvedRequests = allRequests.filter((req: AuthRequest) => req.status === 1);
+        console.log('已通过的请求:', approvedRequests);
       }
     } catch (error) {
       console.error('获取收到的认证请求错误:', error);
@@ -324,11 +332,9 @@ const UserProfilePage = () => {
         title="个人资料"
         extra={
           <Space>
-            <Badge dot={hasUnreadAuth}>
               <Button type="primary" onClick={() => setEditModalVisible(true)}>
                 编辑资料
               </Button>
-            </Badge>
             <Button onClick={() => setPasswordModalVisible(true)}>
               修改密码
             </Button>
