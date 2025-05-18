@@ -62,7 +62,7 @@ export default function SearchResultTable({
                     style={{ 
                     color: token.colorPrimary,
                     cursor: 'pointer',
-                    textDecoration: 'underline'
+                    textDecoration: 'none'
                     }}
                 >
                     {value?.toString() || '-'}
