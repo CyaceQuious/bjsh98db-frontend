@@ -9,11 +9,13 @@ import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
 
+import { filterByType, removeEmptyFields } from '../utils/types';
+
 interface ResultChangeRequest {
   session: string;
   // 以下创建时提供
   projectid?: number; 
-  commit?: boolean; // 强制创建
+  commit?: string; // 强制创建
   // 以下更新时提供
   resultid?: number;
   // 以下是成绩属性
@@ -91,24 +93,27 @@ const ResultEditForm = ({
   }, [open, form, defaultValues, isEditMode]);
 
   // 提交处理
-  const handleSubmit = async (values: EntryFormValues) => {
+  const handleSubmit = async (values: EntryFormValues, commit: string = "False") => {
     setLoading(true);
     console.log('Form Values:', values);
     const cleanedValues = {
       ...defaultValues,
       ...infoIds,
       ...values,
-      rank: values.rank ?? undefined,
-      score: values.score ?? undefined
+      rank: !isNaN(+(values.rank??"")) ? +(values.rank??"") : undefined,
+      score: !isNaN(+(values.score??"")) ? +(values.score??"") : undefined,
+      session,
+      commit,
     };
+    const realRequest = filterByType<ResultChangeRequest>(
+      cleanedValues,
+      ['session', 'commit', 'projectid', 'resultid', 'name', 'groupname', 'result', 'rank', 'score']
+    );
     try {
       const data: ResultChangeResponse = await request(
       `/api/manage_result`, 
       isEditMode ? 'PUT' : 'POST', 
-      {
-        ...cleanedValues, 
-        session, 
-      } as ResultChangeRequest, 
+      realRequest, 
       false, 
       'json'
       );

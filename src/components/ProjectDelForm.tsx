@@ -4,14 +4,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
+import { filterByType } from '../utils/types';
 
 interface DeleteRequest {
   session: string;
-  mid: number;
-  name: string;
-  leixing: string;
-  zubie: string;
-  xingbie: string;
+  id: string;
 }
 
 interface DeleteResponse {
@@ -57,10 +54,10 @@ const ProjectDelForm = ({
       const data: DeleteResponse = await request(
         `/api/manage_project`,
         'DELETE',
-        {
+        filterByType<DeleteRequest>({
           ...values,
           session,
-        } as DeleteRequest,
+        },['session', 'id']),
         false,
         'json'
       );

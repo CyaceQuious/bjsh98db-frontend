@@ -11,27 +11,14 @@ import { request } from '../utils/network';
 
 import { filterByType } from '../utils/types';
 
-// "session": "lox53dvn9k6vma13vkmn4feuvi5vepun",
-// "mid": 3,
-// "name": "100米",
-// "xingbie":"男子",
-// "zubie":"甲组",
-// "leixing":"决赛",
-// "new_name": "200米决赛",
-// "new_xingbie":"男子",
-// "new_zubie":"甲组",
-// "new_leixing":"决赛",
 interface ProjectChangeRequest {
   session: string;
-  mid: number;
+  mid?: number; // 创建时提供
+  id?: number; // 更新时提供
   name: string;
   xingbie: string;
   zubie: string;
   leixing: string;
-  new_name?: string;
-  new_xingbie?: string;
-  new_zubie?: string;
-  new_leixing?: string;
 }
 
 interface ProjectChangeResponse {
@@ -40,36 +27,34 @@ interface ProjectChangeResponse {
 }
 
 interface EntryFormValues {
-  mid: number;
   meet: string;
 
-  name: string;
-  xingbie: string;
-  zubie: string;
-  leixing: string;
+  name?: string;
+  xingbie?: string;
+  zubie?: string;
+  leixing?: string;
+}
 
-  new_name?: string;
-  new_xingbie?: string;
-  new_zubie?: string;
-  new_leixing?: string;
+interface InfoId {
+  // 用来传递提交给后端的时候需要用的id
+  mid?: number; // 创建时提供
+  id?: number; // 更新时提供
 }
 
 interface EntryFormDrawerProps {
-  // 触发按钮的样式
-  buttonStyle?: React.CSSProperties;
-  // 表单默认值
-  defaultValues?: Partial<EntryFormValues>;
-  // 操作模式：新建(false) 或 更新(true)
-  isEditMode?: boolean;
-  useGray?: boolean;
+  buttonStyle?: React.CSSProperties; // 触发按钮的样式
+  defaultValues: EntryFormValues; // 表单默认值
+  infoIds: InfoId;
+  isEditMode?: boolean; // 操作模式：新建(false) 或 更新(true)
+  useGray?: boolean; // 是否使用灰色按钮
   frozenItems: string[]; 
-  // 提交成功回调
-  onSuccess?: (values: EntryFormValues) => void;
+  onSuccess?: (values: ProjectChangeRequest) => void; // 提交成功回调
 }
 
 const ProjectEditForm = ({
   buttonStyle,
   defaultValues,
+  infoIds,
   isEditMode = false, // 新建条目 / 编辑条目
   useGray = false, 
   frozenItems = [], 
@@ -100,14 +85,17 @@ const ProjectEditForm = ({
   const handleSubmit = async (values: EntryFormValues) => {
     setLoading(true);
     console.log('Form Values:', values);
-    const cleanedValues = {
-      ...defaultValues, 
-      ...values, 
+    const cleanedValues: ProjectChangeRequest = {
+      ...infoIds,
       session,
-    };
+      name: values.name || defaultValues.name || "",
+      xingbie: values.xingbie || defaultValues.xingbie || "",
+      zubie: values.zubie || defaultValues.zubie || "",
+      leixing: values.leixing || defaultValues.leixing || "",
+    }
     const realRequest = filterByType<ProjectChangeRequest>(
       cleanedValues,
-      ['session', 'mid', 'name', 'xingbie', 'zubie', 'leixing', 'new_name', 'new_xingbie', 'new_zubie', 'new_leixing']
+      ['session', 'mid', 'name', 'xingbie', 'zubie', 'leixing', 'id']
     )
     console.log('Real Request:', realRequest);
     try {
@@ -216,40 +204,6 @@ const ProjectEditForm = ({
             >
               <Input placeholder="例：男子/女子/混合" disabled={frozenItems.includes("xingbie")}/>
             </Form.Item>
-
-            {isEditMode && <>
-            <Form.Item
-              label="新项目名称"
-              name="new_name"
-              rules={[{ required: true, message: '请输入项目名称' }]}
-            >
-              <Input placeholder="例：跳高" disabled={frozenItems.includes("new_name")}/>
-            </Form.Item>
-
-            <Form.Item
-              label="新项目阶段"
-              name="new_leixing"
-              rules={[{ required: true, message: '请输入项目阶段' }]}
-            >
-              <Input placeholder="例：决赛" disabled={frozenItems.includes("new_leixing")}/>
-            </Form.Item>
-
-            <Form.Item
-              label="新组别"
-              name="new_zubie"
-              rules={[{ required: true, message: '请输入组别' }]}
-            >
-              <Input placeholder="例：甲组" disabled={frozenItems.includes("new_zubie")}/>
-            </Form.Item>
-
-            <Form.Item
-              label="新性别"
-              name="new_xingbie"
-              rules={[{ required: true, message: '请输入性别' }]}
-            >
-              <Input placeholder="例：男子/女子/混合" disabled={frozenItems.includes("new_xingbie")}/>
-            </Form.Item>
-            </>}
           </Form>
         </Spin>
       </Drawer>

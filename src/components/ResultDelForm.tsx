@@ -5,6 +5,8 @@ import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
 
+import { filterByType } from '../utils/types';
+
 interface DeleteRequest {
   session: string;
   resultid: number;
@@ -53,10 +55,10 @@ const ResultDelForm = ({
       const data: DeleteResponse = await request(
         `/api/manage_result`,
         'DELETE',
-        {
+        filterByType<DeleteRequest>({
           ...values,
           session,
-        } as DeleteRequest,
+        },['resultid','session']),
         false,
         'json'
       );

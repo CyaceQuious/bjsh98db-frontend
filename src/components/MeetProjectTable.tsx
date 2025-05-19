@@ -112,22 +112,17 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         )}
         <ProjectEditForm 
           defaultValues={{
-            mid,
             meet: meetName,
             name: record.name,
             leixing: record.leixing,
             zubie: record.zubie,
             xingbie: record.xingbie,
-            new_name: record.name,
-            new_leixing: record.leixing,
-            new_zubie: record.zubie,
-            new_xingbie: record.xingbie,
           }}
+          infoIds={{id: record.id}}
           isEditMode
           onSuccess={onContentRefresh}
           frozenItems={[
-            "meet", "mid", 
-            "name", "leixing", "zubie", "xingbie", 
+            "meet" 
           ]}
         />
         <ProjectDelForm
