@@ -13,6 +13,7 @@ const { Header } = Layout;
 export default function Navbar() {
     const router = useRouter();
     const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
+    const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
     const [isLogoutConfirmVisible, setIsLogoutConfirmVisible] = useState(false);
     const {
         token: { colorBgContainer },
@@ -47,10 +48,10 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-      if (isDepartmentOfficial) {
+      if (isDepartmentOfficial || isSystemAdmin) {
         fetchReceivedAuthRequests();
       }
-    }, [session, isDepartmentOfficial]);
+    }, [session, isDepartmentOfficial || isSystemAdmin]);
 
     
     // 从Redux获取状态

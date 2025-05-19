@@ -17,6 +17,7 @@ const UserProfilePage = () => {
   const router = useRouter();
   const session = useSelector((state: RootState) => state.auth.session);
   const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
+  const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
   const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -39,10 +40,10 @@ const UserProfilePage = () => {
     }
     fetchUserProfile();
     fetchAuthRequests();
-    if (isDepartmentOfficial) {
+    if (isDepartmentOfficial || isSystemAdmin) {
       fetchReceivedAuthRequests();
     }
-  }, [session, isDepartmentOfficial]);
+  }, [session, isDepartmentOfficial||isSystemAdmin]);
 
   const fetchUserProfile = async () => {
     try {
@@ -445,7 +446,7 @@ const UserProfilePage = () => {
 
         <AuthRequests
           authRequests={authRequests}
-          isDepartmentOfficial={isDepartmentOfficial}
+          isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}
           receivedAuthRequests={receivedAuthRequests}
           onReviewRequest={(request) => {
             setCurrentAuthRequest(request);
