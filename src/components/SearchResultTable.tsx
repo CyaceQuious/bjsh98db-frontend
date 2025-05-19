@@ -74,17 +74,22 @@ export default function SearchResultTable({
               );
             }
             if (name === 'meet') {                    // 点击“运动会”跳转
-                return (
-                  <span
-                    onClick={() => router.push(`/meet?mid=${record.mid}`)}
-                    style={{
-                      color: token.colorPrimary,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {value?.toString() || '-'}
-                  </span>
-                );
+                const onSearchPage = router.pathname.startsWith('/search');
+                if (onSearchPage) {
+                  return (
+                    <span
+                      onClick={() => router.push(`/meet?mid=${record.mid}`)}
+                      style={{
+                        color: token.colorPrimary,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {value?.toString() || '-'}
+                    </span>
+                  );
+                } else {
+                  return value?.toString() || '-';
+                }
             }
             return value?.toString() || '-';
         }
