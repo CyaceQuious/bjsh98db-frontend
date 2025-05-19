@@ -82,7 +82,7 @@ const FeedbackApplicationForm = ({
     }
     const realRequest = filterByType<FeedbackRequest>(
       cleanedValues,
-      ['session', 'applyreason']
+      ['session', 'applyreason', 'result_id']
     )
     console.log('Real Request:', realRequest);
     try {
@@ -91,7 +91,7 @@ const FeedbackApplicationForm = ({
         'POST', 
         realRequest, 
         false, 
-        'form',
+        'json',
       );
       if (data.code !== 0) {
         alert(data.info || 'Failed to submit feedback');

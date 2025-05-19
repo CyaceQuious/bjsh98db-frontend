@@ -4,6 +4,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-color: #f8f8f8; /* 淡灰色 */
 }
 
 a {
@@ -13,4 +14,31 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.ant-descriptions-item-content {
+  word-break: break-word !important;
+  white-space: nowrap;
+}
+
+.ant-list-item {
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #fafafa !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .ant-col-sm-8 {
+    margin-bottom: 24px;
+  }
+  .ant-row {
+    flex-direction: column;
+  }
+  
+  .ant-col-flex {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #f0f0f0;
+  }
 }

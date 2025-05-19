@@ -152,9 +152,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         setError(data.info || 'Failed to fetch projects');
       }
     } catch (err) {
-      alert('An error occurred while fetching projects' + err); 
-      setError('An error occurred while fetching projects' + err);
-      console.log('Fetch error:', err);
+      alert('An error occurred while fetching projects' + `${err}`); 
+      setError('An error occurred while fetching projects' + `${err}`);
+      console.log('Fetch error:', `${err}`);
     } finally {
       setLoading(false);
     }

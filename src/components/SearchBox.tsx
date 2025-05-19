@@ -3,7 +3,8 @@ import {
   Form,
   Row,
   Col,
-  theme
+  theme,
+  Card,
 } from 'antd';
 import { useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
@@ -77,6 +78,7 @@ export default function SearchBox({
   })
 
   return (
+    <Card title="搜索">
     <Form
       form={form}
       onFinish={handleSearch}
@@ -131,5 +133,6 @@ export default function SearchBox({
         </Col>
       </Row>
     </Form>
+    </Card>
   );
 }

@@ -16,7 +16,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Head>
                 <title> BJSH98.db </title>
             </Head>
-            <div style={{ padding: 12 }}>
+            <div>
                 <Navbar/>
                 <Component {...pageProps} />
             </div>

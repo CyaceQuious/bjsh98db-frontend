@@ -119,7 +119,8 @@ export default function SearchResultTable({
             fixed: 'right',
             width: 100,
             render: (_, record) => (
-                (isSystemAdmin || allContestOfficial.includes(record.mid)) ?
+                <>
+                {(isSystemAdmin || allContestOfficial.includes(record.mid)) ?
                 <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <ResultEditForm 
                         defaultValues={record} 
@@ -129,18 +130,20 @@ export default function SearchResultTable({
                         frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]}
                     />
                     <ResultDelForm values={record} onSuccess={onContentReFresh} />
-                </div> : isDepartmentOfficial &&
+                </div> : ""}
+                {isDepartmentOfficial &&
                 <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <FeedbackApplicationForm
                         defaultValues={{
                             entryString: `${record.meet}-${record.xingbie}${record.zubie}${record.projectname}${record.leixing}-${record.groupname}${record.name}-${record.result}`,
                             applyreason: "",
                         }}
-                        infoIds={{result_id: record.result_id}}
+                        infoIds={{result_id: record.resultid}}
                         frozenItems={["entryString"]}
                         onSuccess={(_: any)=>{}}
                     />
-                </div>
+                </div>}
+                </>
             )
         };
         columns = [...columns, managementColumn]; 
