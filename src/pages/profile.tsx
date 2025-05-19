@@ -1,21 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
-import { Button, Modal, message, Card, Space, List, Tag } from 'antd';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { useRouter } from "next/router";
+import Head from "next/head";
+import {
+  theme,
+  Button,
+  Modal,
+  message,
+  Card,
+  List,
+  Tag,
+  Space,
+} from "antd";
+import PlayerModal from "../components/player";
 import AuthStatus from '../components/AuthStatus';
 import AuthRequests from '../components/AuthRequests';
 import ProfileForm from '../components/ProfileForm';
 import PasswordForm from '../components/PasswordForm';
 import AuthApplicationForm from '../components/AuthApplicationForm';
 import AuthReviewModal from '../components/AuthReviewModal';
-import { UserProfile, AuthRequest } from '../utils/types';
+import { AuthRequest } from '../utils/types';
+
+const { useToken } = theme;
+interface UserProfile {
+  username: string;
+  email: string;
+  create_time: string;
+  Is_Department_Official: boolean;
+  Is_Contest_Official: string[];
+  Is_System_Admin: boolean;
+  star_list: string[];
+}
 
 const UserProfilePage = () => {
+  const { token } = useToken();
   const router = useRouter();
   const session = useSelector((state: RootState) => state.auth.session);
   const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
+  const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
   const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -27,20 +50,25 @@ const UserProfilePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [authRequests, setAuthRequests] = useState<AuthRequest[]>([]);
   const [receivedAuthRequests, setReceivedAuthRequests] = useState<AuthRequest[]>([]);
-  const [hasUnreadAuth, setHasUnreadAuth] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAthlete, setSelectedAthlete] = useState('');
+  const handlePlayerClick = (name: string) => {
+    setSelectedAthlete(name);
+    setModalVisible(true);
+  };
 
   useEffect(() => {
     if (!session) {
-      message.warning('请先登录');
-      router.push('/login');
+      message.warning("请先登录");
+      router.push("/login");
       return;
     }
     fetchUserProfile();
     fetchAuthRequests();
-    if (isDepartmentOfficial) {
+    if (isDepartmentOfficial || isSystemAdmin) {
       fetchReceivedAuthRequests();
     }
-  }, [session, isDepartmentOfficial]);
+  }, [session, isDepartmentOfficial||isSystemAdmin]);
 
   const fetchUserProfile = async () => {
     try {
@@ -125,10 +153,10 @@ const UserProfilePage = () => {
   const handleEditSubmit = async (values: { email: string }) => {
     try {
       setSubmitting(true);
-      const response = await fetch('/api/users/modify_user_profile', {
-        method: 'POST',
+      const response = await fetch("/api/users/modify_user_profile", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
           session,
@@ -139,18 +167,18 @@ const UserProfilePage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.info || '请求失败');
+        throw new Error(data.info || "请求失败");
       }
 
       if (data.code === 0) {
-        message.success('资料更新成功');
+        message.success("资料更新成功");
         setEditModalVisible(false);
         fetchUserProfile();
       } else {
-        message.error(data.info || '资料更新失败');
+        message.error(data.info || "资料更新失败");
       }
     } catch (error) {
-      console.error('资料更新错误:', error);
+      console.error("资料更新错误:", error);
       message.error(`资料更新失败: ${(error as Error).message}`);
     } finally {
       setSubmitting(false);
@@ -165,14 +193,14 @@ const UserProfilePage = () => {
     try {
       setSubmitting(true);
       if (values.new_password !== values.confirm_password) {
-        message.error('两次输入的新密码不一致');
+        message.error("两次输入的新密码不一致");
         return;
       }
 
-      const response = await fetch('/api/users/modify_password', {
-        method: 'POST',
+      const response = await fetch("/api/users/modify_password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
           session,
@@ -183,17 +211,17 @@ const UserProfilePage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.info || '请求失败');
+        throw new Error(data.info || "请求失败");
       }
 
       if (data.code === 0) {
-        message.success('密码修改成功');
+        message.success("密码修改成功");
         setPasswordModalVisible(false);
       } else {
-        message.error(data.info || '密码修改失败');
+        message.error(data.info || "密码修改失败");
       }
     } catch (error) {
-      console.error('密码修改错误:', error);
+      console.error("密码修改错误:", error);
       message.error(`密码修改失败: ${(error as Error).message}`);
     } finally {
       setSubmitting(false);
@@ -204,17 +232,17 @@ const UserProfilePage = () => {
     Modal.confirm({
       title: '确认取消关注',
       content: `确定要取消关注 ${athleteName} 吗？`,
-      okText: '确定',
-      okType: 'danger',
-      cancelText: '取消',
+      okText: "确定",
+      okType: "danger",
+      cancelText: "取消",
       onOk: async () => {
         try {
-          setUnstarLoading(prev => ({ ...prev, [athleteName]: true }));
-          
-          const response = await fetch('/api/users/delete_star', {
-            method: 'POST',
+          setUnstarLoading((prev) => ({ ...prev, [athleteName]: true }));
+
+          const response = await fetch("/api/users/delete_star", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
+              "Content-Type": "application/x-www-form-urlencoded",
             },
             body: new URLSearchParams({
               session,
@@ -225,20 +253,20 @@ const UserProfilePage = () => {
           const data = await response.json();
 
           if (!response.ok) {
-            throw new Error(data.info || '请求失败');
+            throw new Error(data.info || "请求失败");
           }
 
           if (data.code === 0) {
             message.success(`已取消关注 ${athleteName}`);
             fetchUserProfile();
           } else {
-            message.error(data.info || '取消关注失败');
+            message.error(data.info || "取消关注失败");
           }
         } catch (error) {
-          console.error('取消关注错误:', error);
+          console.error("取消关注错误:", error);
           message.error(`取消关注失败: ${(error as Error).message}`);
         } finally {
-          setUnstarLoading(prev => ({ ...prev, [athleteName]: false }));
+          setUnstarLoading((prev) => ({ ...prev, [athleteName]: false }));
         }
       },
     });
@@ -276,7 +304,7 @@ const UserProfilePage = () => {
     }
   };
 
-  const handleReviewAuth = async (status: number, reject_Reason?: string) => {
+  const handleReviewAuth = async (status: number, rejectReason?: string) => {
     if (!currentAuthRequest) return;
 
     try {
@@ -290,7 +318,7 @@ const UserProfilePage = () => {
           session,
           message_id: currentAuthRequest.message_id.toString(),
           status: status.toString(),
-          reject_Reason: reject_Reason || '',
+          reject_reason: rejectReason || '',
         }),
       });
 
@@ -312,11 +340,17 @@ const UserProfilePage = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">加载中...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">加载中...</div>
+    );
   }
 
   if (!profile) {
-    return <div className="flex justify-center items-center h-screen">无法获取用户信息</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        无法获取用户信息
+      </div>
+    );
   }
 
   return (
@@ -337,6 +371,7 @@ const UserProfilePage = () => {
             </Button>
           </Space>
         }
+        style={{ width: "60%", margin: "20px auto" }}
       >
         <AuthStatus 
           authRequests={authRequests} 
@@ -354,7 +389,7 @@ const UserProfilePage = () => {
                 <span className="font-medium">邮箱:</span> {profile.email}
               </p>
               <p>
-                <span className="font-medium">注册时间:</span>{' '}
+                <span className="font-medium">注册时间:</span>{" "}
                 {new Date(profile.create_time).toLocaleString()}
               </p>
             </div>
@@ -372,7 +407,7 @@ const UserProfilePage = () => {
                 )}
               </p>
               <p>
-                <span className="font-medium">系统管理员:</span>{' '}
+                <span className="font-medium">系统管理员:</span>{" "}
                 {profile.Is_System_Admin ? (
                   <Tag color="green">是</Tag>
                 ) : (
@@ -401,18 +436,33 @@ const UserProfilePage = () => {
               renderItem={(item) => (
                 <List.Item
                   actions={[
-                    <Button 
-                      type="link" 
-                      danger 
+                    <Button
+                      type="link"
+                      danger
                       onClick={() => handleUnstar(item)}
                       loading={unstarLoading[item]}
                       key="unstar"
                     >
                       取消关注
-                    </Button>
+                    </Button>,
                   ]}
                 >
-                  <span className="text-base">{item}</span>
+                  <span
+                    onClick={() => handlePlayerClick(item)}
+                      style={{ 
+                      color: token.colorText,
+                      cursor: 'pointer',
+                      textDecoration: 'none'
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.color = token.colorPrimary)
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.color = token.colorText)
+                    }
+                  >
+                    {item}
+                  </span>
                 </List.Item>
               )}
               className="mt-2"
@@ -421,11 +471,17 @@ const UserProfilePage = () => {
           ) : (
             <p className="mt-2 text-gray-500">暂无关注</p>
           )}
+
+          <PlayerModal
+            visible={modalVisible}
+            name={selectedAthlete}
+            onClose={() => setModalVisible(false)}
+          />
         </div>
 
         <AuthRequests
           authRequests={authRequests}
-          isDepartmentOfficial={isDepartmentOfficial}
+          isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}
           receivedAuthRequests={receivedAuthRequests}
           onReviewRequest={(request) => {
             setCurrentAuthRequest(request);
