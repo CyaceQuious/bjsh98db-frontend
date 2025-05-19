@@ -304,7 +304,7 @@ const UserProfilePage = () => {
     }
   };
 
-  const handleReviewAuth = async (status: number, reject_Reason?: string) => {
+  const handleReviewAuth = async (status: number, rejectReason?: string) => {
     if (!currentAuthRequest) return;
 
     try {
@@ -318,7 +318,7 @@ const UserProfilePage = () => {
           session,
           message_id: currentAuthRequest.message_id.toString(),
           status: status.toString(),
-          reject_Reason: reject_Reason || '',
+          reject_reason: rejectReason || '',
         }),
       });
 
