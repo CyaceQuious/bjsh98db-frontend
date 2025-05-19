@@ -4,7 +4,7 @@ import { AuthRequest } from '../utils/types';
 
 interface AuthReviewModalProps {
   visible: boolean;
-  request: AuthRequest | null;
+  request: AuthRequest | undefined;
   onCancel: () => void;
   onApprove: () => void;
   onReject: (reason: string) => void;
@@ -34,7 +34,7 @@ const AuthReviewModal: React.FC<AuthReviewModalProps> = ({
       title="处理认证申请"
       open={visible}
       onCancel={onCancel}
-      footer={null}
+      footer={undefined}
       destroyOnClose
     >
       {request && (

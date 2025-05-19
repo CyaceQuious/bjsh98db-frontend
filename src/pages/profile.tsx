@@ -22,7 +22,7 @@ const UserProfilePage = () => {
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [authReviewModalVisible, setAuthReviewModalVisible] = useState(false);
-  const [currentAuthRequest, setCurrentAuthRequest] = useState<AuthRequest | null>(null);
+  const [currentAuthRequest, setCurrentAuthRequest] = useState<AuthRequest | undefined>(undefined);
   const [unstarLoading, setUnstarLoading] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
   const [authRequests, setAuthRequests] = useState<AuthRequest[]>([]);

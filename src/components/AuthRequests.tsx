@@ -60,7 +60,7 @@ const AuthRequests: React.FC<AuthRequestsProps> = ({
                       >
                         处理
                       </Button>
-                    ) : null
+                    ) : undefined
                   ]}
                 >
                   <List.Item.Meta
