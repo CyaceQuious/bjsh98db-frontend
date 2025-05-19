@@ -9,7 +9,7 @@ import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
 
-import { filterByType, removeEmptyFields } from '../utils/types';
+import { filterByType } from '../utils/types';
 
 interface ResultChangeRequest {
   session: string;
@@ -247,7 +247,7 @@ const ResultEditForm = ({
               rules={[{ required: false, message: '请输入排名' }]}
               getValueFromEvent={(value) => {
                 // 当 InputNumber 清空时，value 为 null，此处转换为 undefined
-                return value === null ? undefined : value;
+                return typeof value !== 'number' ? undefined : value;
               }}
             >
               <InputNumber min={1} disabled={frozenItems.includes("rank")}/>
@@ -259,7 +259,7 @@ const ResultEditForm = ({
               rules={[{ required: false, message: '请输入得分' }]}
               getValueFromEvent={(value) => {
                 // 当 InputNumber 清空时，value 为 null，此处转换为 undefined
-                return value === null ? undefined : value;
+                return typeof value !== 'number' ? undefined : value;
               }}
             >
               <InputNumber step={0.1} disabled={frozenItems.includes("score")}/>

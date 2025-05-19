@@ -173,18 +173,7 @@ export interface AuthRequest {
 export function filterByType<T>(obj: any, keys: (keyof T)[]): T {
     const result = {} as T;
     keys.forEach((key) => {
-        if (obj.hasOwnProperty(key)) {
-        result[key] = obj[key];
-        }
+        result[key] = obj[key] || undefined;
     });
     return result;
-}
-
-export function removeEmptyFields(obj: any): any {
-    for (const key in obj) {
-        if (obj[key] === null || obj[key] === undefined || obj[key] === "") {
-        delete obj[key];
-        }
-    }
-    return obj;
 }

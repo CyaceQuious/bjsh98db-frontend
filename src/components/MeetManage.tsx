@@ -9,7 +9,6 @@ import { getContestName, request } from '../utils/network';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-import ResultEditForm from "./ResultEditForm";
 import ProjectEditForm from './ProjectEditForm';
 
 interface MeetManageProps {
