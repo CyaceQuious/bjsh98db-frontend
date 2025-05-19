@@ -97,12 +97,12 @@ export default function FeedbackReceiver({ style }: FeedbackReceiverProps) {
     }
 
     // 发送审批请求
-    const replyFeedback = async (id: number, approval: string, reject_reason: string) => {
+    const replyFeedback = async (id: number, approval: string, rejectReason: string) => {
         const curQuery: ReplyFeedbackRequest = {
             session,
             id,
             approval,
-            reject_reason
+            reject_reason: rejectReason
         }
         console.log('start to reply');
         console.log(curQuery);
@@ -136,8 +136,8 @@ export default function FeedbackReceiver({ style }: FeedbackReceiverProps) {
     };
 
     // 处理审批请求
-    const handleReply = (id: number, approval: boolean, reject_reason: string) => {
-        replyFeedback(id, approval ? 'True' : 'False', reject_reason)
+    const handleReply = (id: number, approval: boolean, rejectReason: string) => {
+        replyFeedback(id, approval ? 'True' : 'False', rejectReason)
     }
 
     // 计算实际显示内容，并注意不要超过数组长度

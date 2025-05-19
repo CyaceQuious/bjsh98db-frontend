@@ -40,7 +40,7 @@ const FeedbackList = ({
   mode,
   onReply,
 }: FeedbackListProps) => {
-  const [selectedId, setSelectedId] = useState<number | null>(data[0]?.id || null);
+  const [selectedId, setSelectedId] = useState<number | undefined>(data[0]?.id || undefined);
   const [rejectReason, setRejectReason] = useState<string>('');
   
   // 当选中项变化时同步驳回理由
@@ -66,7 +66,7 @@ const FeedbackList = ({
 
   // 分页变化处理
   const handlePageChange = (page: number, pageSize: number) => {
-    setSelectedId(null); // 清空选中项
+    setSelectedId(undefined); // 清空选中项
     onPageChange?.(page, pageSize);
   };
 
