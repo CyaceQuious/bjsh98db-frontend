@@ -112,9 +112,6 @@ const UserProfilePage = () => {
         // 设置所有请求（包括已通过的）
         setReceivedAuthRequests(allRequests);
         
-        // 仅当有status=0的请求时才显示小红点
-        const hasPending = allRequests.some((req: AuthRequest) => req.status === 0);
-        
         // 调试：检查通过的请求
         const approvedRequests = allRequests.filter((req: AuthRequest) => req.status === 1);
         console.log('已通过的请求:', approvedRequests);

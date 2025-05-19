@@ -1,16 +1,18 @@
 import { useRouter } from 'next/router';
+import React, { useState, useEffect } from 'react';
 import { Layout, Menu, theme, Modal, notification, Badge } from 'antd';
 import type { MenuProps } from 'antd';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { resetData, setHasUnreadAuth } from '../redux/auth';
+import { AuthRequest } from '../utils/types';
 import Link from 'next/link';
 
 const { Header } = Layout;
 
 export default function Navbar() {
     const router = useRouter();
+    const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
     const [isLogoutConfirmVisible, setIsLogoutConfirmVisible] = useState(false);
     const {
         token: { colorBgContainer },
@@ -18,6 +20,38 @@ export default function Navbar() {
 
     const [api, contextHolder] = notification.useNotification();
     const dispatch = useDispatch();
+    const session = useSelector((state: RootState) => state.auth.session);
+
+    const fetchReceivedAuthRequests = async () => {
+      try {
+        const response = await fetch(`/api/message/get_auth_received?session=${encodeURIComponent(session)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+
+        const data = await response.json();
+        console.log('API Response:', data); // 调试用
+
+        if (data.code === 0) {
+          const allRequests = data.data.auth_requests || [];
+          console.log('所有请求:', allRequests); // 调试
+          // 仅当有status=0的请求时才显示小红点
+          const hasPending = allRequests.some((req: AuthRequest) => req.status === 0);
+          dispatch(setHasUnreadAuth(hasPending));
+        }
+      } catch (error) {
+        console.error('获取收到的认证请求错误:', error);
+      }
+    };
+
+    useEffect(() => {
+      if (isDepartmentOfficial) {
+        fetchReceivedAuthRequests();
+      }
+    }, [session, isDepartmentOfficial]);
+
     
     // 从Redux获取状态
     const {
