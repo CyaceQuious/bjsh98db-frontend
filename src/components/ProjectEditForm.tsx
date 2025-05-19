@@ -9,6 +9,8 @@ import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
 
+import { filterByType } from '../utils/types';
+
 // "session": "lox53dvn9k6vma13vkmn4feuvi5vepun",
 // "mid": 3,
 // "name": "100米",
@@ -101,15 +103,18 @@ const ProjectEditForm = ({
     const cleanedValues = {
       ...defaultValues, 
       ...values, 
+      session,
     };
+    const realRequest = filterByType<ProjectChangeRequest>(
+      cleanedValues,
+      ['session', 'mid', 'name', 'xingbie', 'zubie', 'leixing', 'new_name', 'new_xingbie', 'new_zubie', 'new_leixing']
+    )
+    console.log('Real Request:', realRequest);
     try {
       const data: ProjectChangeResponse = await request(
         `/api/manage_project`, 
         isEditMode ? 'PUT' : 'POST', 
-        {
-          ...cleanedValues, 
-          session, 
-        } as ProjectChangeRequest, 
+        realRequest, 
         false, 
         'json'
       );

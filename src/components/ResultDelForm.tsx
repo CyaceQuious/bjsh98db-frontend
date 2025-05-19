@@ -7,13 +7,7 @@ import { request } from '../utils/network';
 
 interface DeleteRequest {
   session: string;
-  mid: number;
-  name: string;
-  projectname: string;
-  leixing: string;
-  zubie: string;
-  xingbie: string;
-  groupname: string;
+  resultid: number;
 }
 
 interface DeleteResponse {

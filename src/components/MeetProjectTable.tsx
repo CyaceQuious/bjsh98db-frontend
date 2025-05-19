@@ -16,6 +16,7 @@ interface Projects {
   leixing: string; 
   zubie: string;
   xingbie: string;
+  id: number;
 }
 
 interface ApiRequest {
@@ -44,6 +45,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   // 具体结果对话框
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [query, setQuery] = useState<SearchQuery>(getEmptyQuery());
+  const [showProjectId, setShowProjectId] = useState<number>(0);
 
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
   const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(mid));
@@ -99,6 +101,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
                 page_size: 10,
                 precise: true
               });
+              setShowProjectId(record.id);
               setShowDetailModal(true);
             }}
           >
@@ -196,10 +199,19 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         title={
           <div>
             查看项目成绩
-            {(isSystemAdmin || isContestOfficial) && <ResultEditForm useGray={true} frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]} defaultValues={{...query, mid}} onSuccess={()=> {
-              onContentRefresh(); 
-              setQuery({...query}); 
-            }}/>}
+            {/* 创建新成绩的按钮 */}
+            {(isSystemAdmin || isContestOfficial) && 
+            <ResultEditForm 
+              useGray={true} 
+              isEditMode={false}
+              frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]} 
+              defaultValues={query}
+              infoIds={{projectid: showProjectId}} 
+              onSuccess={()=> {
+                onContentRefresh(); 
+                setQuery({...query}); 
+              }}
+            />}
           </div>
         }
         open={showDetailModal}

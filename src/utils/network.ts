@@ -5,24 +5,20 @@ import { interfaceToString } from "./types";
 
 import store from "../redux/store";
 
-export enum NetworkErrorType {
-    UNAUTHORIZED,
-    REJECTED,
-    CORRUPTED_RESPONSE,
-    UNKNOWN_ERROR,
-}
-
 export class NetworkError extends Error {
-    type: NetworkErrorType;
+    status: number;
+    code: number;
     message: string;
 
     constructor(
-        _type: NetworkErrorType,
+        _status: number,
+        _code: number,
         _message: string,
     ) {
         super(_message);
 
-        this.type = _type;
+        this.status = _status;
+        this.code = _code;
         this.message = _message;
     }
 
@@ -103,44 +99,10 @@ export const request = async (
     if (response.status === 200 && code === 0) {
         return { ...data, code: 0};
     }
-    else if (response.status === 200) {
-        throw new NetworkError(
-            NetworkErrorType.CORRUPTED_RESPONSE,
-            "[200] " + data.info,
-        );
-    }
-
-    // HTTP status 401
-    if (response.status === 401 && code === 2) {
-        throw new NetworkError(
-            NetworkErrorType.UNAUTHORIZED,
-            "[401] " + data.info,
-        );
-    }
-    else if (response.status === 401) {
-        throw new NetworkError(
-            NetworkErrorType.CORRUPTED_RESPONSE,
-            "[401] " + data.info,
-        );
-    }
-
-    // HTTP status 403
-    if (response.status === 403 && code === 3) {
-        throw new NetworkError(
-            NetworkErrorType.REJECTED,
-            "[403] " + data.info,
-        );
-    }
-    else if (response.status === 403) {
-        throw new NetworkError(
-            NetworkErrorType.CORRUPTED_RESPONSE,
-            "[403] " + data.info,
-        );
-    }
-
     throw new NetworkError(
-        NetworkErrorType.UNKNOWN_ERROR,
-        `[${response.status}] ` + data.info,
+        response.status,
+        code,
+        `[${response.status}](${code}) ` + data.info,
     );
 };
 
