@@ -63,10 +63,16 @@ export default function SearchResultTable({
                 <span 
                   onClick={() => handlePlayerClick(value?.toString())}
                   style={{ 
-                    color: token.colorPrimary,
+                    color: token.colorText,
                     cursor: 'pointer',
                     textDecoration: 'none'
                   }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = token.colorPrimary)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = token.colorText)
+                  }
                 >
                   {value?.toString() || '-'}
                 </span>
@@ -79,10 +85,17 @@ export default function SearchResultTable({
                   return (
                     <span
                       onClick={() => router.push(`/meet?mid=${record.mid}`)}
-                      style={{
-                        color: token.colorPrimary,
+                      style={{ 
+                        color: token.colorText,
                         cursor: 'pointer',
+                        textDecoration: 'none'
                       }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.color = token.colorPrimary)
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.color = token.colorText)
+                      }
                     >
                       {value?.toString() || '-'}
                     </span>

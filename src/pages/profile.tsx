@@ -329,11 +329,17 @@ const UserProfilePage = () => {
                 >
                   <span
                     onClick={() => handlePlayerClick(item)}
-                    style={{
-                      color: token.colorPrimary,
+                      style={{ 
+                      color: token.colorText,
                       cursor: 'pointer',
                       textDecoration: 'none'
                     }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.color = token.colorPrimary)
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.color = token.colorText)
+                    }
                   >
                     {item}
                   </span>
