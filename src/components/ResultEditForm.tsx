@@ -100,11 +100,12 @@ const ResultEditForm = ({
       ...defaultValues,
       ...infoIds,
       ...values,
-      rank: !isNaN(+(values.rank??"")) ? +(values.rank??"") : undefined,
-      score: !isNaN(+(values.score??"")) ? +(values.score??"") : undefined,
+      rank: !isNaN(+(values.rank??"-")) ? +(values.rank??"") : undefined,
+      score: !isNaN(+(values.score??"-")) ? +(values.score??"") : undefined,
       session,
       commit,
     };
+    console.log('Cleaned Values:', cleanedValues);
     const realRequest = filterByType<ResultChangeRequest>(
       cleanedValues,
       ['session', 'commit', 'projectid', 'resultid', 'name', 'groupname', 'result', 'rank', 'score']
@@ -244,6 +245,10 @@ const ResultEditForm = ({
               label="排名"
               name="rank"
               rules={[{ required: false, message: '请输入排名' }]}
+              getValueFromEvent={(value) => {
+                // 当 InputNumber 清空时，value 为 null，此处转换为 undefined
+                return value === null ? undefined : value;
+              }}
             >
               <InputNumber min={1} disabled={frozenItems.includes("rank")}/>
             </Form.Item>
@@ -252,6 +257,10 @@ const ResultEditForm = ({
               label="得分"
               name="score"
               rules={[{ required: false, message: '请输入得分' }]}
+              getValueFromEvent={(value) => {
+                // 当 InputNumber 清空时，value 为 null，此处转换为 undefined
+                return value === null ? undefined : value;
+              }}
             >
               <InputNumber step={0.1} disabled={frozenItems.includes("score")}/>
             </Form.Item>
