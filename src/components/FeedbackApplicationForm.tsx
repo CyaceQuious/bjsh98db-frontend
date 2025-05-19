@@ -123,7 +123,7 @@ const FeedbackApplicationForm = ({
         onClick={() => setOpen(true)}
         icon={<EditOutlined/>}
       >
-        {'成绩反馈'}
+        {'反馈'}
       </Button>
 
       <Modal
@@ -162,7 +162,7 @@ const FeedbackApplicationForm = ({
             </Form.Item>
 
             <Form.Item
-              label="申请理由"
+              label="申请内容与理由"
               name="applyreason"
               rules={[{ required: true, message: '请输入申请理由，不超过300个字符' }]}
             >
