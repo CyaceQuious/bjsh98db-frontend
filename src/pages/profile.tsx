@@ -20,7 +20,9 @@ import ProfileForm from '../components/ProfileForm';
 import PasswordForm from '../components/PasswordForm';
 import AuthApplicationForm from '../components/AuthApplicationForm';
 import AuthReviewModal from '../components/AuthReviewModal';
+import FeedbackSender from "../components/FeedbackSender";
 import { AuthRequest } from '../utils/types';
+import FeedbackReceiver from "../components/FeedbackReceiver";
 
 const { useToken } = theme;
 interface UserProfile {
@@ -39,6 +41,7 @@ const UserProfilePage = () => {
   const session = useSelector((state: RootState) => state.auth.session);
   const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+  const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial);
   const [profile, setProfile] = useState<UserProfile | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -371,7 +374,7 @@ const UserProfilePage = () => {
             </Button>
           </Space>
         }
-        style={{ width: "60%", margin: "20px auto" }}
+        style={{ width: "70%", margin: "20px auto" }}
       >
         <AuthStatus 
           authRequests={authRequests} 
@@ -478,17 +481,23 @@ const UserProfilePage = () => {
             onClose={() => setModalVisible(false)}
           />
         </div>
-
-        <AuthRequests
-          authRequests={authRequests}
-          isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}
-          receivedAuthRequests={receivedAuthRequests}
-          onReviewRequest={(request) => {
-            setCurrentAuthRequest(request);
-            setAuthReviewModalVisible(true);
-          }}
-        />
       </Card>
+
+      {isDepartmentOfficial&&<FeedbackSender style={{ width: "70%", margin: "20px auto" }}/>}
+
+      {(isContestOfficial.length>0)&&<FeedbackReceiver style={{ width: "70%", margin: "20px auto" }}/>}
+      
+      <div style={{ width: "70%", margin: "20px auto"}}>
+      <AuthRequests
+        authRequests={authRequests}
+        isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}
+        receivedAuthRequests={receivedAuthRequests}
+        onReviewRequest={(request) => {
+          setCurrentAuthRequest(request);
+          setAuthReviewModalVisible(true);
+        }}
+      />
+      </div>
 
       <ProfileForm
         visible={editModalVisible}
