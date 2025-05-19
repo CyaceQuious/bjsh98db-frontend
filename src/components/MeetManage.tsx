@@ -9,7 +9,6 @@ import { getContestName, request } from '../utils/network';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-import ResultEditForm from "./ResultEditForm";
 import ProjectEditForm from './ProjectEditForm';
 
 interface MeetManageProps {
@@ -165,15 +164,10 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       </Modal>
 
       {!loading && <div>
-      <ResultEditForm 
-        buttonStyle={{ marginLeft: 16 }}
-        defaultValues={{mid, meet: meetName}} 
-        onSuccess={() => reload()}
-        frozenItems={["meet", "mid"]}
-      />
       <ProjectEditForm
         buttonStyle={{ marginLeft: 16 }}
-        defaultValues={{mid, meet: meetName}}
+        defaultValues={{meet: meetName}}
+        infoIds={{mid}}
         onSuccess={() => reload()}
         frozenItems={["meet", "mid"]}
       />

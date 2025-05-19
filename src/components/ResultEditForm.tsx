@@ -9,22 +9,16 @@ import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
 
-// "session": "lox53dvn9k6vma13vkmn4feuvi5vepun",
-// "mid": 3,
-// "projectname": "男子跳高",
-// "name": "张三",
-// "groupname": "电子系",
-// "result": "1.95m",
-// "rank": 1,
-// "score": 9.0
+import { filterByType } from '../utils/types';
+
 interface ResultChangeRequest {
   session: string;
-  meet: string;
-  mid: number;
-  projectname: string;
-  xingbie: string;
-  zubie: string;
-  leixing: string;
+  // 以下创建时提供
+  projectid?: number; 
+  commit?: string; // 强制创建
+  // 以下更新时提供
+  resultid?: number;
+  // 以下是成绩属性
   name: string;
   groupname: string;
   result: string;
@@ -38,12 +32,13 @@ interface ResultChangeResponse {
 }
 
 interface EntryFormValues {
-  mid: number;
+  // 以下项目基本都是冻结项（但是还是以调用者为准）
   meet: string;
   projectname: string;
   xingbie: string;
   zubie: string;
   leixing: string;
+  // 以下项目可以修改
   name: string;
   groupname: string;
   result: string;
@@ -51,22 +46,26 @@ interface EntryFormValues {
   score?: number;
 }
 
+interface InfoId {
+  // 用来传递提交给后端的时候需要用的id
+  projectid?: number;
+  resultid?: number;
+}
+
 interface EntryFormDrawerProps {
-  // 触发按钮的样式
-  buttonStyle?: React.CSSProperties;
-  // 表单默认值
-  defaultValues?: Partial<EntryFormValues>;
-  // 操作模式：新建(false) 或 更新(true)
-  isEditMode?: boolean;
-  useGray?: boolean;
+  buttonStyle?: React.CSSProperties; // 触发按钮的样式
+  defaultValues: Partial<EntryFormValues>; // 表单默认值
+  infoIds: Partial<InfoId>;
+  isEditMode?: boolean; // 操作模式：新建(false) 或 更新(true)
+  useGray?: boolean; // 是否使用灰色按钮
   frozenItems: string[]; 
-  // 提交成功回调
-  onSuccess?: (values: EntryFormValues) => void;
+  onSuccess?: (values: EntryFormValues) => void; // 提交成功回调
 }
 
 const ResultEditForm = ({
   buttonStyle,
   defaultValues,
+  infoIds,
   isEditMode = false, // 新建条目 / 编辑条目
   useGray = false, 
   frozenItems = [], 
@@ -94,23 +93,28 @@ const ResultEditForm = ({
   }, [open, form, defaultValues, isEditMode]);
 
   // 提交处理
-  const handleSubmit = async (values: EntryFormValues) => {
+  const handleSubmit = async (values: EntryFormValues, commit: string = "False") => {
     setLoading(true);
     console.log('Form Values:', values);
     const cleanedValues = {
-      ...defaultValues, 
-      ...values, 
-      rank: values.rank ?? undefined,
-      score: values.score ?? undefined
+      ...defaultValues,
+      ...infoIds,
+      ...values,
+      rank: !isNaN(+(values.rank??"-")) ? +(values.rank??"") : undefined,
+      score: !isNaN(+(values.score??"-")) ? +(values.score??"") : undefined,
+      session,
+      commit,
     };
+    console.log('Cleaned Values:', cleanedValues);
+    const realRequest = filterByType<ResultChangeRequest>(
+      cleanedValues,
+      ['session', 'commit', 'projectid', 'resultid', 'name', 'groupname', 'result', 'rank', 'score']
+    );
     try {
       const data: ResultChangeResponse = await request(
       `/api/manage_result`, 
       isEditMode ? 'PUT' : 'POST', 
-      {
-        ...cleanedValues, 
-        session, 
-      } as ResultChangeRequest, 
+      realRequest, 
       false, 
       'json'
       );
@@ -241,6 +245,10 @@ const ResultEditForm = ({
               label="排名"
               name="rank"
               rules={[{ required: false, message: '请输入排名' }]}
+              getValueFromEvent={(value) => {
+                // 当 InputNumber 清空时，value 为 null，此处转换为 undefined
+                return typeof value !== 'number' ? undefined : value;
+              }}
             >
               <InputNumber min={1} disabled={frozenItems.includes("rank")}/>
             </Form.Item>
@@ -249,6 +257,10 @@ const ResultEditForm = ({
               label="得分"
               name="score"
               rules={[{ required: false, message: '请输入得分' }]}
+              getValueFromEvent={(value) => {
+                // 当 InputNumber 清空时，value 为 null，此处转换为 undefined
+                return typeof value !== 'number' ? undefined : value;
+              }}
             >
               <InputNumber step={0.1} disabled={frozenItems.includes("score")}/>
             </Form.Item>

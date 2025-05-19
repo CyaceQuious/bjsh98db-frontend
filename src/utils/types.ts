@@ -76,6 +76,9 @@ export interface SearchResultItem {
     grade: string; 
     rank: string; 
     score: string; 
+    mid: number;
+    resultid: number;
+    projectid: number;
 }
 
 export interface SearchResult {
@@ -159,4 +162,18 @@ export interface AuthRequest {
   reject_reason?: string;
   replied_at?: string;
   sender_username?: string;
+}
+
+/**
+ * 过滤对象属性，仅保留类型 T 中定义的键
+ * @param obj 原始对象
+ * @param keys 类型 T 的键列表
+ * @returns 符合类型 T 的对象
+ */
+export function filterByType<T>(obj: any, keys: (keyof T)[]): T {
+    const result = {} as T;
+    keys.forEach((key) => {
+        result[key] = obj[key] || undefined;
+    });
+    return result;
 }

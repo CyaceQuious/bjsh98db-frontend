@@ -118,7 +118,13 @@ export default function SearchResultTable({
             width: 100,
             render: (_, record) => (
                 (isSystemAdmin || allContestOfficial.includes(record.mid)) && <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <ResultEditForm defaultValues={record} isEditMode onSuccess={onContentReFresh} frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie", "name", "groupname"]}/>
+                    <ResultEditForm 
+                        defaultValues={record} 
+                        infoIds={record}
+                        isEditMode 
+                        onSuccess={onContentReFresh} 
+                        frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]}
+                    />
                     <ResultDelForm values={record} onSuccess={onContentReFresh} />
                 </div>
             )
