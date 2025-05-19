@@ -139,3 +139,24 @@ export interface TeamScoreResponse {
   export interface TeamScoreRequest {
     mid: number;
   }
+
+  export interface UserProfile {
+  username: string;
+  email: string;
+  create_time: string;
+  Is_Department_Official: boolean;
+  Is_Contest_Official: string[];
+  Is_System_Admin: boolean;
+  star_list: string[];
+}
+
+export interface AuthRequest {
+  message_id: number;
+  real_name: string;
+  invited_reviewer: string;
+  applied_at: string;
+  status: number; // 0: pending, 1: approved, 2: rejected
+  reject_reason?: string;
+  replied_at?: string;
+  sender_username?: string;
+}

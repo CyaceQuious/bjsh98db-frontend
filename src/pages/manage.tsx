@@ -23,6 +23,13 @@ interface Contest {
   mid: number;
 }
 
+interface UserStatus {
+  username: string;
+  Is_Department_Official: boolean;
+  Is_Contest_Official: number[];
+  Is_System_Admin: boolean;
+}
+
 interface ModifyUserParams {
   session: string;
   user_to_modify: string;
@@ -43,6 +50,7 @@ export default function UserManagement() {
     type: "success" | "error" | "info" | "warning" | undefined;
     message: string;
   }>({ type: undefined, message: "" });
+  const [fetchingStatus, setFetchingStatus] = useState(false);
 
   // 获取比赛列表
   useEffect(() => {
@@ -54,7 +62,6 @@ export default function UserManagement() {
 
         if (result.code === 0 && result.results) {
           setContests(result.results);
-          //message.success("比赛列表加载成功");
         } else {
           message.error(`获取比赛列表失败: ${result.info}`);
           setSubmitStatus({
@@ -83,6 +90,65 @@ export default function UserManagement() {
       router.push("/");
     }
   }, [isAdmin, router]);
+
+  // 获取用户当前权限状态
+  // ... (previous imports remain the same)
+
+  // 获取用户当前权限状态
+  const fetchUserStatus = async (username: string) => {
+    if (!username) return;
+    
+    setFetchingStatus(true);
+    try {
+      const response = await fetch(`/api/users/get_user_status?username=${encodeURIComponent(username)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.code === 0 && result.data) {
+        const userStatus: UserStatus = {
+          username: result.data.username,
+          Is_Department_Official: result.data.Is_Department_Official,
+          Is_Contest_Official: result.data.Is_Contest_Official || [],
+          Is_System_Admin: result.data.Is_System_Admin,
+        };
+        
+        form.setFieldsValue({
+          user_to_modify: userStatus.username,
+          Is_Department_Official: userStatus.Is_Department_Official,
+          Is_System_Admin: userStatus.Is_System_Admin,
+          Is_Contest_Official: userStatus.Is_Contest_Official,
+        });
+      } else {
+        message.warning(`获取用户权限失败: ${result.info}`);
+        // 如果用户不存在，清空表单
+        form.setFieldsValue({
+          Is_Department_Official: false,
+          Is_System_Admin: false,
+          Is_Contest_Official: [],
+        });
+      }
+    } catch (error) {
+      console.error("获取用户权限失败:", error);
+      message.error("获取用户权限失败，请检查网络连接");
+    } finally {
+      setFetchingStatus(false);
+    }
+  };
+
+// ... (rest of the code remains the same)
+
+  // 用户名输入框失去焦点时获取用户权限
+  const handleUsernameBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const username = e.target.value.trim();
+    if (username) {
+      await fetchUserStatus(username);
+    }
+  };
 
   // SSR 阶段避免渲染
   if (!isAdmin) {
@@ -131,7 +197,6 @@ export default function UserManagement() {
           type: "success",
           message: `成功修改用户 ${values.user_to_modify} 的权限`,
         });
-        form.resetFields();
       } else {
         message.error(`操作失败: ${result.info}`);
         setSubmitStatus({
@@ -190,7 +255,12 @@ export default function UserManagement() {
               { required: true, message: "请输入用户名" },
             ]}
           >
-            <Input placeholder="输入要修改权限的用户名" />
+            <Input 
+              placeholder="输入要修改权限的用户名" 
+              onBlur={handleUsernameBlur}
+              disabled={fetchingStatus}
+              suffix={fetchingStatus ? <Spin size="small" /> : null}
+            />
           </Form.Item>
 
           <Form.Item
@@ -199,7 +269,7 @@ export default function UserManagement() {
             valuePropName="checked"
             tooltip="授予用户体干权限"
           >
-            <Switch />
+            <Switch disabled={fetchingStatus} />
           </Form.Item>
 
           <Form.Item
@@ -208,7 +278,7 @@ export default function UserManagement() {
             valuePropName="checked"
             tooltip="授予用户系统管理员权限"
           >
-            <Switch />
+            <Switch disabled={fetchingStatus} />
           </Form.Item>
 
           <Form.Item
@@ -221,7 +291,8 @@ export default function UserManagement() {
               placeholder="选择可管理的比赛"
               optionFilterProp="children"
               style={{ width: "100%" }}
-              loading={contestsLoading}
+              loading={contestsLoading || fetchingStatus}
+              disabled={contestsLoading || fetchingStatus}
               notFoundContent={
                 contestsLoading ? <Spin size="small" /> : "无比赛数据"
               }
@@ -240,7 +311,7 @@ export default function UserManagement() {
               htmlType="submit"
               loading={loading}
               style={{ width: "100%" }}
-              disabled={contestsLoading}
+              disabled={contestsLoading || fetchingStatus}
             >
               {loading ? "处理中..." : "修改权限"}
             </Button>

@@ -1,27 +1,65 @@
 import { useRouter } from 'next/router';
-import { Layout, Menu, theme, Modal, notification } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Layout, Menu, theme, Modal, notification, Badge } from 'antd';
 import type { MenuProps } from 'antd';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { resetData } from '../redux/auth';
+import { resetData, setHasUnreadAuth } from '../redux/auth';
+import { AuthRequest } from '../utils/types';
 import Link from 'next/link';
 
 const { Header } = Layout;
 
 export default function Navbar() {
     const router = useRouter();
+    const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
+    const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
     const [isLogoutConfirmVisible, setIsLogoutConfirmVisible] = useState(false);
     const {
         token: { colorBgContainer },
     } = theme.useToken();
 
     const [api, contextHolder] = notification.useNotification();
-
     const dispatch = useDispatch();
-    const userName = useSelector((state: RootState) => state.auth.userName);
-    // 从Redux中获取管理员状态
-    const isAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
+    const session = useSelector((state: RootState) => state.auth.session);
+
+    const fetchReceivedAuthRequests = async () => {
+      try {
+        const response = await fetch(`/api/message/get_auth_received?session=${encodeURIComponent(session)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+
+        const data = await response.json();
+        console.log('API Response:', data); // 调试用
+
+        if (data.code === 0) {
+          const allRequests = data.data.auth_requests || [];
+          console.log('所有请求:', allRequests); // 调试
+          // 仅当有status=0的请求时才显示小红点
+          const hasPending = allRequests.some((req: AuthRequest) => req.status === 0);
+          dispatch(setHasUnreadAuth(hasPending));
+        }
+      } catch (error) {
+        console.error('获取收到的认证请求错误:', error);
+      }
+    };
+
+    useEffect(() => {
+      if (isDepartmentOfficial || isSystemAdmin) {
+        fetchReceivedAuthRequests();
+      }
+    }, [session, isDepartmentOfficial || isSystemAdmin]);
+
+    
+    // 从Redux获取状态
+    const {
+        userName,
+        isSystemAdmin: isAdmin,
+        hasUnreadAuth
+    } = useSelector((state: RootState) => state.auth);
 
     // 处理登出确认
     const handleLogoutConfirm = () => {
@@ -29,8 +67,9 @@ export default function Navbar() {
         api.open({
             message: `用户${userName}成功登出`,
             duration: 3,
-          });
-        dispatch(resetData()); 
+        });
+        dispatch(resetData());
+        dispatch(setHasUnreadAuth(false)); // 登出时重置未读状态
     };
 
     // 根据当前路径自动选中菜单项
@@ -40,7 +79,7 @@ export default function Navbar() {
         router.pathname.startsWith('/contests') ? 'contests' :
         router.pathname.startsWith('/meet') ? 'contests' :
         router.pathname.startsWith('/manage') ? 'manage' :
-        router.pathname.startsWith('/admin/users') ? 'admin-users' : // 新增用户管理页面选中状态
+        router.pathname.startsWith('/admin/users') ? 'admin-users' :
         router.pathname === '/about' ? 'about' : ''
     ].filter(Boolean);
 
@@ -66,62 +105,71 @@ export default function Navbar() {
     // 如果是管理员，添加管理菜单项
     const items: MenuProps['items'] = [
         ...baseItems,
-        ...(isAdmin ? [
-            {
-                key: 'admin-users',
-                label: '用户管理',
-                onClick: () => router.push('/manage'),
-            }
-        ] : [])
+        ...(isAdmin ? [{
+            key: 'admin-users',
+            label: '用户管理',
+            onClick: () => router.push('/manage'),
+        }] : [])
     ];
 
-    const hideRightItems = ['/login', '/register', '/logout']
+    const hideRightItems = ['/login', '/register', '/logout'];
+    
     // 右侧菜单项配置
     const rightItems: MenuProps['items'] = hideRightItems.includes(router.asPath)
     ? [] : userName !== ""
         ? [
             {
-              key: 'username',
-              label: (
-                <span style={{ cursor: 'default', color: 'inherit' }}>
-                  <Link href="/profile" className="...">
-                    {userName}
-                  </Link>
-                </span>
-              ),
+                key: 'username',
+                label: (
+                    <span style={{ cursor: 'pointer', color: 'inherit' }}>
+                        <Link href="/profile" passHref>
+                            <Badge 
+                                dot={hasUnreadAuth} 
+                                offset={[5, 5]}
+                                style={{ 
+                                    marginRight: 8,
+                                    transform: 'translateY(-2px)'
+                                }}
+                            >
+                                <span className="username-text">
+                                    {userName}
+                                </span>
+                            </Badge>
+                        </Link>
+                    </span>
+                ),
             },
             {
-              key: 'logout',
-              label: '登出',
-              onClick: () => {
-                setIsLogoutConfirmVisible(true);
-              },
+                key: 'logout',
+                label: '登出',
+                onClick: () => setIsLogoutConfirmVisible(true),
             },
           ]
         : [
             {
-              key: 'login',
-              label: '登录',
-              onClick: () => router.push('/login'),
+                key: 'login',
+                label: '登录',
+                onClick: () => router.push('/login'),
             },
             {
-              key: 'register',
-              label: '注册',
-              onClick: () => router.push('/register'),
+                key: 'register',
+                label: '注册',
+                onClick: () => router.push('/register'),
             },
           ];
 
     return (
         <Header
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            width: '100%',
-            background: colorBgContainer,
-            display: 'flex',
-            alignItems: 'center',
-          }}
+            style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 1,
+                width: '100%',
+                background: colorBgContainer,
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 24px',
+            }}
         >
             {contextHolder}
             <Modal
@@ -134,35 +182,37 @@ export default function Navbar() {
             >
                 <p>确定要退出登录吗？</p>
             </Modal>
-          <div className="demo-logo" />
-          <Menu
-            theme="light"
-            mode="horizontal"
-            selectedKeys={selectedKeys}
-            items={items}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              justifyContent: 'flex-start'
-            }}
-          />
-          
-          {/* 右侧菜单 */}
-          <Menu
-            theme="light"
-            mode="horizontal"
-            selectedKeys={[]}
-            items={rightItems}
-            disabledOverflow={true}
-            style={{
-              marginLeft: 'auto', // 自动左外边距推到最右
-              // flex: 'none',      // 禁止伸缩
-              whiteSpace: 'nowrap', // 防止文字换行
-              background: 'transparent',
-              lineHeight: '64px',
-              borderBottom: 'none'
-            }}
-          />
+            
+            <div className="demo-logo" />
+            
+            <Menu
+                theme="light"
+                mode="horizontal"
+                selectedKeys={selectedKeys}
+                items={items}
+                style={{
+                    flex: 1,
+                    minWidth: 0,
+                    justifyContent: 'flex-start',
+                    borderBottom: 'none'
+                }}
+            />
+            
+            {/* 右侧菜单 */}
+            <Menu
+                theme="light"
+                mode="horizontal"
+                selectedKeys={[]}
+                items={rightItems}
+                disabledOverflow={true}
+                style={{
+                    marginLeft: 'auto',
+                    whiteSpace: 'nowrap',
+                    background: 'transparent',
+                    lineHeight: '64px',
+                    borderBottom: 'none'
+                }}
+            />
         </Header>
-      );
+    );
 }
