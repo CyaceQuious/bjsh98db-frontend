@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { Table, Spin, message, Modal } from 'antd';
+import { Table, Spin, message, Modal, Descriptions } from 'antd';
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 
 interface EventResult {
@@ -13,14 +13,19 @@ interface PlayerData {
   [eventName: string]: EventResult;
 }
 
-// interface UserProfile {
-//   star_list: string[];
-// }
-
 interface PlayerModalProps {
   visible: boolean;
   name: string;
   onClose: () => void;
+}
+
+interface ApiResponse {
+  code: number;
+  info: string;
+  count: number;
+  results: PlayerData;
+  username: string | undefined;
+  email: string | undefined;
 }
 
 const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
@@ -29,7 +34,8 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
   const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [isStarred, setIsStarred] = useState(false);
-  // const [userProfile, setUserProfile] = useState<UserProfile | undefined>(undefined);
+  const [username, setUsername] = useState<string | undefined>(undefined);
+  const [email, setEmail] = useState<string | undefined>(undefined);
   
   // 获取选手数据 - GET方法
   useEffect(() => {
@@ -47,10 +53,12 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
           },
         });
         
-        const data = await response.json();
+        const data: ApiResponse = await response.json();
         
         if (data.code === 0) {
           setPlayerData(data.results);
+          setUsername(data.username);
+          setEmail(data.email);
         } else {
           message.error(data.info);
         }
@@ -85,7 +93,6 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
         const data = await response.json();
         
         if (data.code === 0) {
-          // setUserProfile(data.data);
           setIsStarred(data.data.star_list.includes(name));
         }
       } catch (error) {
@@ -121,7 +128,6 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
       if (data.code === 0) {
         setIsStarred(!isStarred);
         message.success(isStarred ? '已取消关注' : '关注成功');
-        // setUserProfile(data.data);
       } else {
         message.error(data.info);
       }
@@ -186,12 +192,18 @@ const PlayerModal = ({ visible, name, onClose }: PlayerModalProps) => {
           <Spin size="large" />
         </div>
       ) : (
-        <Table 
-          dataSource={tableData} 
-          columns={columns} 
-          pagination={false}
-          bordered
-        />
+        <>
+          <Descriptions bordered column={1} size="small" style={{ marginBottom: '20px' }}>
+            {username && <Descriptions.Item label="用户名">{username}</Descriptions.Item>}
+            {email && <Descriptions.Item label="邮箱">{email}</Descriptions.Item>}
+          </Descriptions>
+          <Table 
+            dataSource={tableData} 
+            columns={columns} 
+            pagination={false}
+            bordered
+          />
+        </>
       )}
     </Modal>
   );

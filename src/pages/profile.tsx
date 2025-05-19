@@ -11,6 +11,7 @@ import PasswordForm from '../components/PasswordForm';
 import AuthApplicationForm from '../components/AuthApplicationForm';
 import AuthReviewModal from '../components/AuthReviewModal';
 import { UserProfile, AuthRequest } from '../utils/types';
+import PlayerModal from '../components/player'; 
 
 const UserProfilePage = () => {
   const router = useRouter();
@@ -27,7 +28,8 @@ const UserProfilePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [authRequests, setAuthRequests] = useState<AuthRequest[]>([]);
   const [receivedAuthRequests, setReceivedAuthRequests] = useState<AuthRequest[]>([]);
-  const [hasUnreadAuth, setHasUnreadAuth] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAthlete, setSelectedAthlete] = useState('');
 
   useEffect(() => {
     if (!session) {
@@ -319,6 +321,12 @@ const UserProfilePage = () => {
     return <div className="flex justify-center items-center h-screen">无法获取用户信息</div>;
   }
 
+  // Function to show athlete details
+  const showAthleteDetails = (athleteName: string) => {
+    setSelectedAthlete(athleteName);
+    setModalVisible(true);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Head>
@@ -412,7 +420,13 @@ const UserProfilePage = () => {
                     </Button>
                   ]}
                 >
-                  <span className="text-base">{item}</span>
+                  <span 
+                    style={{ color: '#2563eb', cursor: 'pointer' }}
+                    className="text-base underline hover:no-underline hover:text-blue-800"
+                    onClick={() => showAthleteDetails(item)}
+                  >
+                    {item}
+                  </span>
                 </List.Item>
               )}
               className="mt-2"
@@ -421,6 +435,12 @@ const UserProfilePage = () => {
           ) : (
             <p className="mt-2 text-gray-500">暂无关注</p>
           )}
+
+          <PlayerModal
+            visible={modalVisible}
+            name={selectedAthlete}
+            onClose={() => setModalVisible(false)}
+          />
         </div>
 
         <AuthRequests
