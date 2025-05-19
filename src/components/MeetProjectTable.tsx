@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Table } from 'antd';
+import { Button, Modal, Table, Card } from 'antd';
 import { getContestName, request } from '../utils/network';
 import { interfaceToString } from '../utils/types';
 import SearchContainer from './SearchContainer';
@@ -152,9 +152,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         setError(data.info || 'Failed to fetch projects');
       }
     } catch (err) {
-      alert('An error occurred while fetching projects' + err); 
-      setError('An error occurred while fetching projects' + err);
-      console.log('Fetch error:', err);
+      alert('An error occurred while fetching projects' + `${err}`); 
+      setError('An error occurred while fetching projects' + `${err}`);
+      console.log('Fetch error:', `${err}`);
     } finally {
       setLoading(false);
     }
@@ -177,10 +177,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   }, [refreshTrigger]);
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        {meetName} 全部比赛项目
-      </h1>
+    <Card title={`${meetName} 全部比赛项目`}style={{ padding: '20px', margin: '5px auto' }}>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
@@ -231,6 +228,6 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
           style={{ marginTop: 20 }}
         />
       )}
-    </div>
+    </Card>
   );
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Modal, Input, message } from 'antd'; 
+import { Button, Modal, Input, message, Card } from 'antd'; 
 
 import { EditOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 
@@ -143,10 +143,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   }, [])
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        赛事管理
-      </h1>
+    <Card title={"赛事管理"} style={{padding: '20px', width: '800px', margin: '5px 0px' }}>
 
       <Modal
         title="修改比赛名称"
@@ -190,7 +187,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
         修改赛事名称
       </Button>}
       </div>}
-	</div>
+	</Card>
   )
 }
 

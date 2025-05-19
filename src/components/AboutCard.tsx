@@ -116,7 +116,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
     return (
         <Content className={styles.container} style={{ padding: token.paddingLG }}>
             <div style={{ 
-                maxWidth: "90%", 
+                // maxWidth: "90%", 
                 margin: '0 auto',
                 padding: token.paddingLG,
                 background: token.colorBgContainer,

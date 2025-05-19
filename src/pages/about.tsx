@@ -13,7 +13,11 @@ const About = () => {
     );
 
     return (
+        <div className={styles.container}>
+        <div style={{width: '90%', display: 'flex', justifyContent: 'center'}}>
         <AboutCard mode='full'/>
+        </div>
+        </div>
     )
 };
 

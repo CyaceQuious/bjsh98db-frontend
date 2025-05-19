@@ -5,6 +5,7 @@ import { SearchResultItem } from "../utils/types";
 import { getResultTableItemName } from "../utils/lang";
 import ResultEditForm from './ResultEditForm';
 import ResultDelForm from './ResultDelForm';
+import FeedbackApplicationForm from './FeedbackApplicationForm';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import PlayerModal from './player';
@@ -38,6 +39,7 @@ export default function SearchResultTable({
     const { token } = useToken();
     const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
     const allContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial);
+    const isDepartmentOfficial = useSelector((state: RootState) => state.auth.isDepartmentOfficial);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPlayer, setSelectedPlayer] = useState('');
     const router = useRouter();
@@ -109,7 +111,7 @@ export default function SearchResultTable({
     }));
 
     let columns: TableColumnsType<any> = [...baseColumns];
-    if (isSystemAdmin || allContestOfficial.length > 0) {
+    if (isSystemAdmin || allContestOfficial.length > 0 || isDepartmentOfficial) {
         // 添加管理列
         const managementColumn: TableColumnsType[number] = {
             title: getResultTableItemName('manage'),
@@ -117,7 +119,9 @@ export default function SearchResultTable({
             fixed: 'right',
             width: 100,
             render: (_, record) => (
-                (isSystemAdmin || allContestOfficial.includes(record.mid)) && <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <>
+                {(isSystemAdmin || allContestOfficial.includes(record.mid)) ?
+                <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <ResultEditForm 
                         defaultValues={record} 
                         infoIds={record}
@@ -126,7 +130,20 @@ export default function SearchResultTable({
                         frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]}
                     />
                     <ResultDelForm values={record} onSuccess={onContentReFresh} />
-                </div>
+                </div> : ""}
+                {isDepartmentOfficial &&
+                <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <FeedbackApplicationForm
+                        defaultValues={{
+                            entryString: `${record.meet}-${record.xingbie}${record.zubie}${record.projectname}${record.leixing}-${record.groupname}${record.name}-${record.result}`,
+                            applyreason: "",
+                        }}
+                        infoIds={{result_id: record.resultid}}
+                        frozenItems={["entryString"]}
+                        onSuccess={(_: any)=>{}}
+                    />
+                </div>}
+                </>
             )
         };
         columns = [...columns, managementColumn]; 
