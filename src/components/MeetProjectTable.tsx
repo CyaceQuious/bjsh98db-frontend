@@ -49,16 +49,15 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(mid));
 
   const columns = [
-    { title: '项目名称', dataIndex: 'name', key: 'name' },
-    { 
-      title: '类型',
-      dataIndex: 'leixing',
-      key: 'leixing',
-      filters: Array.from(new Set(projects.map(p => p.leixing))).map(value => ({
+    {
+      title: '性别',
+      dataIndex: 'xingbie',
+      key: 'xingbie',
+      filters: Array.from(new Set(projects.map(p => p.xingbie))).map(value => ({
         text: value,
         value
       })),
-      onFilter: (value: any, record: Projects) => record.leixing === value,
+      onFilter: (value: any, record: Projects) => record.xingbie === value,
     },
     {
       title: '组别',
@@ -70,15 +69,16 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       })),
       onFilter: (value: any, record: Projects) => record.zubie === value,
     },
-    {
-      title: '性别',
-      dataIndex: 'xingbie',
-      key: 'xingbie',
-      filters: Array.from(new Set(projects.map(p => p.xingbie))).map(value => ({
+    { title: '项目名称', dataIndex: 'name', key: 'name' },
+    { 
+      title: '类型',
+      dataIndex: 'leixing',
+      key: 'leixing',
+      filters: Array.from(new Set(projects.map(p => p.leixing))).map(value => ({
         text: value,
         value
       })),
-      onFilter: (value: any, record: Projects) => record.xingbie === value,
+      onFilter: (value: any, record: Projects) => record.leixing === value,
     },
     {
       title: '操作',
