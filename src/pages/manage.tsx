@@ -30,14 +30,6 @@ interface UserStatus {
   Is_System_Admin: boolean;
 }
 
-interface ModifyUserParams {
-  session: string;
-  user_to_modify: string;
-  Is_Department_Official: boolean;
-  Is_Contest_Official: number[];
-  Is_System_Admin: boolean;
-}
-
 export default function UserManagement() {
   const router = useRouter();
   const session = useSelector((state: RootState) => state.auth.session);
@@ -259,7 +251,7 @@ export default function UserManagement() {
               placeholder="输入要修改权限的用户名" 
               onBlur={handleUsernameBlur}
               disabled={fetchingStatus}
-              suffix={fetchingStatus ? <Spin size="small" /> : null}
+              suffix={fetchingStatus ? <Spin size="small" /> : undefined}
             />
           </Form.Item>
 
