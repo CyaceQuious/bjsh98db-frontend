@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import PlayerModal from './player';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 
 const { useToken } = theme;
@@ -22,6 +23,7 @@ interface SearchResultTableProps {
 }
 
 export interface SearchResultTableItem extends SearchResultItem {
+    mid: number;
     manage?: React.ReactNode; // 添加管理列类型
 }
 
@@ -38,6 +40,7 @@ export default function SearchResultTable({
     const allContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedPlayer, setSelectedPlayer] = useState('');
+    const router = useRouter();
 
     const handlePlayerClick = (name: string) => {
         setSelectedPlayer(name);
@@ -45,30 +48,43 @@ export default function SearchResultTable({
     };
 
     // 生成动态列配置
-    const baseColumns = ["name", "meet", "zubie", "projectname", "xingbie", "leixing","groupname", "result", "grade", "rank", "score"].map(name => ({
+    const baseColumns = ["name", "meet", "xingbie", "zubie", "projectname", "leixing","groupname", "result", "grade", "rank", "score"].map(name => ({
         title: getResultTableItemName(name as keyof SearchResultTableItem),
         dataIndex: name,
         key: name,
         ellipsis: true,
         // 在 SearchResultTable.tsx 中
         
-        render: (value: any) => {
+        render: (value: any, record: SearchResultTableItem) => {
             if (name === 'name') {
-            return (
+              return (
                 <div>
                 {/* 原来的Link替换为点击事件 */}
                 <span 
-                    onClick={() => handlePlayerClick(value?.toString())}
-                    style={{ 
+                  onClick={() => handlePlayerClick(value?.toString())}
+                  style={{ 
                     color: token.colorPrimary,
                     cursor: 'pointer',
                     textDecoration: 'none'
-                    }}
+                  }}
                 >
-                    {value?.toString() || '-'}
+                  {value?.toString() || '-'}
                 </span>
                 </div>
-            );
+              );
+            }
+            if (name === 'meet') {                    // 点击“运动会”跳转
+                return (
+                  <span
+                    onClick={() => router.push(`/meet?mid=${record.mid}`)}
+                    style={{
+                      color: token.colorPrimary,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {value?.toString() || '-'}
+                  </span>
+                );
             }
             return value?.toString() || '-';
         }
