@@ -32,7 +32,8 @@ const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, strin
     grade: "运动技术等级",
     rank: "名次", 
     score: "得分", 
-    manage: "管理"
+    manage: "管理",
+    mid: "运动会编号",
 };
 // current language is simplified chinese
 export function getResultTableItemName(itemName: keyof SearchResultTableItem): string {
