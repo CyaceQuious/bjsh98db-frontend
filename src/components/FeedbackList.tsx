@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Row, Col, Descriptions, Tag, Typography, List, Card, Empty, Pagination, Input, Button, Space,   message  } from 'antd';
+import ResultEditForm from './ResultEditCard';
 
 export interface FeedbackItem {
   meet: string;
@@ -184,11 +185,8 @@ const FeedbackList = ({
                 </Descriptions.Item>
               )}
             </Descriptions>
-            {mode === 'receive' && (
-              <div style={{ marginTop: 24 }}>
-                <Typography.Title level={5} style={{ marginBottom: 16 }}>
-                  审核操作
-                </Typography.Title>
+            {mode === 'receive' && (<>
+              <Card style={{ marginTop: 24 }} title={"审核操作"}>
                 
                 <Input.TextArea
                   value={rejectReason}
@@ -212,8 +210,14 @@ const FeedbackList = ({
                     驳回申请
                   </Button>
                 </Space>
-              </div>
-            )}
+              </Card>
+              <ResultEditForm
+                defaultValues={selectedItem}
+                infoIds={{resultid: selectedItem.resultid}}
+                isEditMode
+                frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]}
+              />
+            </>)}
           </Card>
         ) : (
           <Empty description="请选择左侧的反馈查看详情" />
