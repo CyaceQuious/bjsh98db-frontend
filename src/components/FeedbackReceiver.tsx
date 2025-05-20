@@ -117,7 +117,7 @@ export default function FeedbackReceiver({ style }: FeedbackReceiverProps) {
             if (data.code !== 0) {
                 alert(data.info || 'Failed to submit reply');
             }
-            message.success("审核提交成功");
+            message.success(approval === 'True' ? "审核提交成功，成绩记录将不会自动修改，请及时手动修改" : "审核提交成功", 3);
         } catch (err) {
             message.warning('操作失败，请重试: ' + err);
             console.log('API Error:', err);
