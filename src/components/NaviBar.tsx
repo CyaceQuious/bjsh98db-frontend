@@ -88,20 +88,23 @@ export default function Navbar() {
         {
             key: 'logo',
             label: (
-                <span>
+                <span style={{
+                    display: 'inline-flex',  
+                    height: '100%',
+                    verticalAlign: 'middle'
+                }}>
                     <img 
                         src="/logo.png" 
                         alt="logo" 
                         style={{ 
-                            height: '32px',
-                            marginRight: '8px',
-                            verticalAlign: 'middle',
+                            objectFit: 'contain',  // 保持图片比例
+                            verticalAlign: 'top',  // 消除底部间隙
                         }}
                     />
                 </span>
             ),
             onClick: () => router.push('/'),
-            className: 'nohover-logo-menu-item',
+            className: 'logo-menu-item',
         },
         {
             key: 'home',
@@ -189,14 +192,14 @@ export default function Navbar() {
                 padding: '0 24px',
             }}
         >
-            <style jsx global>{`
-                .nohover-logo-menu-item:hover {
+            {/* <style jsx global>{`
+                .logo-menu-item:hover {
                     background: transparent !important;
                 }
-                .nohover-logo-menu-item::after {
+                .logo-menu-item::after {
                     display: none !important;
                 }
-            `}</style>
+            `}</style> */}
             {contextHolder}
             <Modal
                 title="确认登出"

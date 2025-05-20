@@ -177,7 +177,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   }, [refreshTrigger]);
 
   return (
-    <Card title={`${meetName} 全部比赛项目`}style={{ padding: '20px', margin: '5px auto' }}>
+    <Card title={`${meetName} 全部比赛项目`}style={{ padding: '20px', margin: '5px auto', width: '100%'}}>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
