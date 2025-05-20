@@ -1,10 +1,10 @@
 import { Typography, Alert, List, Layout, theme } from 'antd';
-import styles from '../styles/container.module.css';
+// import styles from '../styles/container.module.css';
 import Link from 'next/link';
 import Card from 'antd/es/card/Card';
 
 const { Title, Text } = Typography;
-const { Content } = Layout;
+// const { Content } = Layout;
 const { useToken } = theme;
 
 import React from 'react';
@@ -114,12 +114,13 @@ const AboutCard = ({mode}: AboutCardProps) => {
     const { token } = useToken();
 
     return (
-        <Content className={styles.container} style={{ padding: token.paddingLG }}>
+        // <Card className={styles.container} style={{ padding: token.paddingLG }}>
             <div style={{ 
+				marginBottom: token.marginLG,
                 // maxWidth: "90%", 
-                margin: '0 auto',
-                padding: token.paddingLG,
-                background: token.colorBgContainer,
+                // margin: '0 auto',
+                // padding: token.paddingLG,
+                // background: token.colorBgContainer,
                 // borderRadius: token.borderRadiusLG,
                 // boxShadow: token.boxShadow
             }}>
@@ -184,7 +185,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
                     showIcon
                 />
             </div>
-        </Content>
+        // </Card>
     );
 };
 
