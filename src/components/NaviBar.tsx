@@ -139,17 +139,16 @@ export default function Navbar() {
             {
                 key: 'username',
                 label: (
-                    <span style={{ cursor: 'pointer', color: 'inherit' }}>
+                    <span style={{ cursor: 'pointer', color: 'inherit', position: 'relative' }}>
                         <Link href="/profile" passHref>
                             <Badge 
                                 dot={hasUnreadAuth} 
-                                offset={[5, 5]}
+                                offset={[10, 0]}  // Adjusted offset values
                                 style={{ 
                                     marginRight: 8,
-                                    transform: 'translateY(-2px)'
                                 }}
                             >
-                                <span className="username-text">
+                                <span className="username-text" style={{ paddingRight: '10px' }}>
                                     {userName}
                                 </span>
                             </Badge>
