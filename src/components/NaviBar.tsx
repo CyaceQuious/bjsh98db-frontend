@@ -92,8 +92,7 @@ export default function Navbar() {
                         src="/logo.png" 
                         alt="logo" 
                         style={{ 
-                            height: '32px',
-                            marginRight: '8px',
+                            height: '48px',
                             verticalAlign: 'middle',
                         }}
                     />
