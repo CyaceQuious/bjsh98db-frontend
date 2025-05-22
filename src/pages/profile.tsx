@@ -524,8 +524,10 @@ const UserProfilePage = () => {
       <AuthReviewModal
         visible={authReviewModalVisible}
         request={currentAuthRequest}
+        onCancel={() => setAuthReviewModalVisible(false)}
         onApprove={() => handleReviewAuth(1)}
         onReject={(reason) => handleReviewAuth(2, reason)}
+        submitting={submitting}
       />
     </div>
   );
