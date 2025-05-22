@@ -34,7 +34,7 @@ const AuthReviewModal: React.FC<AuthReviewModalProps> = ({
       title="处理认证申请"
       open={visible}
       onCancel={onCancel}
-      footer={undefined}
+      footer={false}
       destroyOnClose
     >
       {request && (

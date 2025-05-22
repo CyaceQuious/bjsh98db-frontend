@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { resetData, setHasUnreadAuth } from '../redux/auth';
 import { AuthRequest } from '../utils/types';
-import Link from 'next/link';
 
 const { Header } = Layout;
 
@@ -142,23 +141,21 @@ export default function Navbar() {
             {
                 key: 'username',
                 label: (
-                    <span style={{ cursor: 'pointer', color: 'inherit' }}>
-                        <Link href="/profile" passHref>
-                            <Badge 
-                                dot={hasUnreadAuth} 
-                                offset={[5, 5]}
-                                style={{ 
-                                    marginRight: 8,
-                                    transform: 'translateY(-2px)'
-                                }}
-                            >
-                                <span className="username-text">
-                                    {userName}
-                                </span>
-                            </Badge>
-                        </Link>
+                    <span style={{ cursor: 'pointer', color: 'inherit', position: 'relative' }}>
+                        <Badge 
+                            dot={hasUnreadAuth} 
+                            offset={[10, 0]}  // Adjusted offset values
+                            style={{ 
+                                marginRight: 8,
+                            }}
+                        >
+                            <span className="username-text" style={{ paddingRight: '10px' }}>
+                                {userName}
+                            </span>
+                        </Badge>
                     </span>
                 ),
+                onClick: () => router.push('/profile'),
             },
             {
                 key: 'logout',

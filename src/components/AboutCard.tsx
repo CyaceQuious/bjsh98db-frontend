@@ -1,4 +1,4 @@
-import { Typography, Alert, List, Layout, theme } from 'antd';
+import { Typography, Alert, List, theme } from 'antd';
 // import styles from '../styles/container.module.css';
 import Link from 'next/link';
 import Card from 'antd/es/card/Card';
@@ -99,11 +99,11 @@ const websetFunctions: WebsiteFunctionDataType[] = [
 ]; 
 
 const Developers = [
-	{ name: 'ryz', link: '/' , other: ''},
-	{ name: 'czy', link: '/' , other: ''},
-	{ name: 'zjy', link: '/' , other: ''},
-	{ name: 'fgf', link: '/' , other: ''},
-	{ name: 'mpc', link: '/' , other: ''}
+	{ name: 'CyaceQuious', link: 'https://github.com/CyaceQuious' , other: ''},
+	{ name: 'czyarl', link: 'https://github.com/czyarl' , other: ''},
+	{ name: 'IrisZou-001', link: 'https://github.com/IrisZou-001' , other: ''},
+	{ name: 'fgaofan', link: 'https://github.com/fgaofan' , other: ''},
+	{ name: 'ympcMark', link: 'https://github.com/ympcMark' , other: ''}
 ]
 
 interface AboutCardProps {
@@ -152,7 +152,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
                         grid={{ gutter: 16, column: 2 }}
                         dataSource={Developers}
                         renderItem={(item) => (
-                            <List.Item style={{ margin: 0 }}>
+                            <List.Item style={{ margin: 0, paddingLeft: '10px', paddingRight: '10px' }}>
                                 <Link 
                                     href={item.link} 
                                     style={{
