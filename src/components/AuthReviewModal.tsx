@@ -5,41 +5,36 @@ import { AuthRequest } from '../utils/types';
 interface AuthReviewModalProps {
   visible: boolean;
   request: AuthRequest | undefined;
+  onCancel: () => void;
   onApprove: () => void;
   onReject: (reason: string) => void;
+  submitting: boolean;
 }
 
 const AuthReviewModal: React.FC<AuthReviewModalProps> = ({
   visible,
   request,
+  onCancel,
   onApprove,
   onReject,
+  submitting,
 }) => {
   const [rejectReason, setRejectReason] = useState('');
-  const [localSubmitting, setLocalSubmitting] = useState(false);
 
   const handleReject = () => {
     if (!rejectReason.trim()) {
       message.error('请填写拒绝原因');
       return;
     }
-    setLocalSubmitting(true);
     onReject(rejectReason);
-  };
-
-  const handleApprove = () => {
-    setLocalSubmitting(true);
-    onApprove();
   };
 
   return (
     <Modal
       title="处理认证申请"
       open={visible}
-      footer={undefined}
-      closable={false}  // Disable the close button (X)
-      maskClosable={false}  // Prevent closing by clicking outside
-      keyboard={false}  // Prevent closing with ESC key
+      onCancel={onCancel}
+      footer={false}
       destroyOnClose
     >
       {request && (
@@ -64,15 +59,15 @@ const AuthReviewModal: React.FC<AuthReviewModalProps> = ({
             <div className="flex justify-between">
               <Button 
                 type="primary" 
-                onClick={handleApprove}
-                loading={localSubmitting}
+                onClick={onApprove}
+                loading={submitting}
               >
                 通过认证
               </Button>
               <Button 
                 danger 
                 onClick={handleReject}
-                loading={localSubmitting}
+                loading={submitting}
               >
                 拒绝认证
               </Button>
