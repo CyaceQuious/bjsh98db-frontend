@@ -69,8 +69,8 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
             console.log('set result over')
             setError(undefined)
         }).catch((err) => {
-            alert(FAILURE_PREFIX + err);
-            setError(SEARCH_ERROR + err);
+            alert(FAILURE_PREFIX + `${err}`);
+            setError(SEARCH_ERROR + `${err}`);
         }).finally(() => {
             setIsLoading(false);
         })

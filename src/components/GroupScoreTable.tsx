@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { Space, AutoComplete, Button, Form, Table } from 'antd';
+import { Space, AutoComplete, Button, Form, Table, Card } from 'antd';
 
 import { SearchOutlined, HistoryOutlined } from '@ant-design/icons';
 import useSearchHistory from '../hook/useSearchHistory';
@@ -104,10 +104,7 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   ];
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        {meetName} 团体总分排名
-      </h1>
+    <Card title={`${meetName} 团体总分排名`} style={{ padding: '20px', margin: '5px auto' }}>
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
@@ -190,6 +187,6 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
         locale={{ emptyText: '暂无数据' }}
       />
       )}
-    </div>
+    </Card>
   );
 }

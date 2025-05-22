@@ -86,6 +86,24 @@ export default function Navbar() {
     // 基础菜单项配置
     const baseItems: MenuProps['items'] = [
         {
+            key: 'logo',
+            label: (
+                <span>
+                    <img 
+                        src="/logo.png" 
+                        alt="logo" 
+                        style={{ 
+                            height: '32px',
+                            marginRight: '8px',
+                            verticalAlign: 'middle',
+                        }}
+                    />
+                </span>
+            ),
+            onClick: () => router.push('/'),
+            className: 'nohover-logo-menu-item',
+        },
+        {
             key: 'home',
             label: '搜索',
             onClick: () => router.push('/'),
@@ -121,17 +139,16 @@ export default function Navbar() {
             {
                 key: 'username',
                 label: (
-                    <span style={{ cursor: 'pointer', color: 'inherit' }}>
+                    <span style={{ cursor: 'pointer', color: 'inherit', position: 'relative' }}>
                         <Link href="/profile" passHref>
                             <Badge 
                                 dot={hasUnreadAuth} 
-                                offset={[5, 5]}
+                                offset={[10, 0]}  // Adjusted offset values
                                 style={{ 
                                     marginRight: 8,
-                                    transform: 'translateY(-2px)'
                                 }}
                             >
-                                <span className="username-text">
+                                <span className="username-text" style={{ paddingRight: '10px' }}>
                                     {userName}
                                 </span>
                             </Badge>
@@ -171,6 +188,14 @@ export default function Navbar() {
                 padding: '0 24px',
             }}
         >
+            <style jsx global>{`
+                .nohover-logo-menu-item:hover {
+                    background: transparent !important;
+                }
+                .nohover-logo-menu-item::after {
+                    display: none !important;
+                }
+            `}</style>
             {contextHolder}
             <Modal
                 title="确认登出"
