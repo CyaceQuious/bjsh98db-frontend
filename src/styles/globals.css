@@ -42,3 +42,28 @@ a {
     border-bottom: 1px solid #f0f0f0;
   }
 }
+
+:root {
+  --navbar-height: 64px;
+  --logo-horizontal-padding: 16px;
+}
+
+.ant-layout-header {
+  height: var(--navbar-height) !important;
+  line-height: var(--navbar-height) !important;
+}
+
+.logo-menu-item {
+  padding: 0 var(--logo-horizontal-padding) !important;
+  
+  img {
+    height: var(--navbar-height);
+  }
+}
+
+.logo-menu-item:hover {
+  background: transparent !important;
+}
+.logo-menu-item::after {
+  display: none !important;
+}

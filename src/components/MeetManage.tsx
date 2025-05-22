@@ -143,7 +143,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   }, [])
 
   return (
-    <Card title={"赛事管理"} style={{padding: '20px', width: '800px', margin: '5px 0px' }}>
+    <Card title={"赛事管理"} style={{padding: '20px', width: '100%', margin: '5px 0px' }}>
 
       <Modal
         title="修改比赛名称"
