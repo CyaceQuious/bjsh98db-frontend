@@ -36,7 +36,7 @@ const AuthReviewModal: React.FC<AuthReviewModalProps> = ({
     <Modal
       title="处理认证申请"
       open={visible}
-      footer={null}
+      footer={undefined}
       closable={false}  // Disable the close button (X)
       maskClosable={false}  // Prevent closing by clicking outside
       keyboard={false}  // Prevent closing with ESC key

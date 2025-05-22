@@ -1,4 +1,4 @@
-import { Typography, Alert, List, Layout, theme } from 'antd';
+import { Typography, Alert, List, theme } from 'antd';
 // import styles from '../styles/container.module.css';
 import Link from 'next/link';
 import Card from 'antd/es/card/Card';
