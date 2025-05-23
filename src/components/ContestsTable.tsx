@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Modal, Input, message, Form } from 'antd'; 
+import { Button, Modal, Input, message, Form, Table, Card } from 'antd'; 
 
 import { PlusOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 
-import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
 import { request } from '../utils/network';
 
 import { useSelector } from "react-redux";
@@ -267,36 +266,70 @@ export default function ContestsTable() {
     }
   }
 
-  // 计算当前页的数据
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = contests.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  // 改变页码
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // 改变每页显示数量
-  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1); // 重置到第一页
-  };
+  // 表格列配置
+  const columns = [
+    {
+      title: '编号',
+      dataIndex: 'mid',
+      key: 'mid',
+    },
+    {
+      title: '比赛名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_: any, record: Contest) => (
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button 
+            type="link" 
+            onClick={() => router.push(`/meet?mid=${record.mid}`)}
+            style={{ padding: 0 }}
+          >
+            进入主页
+          </Button>
+          {isSystemAdmin && (
+            <>
+              <Button
+                type="link"
+                onClick={() => handleRenameClick(record.mid, record.name)}
+                style={{ padding: 0 }}
+              >
+                修改名称
+              </Button>
+              <Button
+                type="link"
+                onClick={() => handleDeleteClick(record.mid, record.name)}
+                style={{ padding: 0 }}
+              >
+                删除比赛
+              </Button>
+            </>
+          )}
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ margin: 0 }}>比赛列表</h1>
-        {isSystemAdmin && <Button 
+    <Card title={
+      <h1>比赛列表</h1>
+    } extra={
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+      {isSystemAdmin && <Button 
           type="link" 
           onClick={() => setIsAddModalOpen(true)}
           style={{ 
             color: '#8c8c8c',
             fontSize: '16px',
-            padding: '0 12px',
+            padding: '0px 12px',
             height: 40,
             display: 'flex',
             alignItems: 'center',
             gap: 8,
+            marginRight: 8,
             // border: '1px solid #d9d9d9',
             // borderRadius: 6,
             backgroundColor: 'rgba(0, 0, 0, 0.02)',
@@ -314,11 +347,12 @@ export default function ContestsTable() {
           style={{ 
             color: '#8c8c8c',
             fontSize: '16px',
-            padding: '0 12px',
+            padding: '0px 12px',
             height: 40,
             display: 'flex',
             alignItems: 'center',
             gap: 8,
+            marginRight: 8,
             // border: '1px solid #d9d9d9',
             // borderRadius: 6,
             backgroundColor: 'rgba(0, 0, 0, 0.02)',
@@ -329,6 +363,8 @@ export default function ContestsTable() {
           同步比赛列表
         </Button>}
       </div>
+    }>
+      
 
       <Modal
         title="修改比赛名称"
@@ -379,82 +415,31 @@ export default function ContestsTable() {
         </div>
       )}
 
-      {/* 分页控制 - 顶部 */}
-      <PagerHeader itemsPerPage={itemsPerPage} totalItems={totalItems} handleItemsPerPageChange={handleItemsPerPageChange}/>
-
-      {!loading && !error && (
-        <>
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              marginTop: '20px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            }}
-          >
-            <thead>
-              <tr style={{ backgroundColor: '#f5f5f5' }}>
-                <th style={{ padding: '12px', textAlign: 'left' }}>编号</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>比赛名称</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.length > 0 ? (
-                currentItems.map((contest) => (
-                  <tr
-                    key={contest.name}
-                    style={{
-                      borderBottom: '1px solid #e0e0e0',
-                      backgroundColor: contest.mid % 2 === 0 ? '#fafafa' : 'white',
-                    }}
-                  >
-                    <td style={{ padding: '12px' }}>{contest.mid}</td>
-                    <td style={{ padding: '12px' }}>{contest.name}</td>
-                    <td style={{ padding: '12px' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <Button 
-                          type="link" 
-                          onClick={() => router.push(`/meet?mid=${contest.mid}`)}
-                          style={{ padding: 0 }}
-                        >
-                          进入主页
-                        </Button>
-                        {isSystemAdmin && <Button
-                          type="link"
-                          onClick={() => handleRenameClick(contest.mid, contest.name)}
-                          style={{ padding: 0 }}
-                        >
-                          修改名称
-                        </Button>}
-                        {isSystemAdmin && <Button
-                          type="link"
-                          onClick={() => handleDeleteClick(contest.mid, contest.name)}
-                          style={{ padding: 0 }}
-                        >
-                          删除比赛
-                        </Button>}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={3} className="py-4 px-4 border-b text-center text-gray-500">
-                    No contests available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          {/* 分页控制 - 底部 */}
-          <PagerFooter currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-          
-          {/* 当前页/总页数显示 */}
-          <PagerCurrent currentPage={currentPage} totalPages={totalPages} />
-        </>
-      )}
-    </div>
+      <Table
+        columns={columns}
+        dataSource={contests}
+        rowKey="mid"
+        loading={loading}
+        pagination={{
+          current: currentPage,
+          pageSize: itemsPerPage,
+          total: totalItems,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50', '100'],
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            setItemsPerPage(pageSize);
+          },
+          showTotal: (total) => `共 ${total} 项`,
+        }}
+        locale={{
+          emptyText: error ? (
+            <div style={{ color: 'red' }}>错误: {error}</div>
+          ) : (
+            '暂无数据'
+          ),
+        }}
+      />
+    </Card>
   );
 };
