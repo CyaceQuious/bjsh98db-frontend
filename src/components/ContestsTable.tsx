@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Modal, Input, message, Form, Table } from 'antd'; 
+import { Button, Modal, Input, message, Form, Table, Card } from 'antd'; 
 
 import { PlusOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 
-import { PagerCurrent, PagerFooter, PagerHeader } from '../components/pager';
 import { request } from '../utils/network';
 
 import { useSelector } from "react-redux";
@@ -315,20 +314,22 @@ export default function ContestsTable() {
   ];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ margin: 0 }}>比赛列表</h1>
-        {isSystemAdmin && <Button 
+    <Card title={
+      <h1>比赛列表</h1>
+    } extra={
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+      {isSystemAdmin && <Button 
           type="link" 
           onClick={() => setIsAddModalOpen(true)}
           style={{ 
             color: '#8c8c8c',
             fontSize: '16px',
-            padding: '0 12px',
+            padding: '0px 12px',
             height: 40,
             display: 'flex',
             alignItems: 'center',
             gap: 8,
+            marginRight: 8,
             // border: '1px solid #d9d9d9',
             // borderRadius: 6,
             backgroundColor: 'rgba(0, 0, 0, 0.02)',
@@ -346,11 +347,12 @@ export default function ContestsTable() {
           style={{ 
             color: '#8c8c8c',
             fontSize: '16px',
-            padding: '0 12px',
+            padding: '0px 12px',
             height: 40,
             display: 'flex',
             alignItems: 'center',
             gap: 8,
+            marginRight: 8,
             // border: '1px solid #d9d9d9',
             // borderRadius: 6,
             backgroundColor: 'rgba(0, 0, 0, 0.02)',
@@ -361,6 +363,8 @@ export default function ContestsTable() {
           同步比赛列表
         </Button>}
       </div>
+    }>
+      
 
       <Modal
         title="修改比赛名称"
@@ -436,6 +440,6 @@ export default function ContestsTable() {
           ),
         }}
       />
-    </div>
+    </Card>
   );
 };
