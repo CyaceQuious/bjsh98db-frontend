@@ -5,6 +5,7 @@ import {
   Col,
   theme,
   Card,
+  Divider,
 } from 'antd';
 import { useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
@@ -135,7 +136,13 @@ export default function SearchBox({
             </Row>
           </div>
         </Col></>}
+      </Row>
+      <Divider style={{ 
+        margin: `${token.marginXS}px 0`,
+        borderColor: token.colorBorderSecondary 
+      }}/>
 
+      <Row align="middle">
         {!briefButton && <Col
           xs={24}
           sm={24}
