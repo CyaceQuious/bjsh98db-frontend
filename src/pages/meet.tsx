@@ -24,6 +24,9 @@ export default function CompetitionTeamScore() {
   const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(midNum));
 
   const [refreshTrigger, setRefreshTrigger] = useState(1);
+
+  if (!router.isReady) return <div>Loading...</div>;
+
   const handleRefresh = () => {
     console.log('meet.tsx: handleRefresh called')
     setRefreshTrigger(refreshTrigger + 1);
