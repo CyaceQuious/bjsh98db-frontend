@@ -12,8 +12,6 @@ export default function CompetitionTeamScore() {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState('group-score');
   
-  if (!router.isReady) return <div>Loading...</div>;
-  
   const { mid } = router.query;
   let midNum = 0; 
   if (typeof mid === 'string') {

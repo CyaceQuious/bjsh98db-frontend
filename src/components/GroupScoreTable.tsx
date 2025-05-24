@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { Space, AutoComplete, Button, Form, Table, Card } from 'antd';
 
-import { SearchOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import useSearchHistory from '../hook/useSearchHistory';
 
 import { getContestName } from '../utils/network';
@@ -103,11 +103,15 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
     }
   };
 
-  useEffect(() => {
+  const handleFresh = () => {
     if (!mid) return;
     fetchData();
     fetchMeetName();
     fetchZubieList();
+  }
+
+  useEffect(() => {
+    handleFresh()
   }, [mid, refreshTrigger]);
 
   const columns = [
@@ -130,7 +134,10 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   ];
 
   return (
-    <Card title={`${meetName} 团体总分排名`} style={{ padding: '20px', margin: '5px auto' }}>
+    <Card 
+      title={<>{`${meetName} 团体总分排名`}<Button type="text" onClick={handleFresh} icon={<ReloadOutlined/>} style={{ marginLeft: '10px' }}>刷新</Button></>} 
+      style={{ padding: '20px', margin: '5px auto' }}
+    >
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
