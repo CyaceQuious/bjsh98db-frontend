@@ -59,7 +59,8 @@ const UserProfilePage = () => {
     setSelectedAthlete(name);
     setModalVisible(true);
   };
-
+  const [contestNameMap, setContestNameMap] = useState<Record<string, string>>({});
+  
   useEffect(() => {
     if (!session) {
       message.warning("请先登录");
@@ -72,6 +73,12 @@ const UserProfilePage = () => {
       fetchReceivedAuthRequests();
     }
   }, [session, isDepartmentOfficial||isSystemAdmin]);
+  useEffect(() => {
+    if (!profile) return;
+    if (profile?.Is_Contest_Official?.length > 0) {
+      fetchContestNames(profile.Is_Contest_Official);
+    }
+  }, [profile?.Is_Contest_Official]);
 
   const fetchUserProfile = async () => {
     try {
@@ -342,6 +349,26 @@ const UserProfilePage = () => {
     }
   };
 
+  const fetchContestNames = async (ids: string[]) => {
+    const newMap: Record<string, string> = {};
+    await Promise.all(
+      ids.map(async (id) => {
+        try {
+          const res = await fetch(`/api/query_meet_name?mid=${id}`);
+          const data = await res.json();
+          if (data.code === 0) {
+            newMap[id] = `${id}：${data.name}`;
+          } else {
+            newMap[id] = `${id}：加载失败`;
+          }
+        } catch {
+          newMap[id] = `${id}：加载失败`;
+        }
+      })
+    );
+    setContestNameMap(newMap);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">加载中...</div>
@@ -419,12 +446,22 @@ const UserProfilePage = () => {
               </p>
               {profile.Is_Contest_Official.length > 0 && (
                 <p>
-                  <span className="font-medium">比赛官员:</span>{' '}
-                  {profile.Is_Contest_Official.map((contest) => (
-                    <Tag key={contest} color="blue">
-                      {contest}
-                    </Tag>
-                  ))}
+                  <span className="font-medium">比赛官员:</span>
+                  <div style={{ marginTop: 4 }}>
+                    {profile.Is_Contest_Official.map((mid) => (
+                      <div key={mid} style={{ marginBottom: '4px' }}>
+                        <Tag
+                          color="blue"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            router.push({ pathname: "/meet", query: { mid } })
+                          }
+                        >
+                          {contestNameMap[mid] || `${mid}：加载中...`}
+                        </Tag>
+                      </div>
+                    ))}
+                  </div>
                 </p>
               )}
             </div>
