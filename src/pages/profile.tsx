@@ -12,7 +12,17 @@ import {
   List,
   Tag,
   Space,
+  Layout,
+  Menu,
 } from "antd";
+import {
+  UserOutlined,
+  SafetyOutlined,
+  DownSquareOutlined,
+  UpSquareOutlined
+} from '@ant-design/icons';
+const { Sider, Content } = Layout;
+
 import PlayerModal from "../components/player";
 import AuthStatus from '../components/AuthStatus';
 import AuthRequests from '../components/AuthRequests';
@@ -60,6 +70,9 @@ const UserProfilePage = () => {
     setModalVisible(true);
   };
   const [contestNameMap, setContestNameMap] = useState<Record<string, string>>({});
+
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState('profile');
   
   useEffect(() => {
     if (!session) {
@@ -382,13 +395,9 @@ const UserProfilePage = () => {
       </div>
     );
   }
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <Head>
-        <title>{profile.username}的个人主页</title>
-      </Head>
-
+  
+  const components = {
+    profile: (
       <Card
         title="个人资料"
         extra={
@@ -401,7 +410,7 @@ const UserProfilePage = () => {
             </Button>
           </Space>
         }
-        style={{ width: "70%", margin: "20px auto" }}
+        style={{ width: "70%", margin: "10px auto" }}
       >
         <AuthStatus 
           authRequests={authRequests} 
@@ -519,12 +528,14 @@ const UserProfilePage = () => {
           />
         </div>
       </Card>
-
+      ),
+    feedBackSend: (<>
       {isDepartmentOfficial&&<FeedbackSender style={{ width: "70%", margin: "20px auto" }}/>}
-
-      {(isContestOfficial.length>0)&&<FeedbackReceiver style={{ width: "70%", margin: "20px auto" }}/>}
-      
-      <div style={{ width: "70%", margin: "20px auto"}}>
+    </>),
+    feedBackReceive: (<>
+      {(isContestOfficial.length > 0)&&<FeedbackReceiver style={{ width: "70%", margin: "20px auto" }}/>}
+    </>),
+    authAppl: (<div style={{ width: "70%", margin: "20px auto"}}>
       <AuthRequests
         authRequests={authRequests}
         isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}
@@ -534,7 +545,97 @@ const UserProfilePage = () => {
           setAuthReviewModalVisible(true);
         }}
       />
-      </div>
+      </div>),
+  }
+
+  const menuItems = [
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
+      label: '个人资料',
+    },
+    {
+      key: 'authAppl',
+      icon: <SafetyOutlined />,
+      label: '运动员认证',
+    },
+    ...(isDepartmentOfficial ? [{
+      key: 'feedBackSend',
+      icon: <UpSquareOutlined />,
+      label: '我发送的成绩反馈',
+    }] : []),
+    ...(isContestOfficial.length > 0 ? [{
+      key: 'feedBackReceive',
+      icon: <DownSquareOutlined />,
+      label: '我收到的成绩反馈',
+    }] : [])
+  ];
+
+  const renderContent = () => {
+    switch(selectedMenu) {
+      case 'profile': return components.profile;
+      case 'authAppl': return components.authAppl;
+      case 'feedBackSend': return components.feedBackSend;
+      case 'feedBackReceive': return components.feedBackReceive;
+      default: return components.profile;
+    };
+  };
+
+  return (
+    <div className="container">
+      <Head>
+        <title>{profile.username}的个人主页</title>
+      </Head>
+
+      <Layout hasSider style={{ minHeight: 'calc(100vh - 64px)' }}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          width={200}
+          theme="light"
+          style={{
+            height: '100%',
+            overflow: 'auto',
+            position: 'fixed',
+            left: 0,
+          }}
+        >
+          <Menu
+            mode="inline"
+            selectedKeys={[selectedMenu]}
+            onClick={({ key }) => setSelectedMenu(key)}
+            items={menuItems}
+            style={{ height: '100%', borderRight: 0 }}
+          />
+        </Sider>
+
+        <Layout style={{ 
+          marginLeft: collapsed ? 80 : 200,
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          transition: 'margin-left 0.3s',
+        }}>
+          <Content
+            style={{
+              flex: 1,
+              padding: 24,
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{ 
+              height: '100%',
+              // overflowY: 'auto',
+              // paddingRight: 8 // 给滚动条留出空间
+            }}>
+              {renderContent()}
+            </div>
+          </Content>
+        </Layout>
+
+      </Layout>
+
 
       <ProfileForm
         visible={editModalVisible}
