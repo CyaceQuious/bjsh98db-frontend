@@ -50,7 +50,7 @@ export default function SearchResultTable({
     };
 
     // 生成动态列配置
-    const baseColumns = ["name", "meet", "xingbie", "zubie", "projectname", "leixing","groupname", "result", "grade", "rank", "score"].map(name => ({
+    const baseColumns = ["name", "meet", "projectname", "groupname", "result", "grade", "rank", "score"].map(name => ({
         title: getResultTableItemName(name as keyof SearchResultTableItem),
         dataIndex: name,
         key: name,
@@ -105,6 +105,9 @@ export default function SearchResultTable({
                 } else {
                   return value?.toString() || '-';
                 }
+            }
+            if (name === 'projectname') {
+              return record.xingbie?.toString() + record.projectname?.toString() + record.zubie?.toString() + record.leixing?.toString();
             }
             return value?.toString() || '-';
         }
