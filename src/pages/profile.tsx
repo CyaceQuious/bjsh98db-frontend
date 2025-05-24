@@ -598,6 +598,7 @@ const UserProfilePage = () => {
             height: '100%',
             overflow: 'auto',
             position: 'fixed',
+            paddingTop: 20,
             left: 0,
           }}
         >
@@ -612,7 +613,7 @@ const UserProfilePage = () => {
 
         <Layout style={{ 
           marginLeft: collapsed ? 80 : 200,
-          height: '100vh',
+          // height: '100vh',
           display: 'flex',
           flexDirection: 'column',
           transition: 'margin-left 0.3s',
@@ -620,12 +621,12 @@ const UserProfilePage = () => {
           <Content
             style={{
               flex: 1,
-              padding: 24,
+              // padding: 24,
               overflow: 'hidden',
             }}
           >
             <div style={{ 
-              height: '100%',
+              // height: '100%',
               // overflowY: 'auto',
               // paddingRight: 8 // 给滚动条留出空间
             }}>
