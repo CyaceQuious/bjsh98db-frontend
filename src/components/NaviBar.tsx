@@ -181,7 +181,7 @@ export default function Navbar() {
             style={{
                 position: 'sticky',
                 top: 0,
-                zIndex: 1,
+                zIndex: 10,
                 width: '100%',
                 background: colorBgContainer,
                 display: 'flex',

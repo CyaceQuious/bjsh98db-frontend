@@ -15,34 +15,45 @@ import { getSearchButtonText, getSearchHistoryDelete } from "../utils/lang";
 import SearchBooleanBox from './SearchBooleanBox';
 import { DeleteOutlined } from '@ant-design/icons';
 
+import { JSX } from 'react';
+
 const { useToken } = theme;
+
+interface SearchItem{
+  key: keyof SearchQuery;
+  type: string;
+  width: number[];
+}
 
 interface SearchBoxProps {
   query: SearchQuery;
   queryTextChange: (name: keyof SearchQuery, value: string | undefined) => void;
   queryBooleanChange: (name: keyof SearchQuery, value: boolean) => void;
+  showAdvancedChange: (value: boolean) => void;
   doSearch: () => void;
   briefButton: boolean; // whether only show the 'Search' button
-  searchItems: {
-    key: keyof SearchQuery;
-    type: string;
-    isFullLine?: boolean;
-  }[];
+  searchItems: SearchItem[];
+  advanceItems: SearchItem[];
+  showAdvanced: boolean;
 }
 
 export default function SearchBox({
   query,
   queryTextChange,
   queryBooleanChange,
+  showAdvancedChange,
   doSearch,
   searchItems, 
+  advanceItems,
   briefButton, 
+  showAdvanced,
 }: SearchBoxProps) {
   const { token } = useToken();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const allSearchBoxes: any[] = [];
+  const basicSearchBoxes: JSX.Element[] = [];
+  const advancedSearchBoxes: JSX.Element[] = [];
   const allFunctionCallOnQuery: any[] = [];
   const allFunctionDeleteHistory: any[] = [];
 
@@ -56,29 +67,43 @@ export default function SearchBox({
     }
   };
 
-  searchItems.forEach((item) => {
+  const pushItem = (item: SearchItem) => {
     const curr = item.type === 'text' ?
       SearchTextBox({ name: item.key, query: query[item.key] as string, textChange: queryTextChange }) :
       SearchBooleanBox({ name: item.key, query: query[item.key] as boolean, booleanChange: queryBooleanChange });
-    allSearchBoxes.push((
+    const element = (
       <Col
         key={item.key.toString()}
-        xs={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
-        sm={item.isFullLine ? 24 : item.type === 'text' ? 24 : 8}
-        md={item.isFullLine ? 24 : item.type === 'text' ? 12 : 4}
-        lg={item.isFullLine ? 24 : item.type === 'text' ? 8 : 4}
+        xs={item.width[0]}
+        sm={item.width[1]}
+        md={item.width[2]}
+        lg={item.width[3]}
       >
-        <Form.Item name={item.key} style={{height: '100%', marginTop: token.marginSM, marginBottom: token.marginSM}}>
+        <Form.Item name={item.key} 
+          style={{height: '100%', marginTop: token.marginSM, marginBottom: token.marginSM}}>
           {curr.item}
         </Form.Item>
       </Col>
-    ));
+    );
     allFunctionCallOnQuery.push(curr.callFunc);
     allFunctionDeleteHistory.push(curr.clearFunc);
-  })
+    return element;
+  }
+
+  searchItems.forEach(item => {
+    const element = pushItem(item);
+    basicSearchBoxes.push(element);
+  });
+
+  advanceItems.forEach(item => {
+    const element = pushItem(item);
+    advancedSearchBoxes.push(element);
+  });
 
   return (
-    <Card title="搜索">
+    <Card title={
+      "搜索"
+    }>
     <Form
       form={form}
       onFinish={handleSearch}
@@ -89,17 +114,44 @@ export default function SearchBox({
         gutter={[token.marginSM, token.marginSM]}
         align="middle"
       >
-        {allSearchBoxes}
+        {briefButton ? 
+        <>
+        {basicSearchBoxes}
+        {advancedSearchBoxes}
+        </>
+        : <>
+        {basicSearchBoxes}
+        <Col span={24}>
+          <div
+            style={{
+              maxHeight: showAdvanced ? '1000px' : '0',
+              opacity: showAdvanced ? 1 : 0,
+              overflow: 'hidden',
+              transition: 'max-height 0.2s ease-in-out, opacity 0.2s ease-in-out',
+            }}
+          >
+            <Row gutter={[token.marginSM, token.marginSM]}>
+              {advancedSearchBoxes}
+            </Row>
+          </div>
+        </Col></>}
+
         {!briefButton && <Col
           xs={24}
-          sm={8}
-          md={9}
-          lg={9}
+          sm={24}
+          md={21}
+          lg={21}
           style={{
             textAlign: 'right',
             marginTop: token.marginSM
           }}
         >
+          {advanceItems.length > 0 && <Button
+            type="link"
+            onClick={() => showAdvancedChange(!showAdvanced)}
+          >
+            {showAdvanced ? '收起' : '高级搜索'}
+          </Button>}
           <Button
             icon={<DeleteOutlined />}
             onClick={() => allFunctionDeleteHistory.forEach((item) => item())}
@@ -108,6 +160,7 @@ export default function SearchBox({
             {getSearchHistoryDelete()}
           </Button>
         </Col>}
+
         <Col
           xs={24}
           sm={24}
