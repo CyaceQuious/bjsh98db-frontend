@@ -101,6 +101,57 @@ export default function SearchBox({
     advancedSearchBoxes.push(element);
   });
 
+  const buttonsComponent = (<>
+    {!briefButton && <Col
+      xs={24}
+      sm={24}
+      md={21}
+      lg={21}
+      style={{
+        textAlign: 'right',
+        marginTop: token.marginSM
+      }}
+    >
+      {advanceItems.length > 0 && <Button
+        type="link"
+        onClick={() => showAdvancedChange(!showAdvanced)}
+      >
+        {showAdvanced ? '收起' : '高级搜索'}
+      </Button>}
+      <Button
+        icon={<DeleteOutlined />}
+        onClick={() => allFunctionDeleteHistory.forEach((item) => item())}
+        disabled={history.length === 0}
+      >
+        {getSearchHistoryDelete()}
+      </Button>
+    </Col>}
+
+    <Col
+      xs={24}
+      sm={24}
+      md={3}
+      lg={3}
+      style={{
+        textAlign: 'right',
+        // marginTop: token.marginSM
+      }}
+    >
+      <Button
+        type="primary"
+        icon={<SearchOutlined />}
+        htmlType="submit"
+        loading={loading}
+        style={{
+          width: 120,
+          height: token.controlHeightLG
+        }}
+      >
+        {getSearchButtonText()}
+      </Button>
+    </Col>
+  </>)
+
   return (
     <Card title={
       "搜索"
@@ -136,62 +187,18 @@ export default function SearchBox({
             </Row>
           </div>
         </Col></>}
+        {briefButton ? buttonsComponent : <></>}
       </Row>
-      <Divider style={{ 
+      {!briefButton&&<><Divider style={{ 
         margin: `${token.marginXS}px 0`,
         borderColor: token.colorBorderSecondary 
       }}/>
 
       <Row align="middle">
-        {!briefButton && <Col
-          xs={24}
-          sm={24}
-          md={21}
-          lg={21}
-          style={{
-            textAlign: 'right',
-            marginTop: token.marginSM
-          }}
-        >
-          {advanceItems.length > 0 && <Button
-            type="link"
-            onClick={() => showAdvancedChange(!showAdvanced)}
-          >
-            {showAdvanced ? '收起' : '高级搜索'}
-          </Button>}
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => allFunctionDeleteHistory.forEach((item) => item())}
-            disabled={history.length === 0}
-          >
-            {getSearchHistoryDelete()}
-          </Button>
-        </Col>}
-
-        <Col
-          xs={24}
-          sm={24}
-          md={3}
-          lg={3}
-          style={{
-            textAlign: 'right',
-            // marginTop: token.marginSM
-          }}
-        >
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            htmlType="submit"
-            loading={loading}
-            style={{
-              width: 120,
-              height: token.controlHeightLG
-            }}
-          >
-            {getSearchButtonText()}
-          </Button>
-        </Col>
+        {buttonsComponent}
       </Row>
+      </>
+      }
     </Form>
     </Card>
   );
