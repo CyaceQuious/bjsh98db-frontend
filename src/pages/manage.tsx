@@ -43,6 +43,8 @@ export default function UserManagement() {
     message: string;
   }>({ type: undefined, message: "" });
   const [fetchingStatus, setFetchingStatus] = useState(false);
+  const [username, setUsername] = useState("");
+  const [disableSubmit, setDisableSubmit] = useState(true);
 
   // 获取比赛列表
   useEffect(() => {
@@ -135,10 +137,12 @@ export default function UserManagement() {
 // ... (rest of the code remains the same)
 
   // 用户名输入框失去焦点时获取用户权限
-  const handleUsernameBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-    const username = e.target.value.trim();
+  const handleUsernameBlur = async (e: string) => {
+    const username = e.trim();
+    setUsername(username);
     if (username) {
       await fetchUserStatus(username);
+      setDisableSubmit(false);
     }
   };
 
@@ -155,7 +159,7 @@ export default function UserManagement() {
       const formData = new URLSearchParams();
       // 基础参数
       formData.append("session", session);
-      formData.append("user_to_modify", values.user_to_modify);
+      formData.append("user_to_modify", username);
       formData.append(
         "Is_Department_Official",
         values.Is_Department_Official ? "True" : "False"
@@ -187,7 +191,7 @@ export default function UserManagement() {
         message.success("用户权限修改成功");
         setSubmitStatus({
           type: "success",
-          message: `成功修改用户 ${values.user_to_modify} 的权限`,
+          message: `成功修改用户 ${username} 的权限`,
         });
       } else {
         message.error(`操作失败: ${result.info}`);
@@ -239,7 +243,7 @@ export default function UserManagement() {
           />
         )}
 
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
+        <Form onFinish={(e)=>handleUsernameBlur(e.user_to_modify)} layout="vertical">
           <Form.Item
             label="用户名"
             name="user_to_modify"
@@ -249,11 +253,15 @@ export default function UserManagement() {
           >
             <Input 
               placeholder="输入要修改权限的用户名" 
-              onBlur={handleUsernameBlur}
+              onBlur={(e)=>handleUsernameBlur(e.target.value)}
+              onChange={()=> setDisableSubmit(true)}
               disabled={fetchingStatus}
               suffix={fetchingStatus ? <Spin size="small" /> : undefined}
             />
           </Form.Item>
+        </Form>
+
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
 
           <Form.Item
             label="体干"
@@ -303,7 +311,7 @@ export default function UserManagement() {
               htmlType="submit"
               loading={loading}
               style={{ width: "100%" }}
-              disabled={contestsLoading || fetchingStatus}
+              disabled={contestsLoading || fetchingStatus || disableSubmit}
             >
               {loading ? "处理中..." : "修改权限"}
             </Button>

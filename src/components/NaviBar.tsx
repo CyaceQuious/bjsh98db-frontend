@@ -7,6 +7,8 @@ import { RootState } from '../redux/store';
 import { resetData, setHasUnreadAuth } from '../redux/auth';
 import { AuthRequest } from '../utils/types';
 
+import { InfoCircleOutlined, LoginOutlined, LogoutOutlined, ProjectOutlined, SafetyOutlined, SearchOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons';
+
 const { Header } = Layout;
 
 export default function Navbar() {
@@ -108,16 +110,19 @@ export default function Navbar() {
         {
             key: 'home',
             label: '搜索',
+            icon: <SearchOutlined/>,
             onClick: () => router.push('/'),
         },
         {
             key: 'contests',
             label: '比赛',
+            icon: <ProjectOutlined/>,
             onClick: () => router.push('/contests'),
         },
         {
             key: 'about',
             label: '关于我们',
+            icon: <InfoCircleOutlined/>,
             onClick: () => router.push('/about'),
         },
     ];
@@ -128,6 +133,7 @@ export default function Navbar() {
         ...(isAdmin ? [{
             key: 'admin-users',
             label: '用户管理',
+            icon: <SafetyOutlined/>,
             onClick: () => router.push('/manage'),
         }] : [])
     ];
@@ -140,6 +146,7 @@ export default function Navbar() {
         ? [
             {
                 key: 'username',
+                icon: <UserOutlined/>,
                 label: (
                     <span style={{ cursor: 'pointer', color: 'inherit', position: 'relative' }}>
                         <Badge 
@@ -160,6 +167,7 @@ export default function Navbar() {
             {
                 key: 'logout',
                 label: '登出',
+                icon: <LogoutOutlined/>,
                 onClick: () => setIsLogoutConfirmVisible(true),
             },
           ]
@@ -167,11 +175,13 @@ export default function Navbar() {
             {
                 key: 'login',
                 label: '登录',
+                icon: <LoginOutlined/>,
                 onClick: () => router.push('/login'),
             },
             {
                 key: 'register',
                 label: '注册',
+                icon: <UserAddOutlined/>,
                 onClick: () => router.push('/register'),
             },
           ];
