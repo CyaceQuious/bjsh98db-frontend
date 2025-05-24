@@ -15,6 +15,7 @@ interface SearchTextBoxProps {
 
 export default function SearchTextBox({ name, query, textChange }: SearchTextBoxProps) {
     const {history, addHistory, clearHistory} = useSearchHistory(name); 
+    const actualList = name === 'xingbie' ? [{query: '男子'},{query: '女子'},{query: '混合'}] : history;
     return {
         item: (
         <Space.Compact
@@ -35,11 +36,11 @@ export default function SearchTextBox({ name, query, textChange }: SearchTextBox
             </Text>
             <AutoComplete
                 allowClear
-                options={history.map(item => ({
+                options={actualList.map(item => ({
                     value: item.query,
                     label: (
                       <Space>
-                        <HistoryOutlined />
+                        {name !== 'xingbie'&&<HistoryOutlined />}
                         <span>{item.query}</span>
                       </Space>
                     )
