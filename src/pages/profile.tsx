@@ -448,10 +448,16 @@ const UserProfilePage = () => {
                 <p>
                   <span className="font-medium">比赛官员:</span>
                   <div style={{ marginTop: 4 }}>
-                    {profile.Is_Contest_Official.map((contest) => (
-                      <div key={contest} style={{ marginBottom: '4px' }}>
-                        <Tag color="blue">
-                          {contestNameMap[contest] || `${contest}：加载中...`}
+                    {profile.Is_Contest_Official.map((mid) => (
+                      <div key={mid} style={{ marginBottom: '4px' }}>
+                        <Tag
+                          color="blue"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            router.push({ pathname: "/meet", query: { mid } })
+                          }
+                        >
+                          {contestNameMap[mid] || `${mid}：加载中...`}
                         </Tag>
                       </div>
                     ))}
