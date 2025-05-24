@@ -410,7 +410,7 @@ const UserProfilePage = () => {
             </Button>
           </Space>
         }
-        style={{ width: "70%", margin: "10px auto" }}
+        style={{ width: "80%", margin: "10px auto" }}
       >
         <AuthStatus 
           authRequests={authRequests} 
@@ -530,12 +530,12 @@ const UserProfilePage = () => {
       </Card>
       ),
     feedBackSend: (<>
-      {isDepartmentOfficial&&<FeedbackSender style={{ width: "70%", margin: "20px auto" }}/>}
+      {isDepartmentOfficial&&<FeedbackSender style={{ width: "80%", margin: "20px auto" }}/>}
     </>),
     feedBackReceive: (<>
-      {(isContestOfficial.length > 0)&&<FeedbackReceiver style={{ width: "70%", margin: "20px auto" }}/>}
+      {(isContestOfficial.length > 0)&&<FeedbackReceiver style={{ width: "80%", margin: "20px auto" }}/>}
     </>),
-    authAppl: (<div style={{ width: "70%", margin: "20px auto"}}>
+    authAppl: (<div style={{ width: "80%", margin: "20px auto"}}>
       <AuthRequests
         authRequests={authRequests}
         isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}
