@@ -187,6 +187,7 @@ export default function Navbar() {
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 24px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
             }}
         >
             {/* <style jsx global>{`
