@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { List, Tag, Timeline } from 'antd';
+import { Timeline } from 'antd';
 import GroupScoreTable from '../components/GroupScoreTable';
 import MeetProjectTable from '../components/MeetProjectTable';
 import MeetManage from '../components/MeetManage';
