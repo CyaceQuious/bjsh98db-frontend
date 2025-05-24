@@ -10,6 +10,7 @@ import { RootState } from "../redux/store";
 
 import ProjectEditForm from './ProjectEditForm';
 import ProjectDelForm from './ProjectDelForm';
+import { ReloadOutlined } from '@ant-design/icons';
 
 interface Projects {
   name: string;
@@ -165,19 +166,26 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
     setMeetName(name);
   }
 
-  useEffect(() => {
+  const handleFresh = () => {
     fetchProjects();
     fetchMeetName(); 
     setShowDetailModal(false); 
     setQuery(getEmptyQuery());
+  }
+
+  useEffect(() => {
+    handleFresh();
   }, []);
 
   useEffect(() => {
-    fetchProjects();
+    handleFresh();
   }, [refreshTrigger]);
 
   return (
-    <Card title={`${meetName} 全部比赛项目`}style={{ padding: '20px', margin: '5px auto', width: '100%'}}>
+    <Card 
+      title={<>{`${meetName} 全部比赛项目`}<Button type="text" onClick={handleFresh} icon={<ReloadOutlined/>} style={{ marginLeft: '10px' }}>刷新</Button></>}
+      style={{ padding: '20px', margin: '5px auto', width: '100%'}}
+    >
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
