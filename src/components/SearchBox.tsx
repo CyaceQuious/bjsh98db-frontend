@@ -153,9 +153,9 @@ export default function SearchBox({
   </>)
 
   return (
-    <Card title={
-      "搜索"
-    }>
+    <Card 
+      title={<>搜索</>}
+    >
     <Form
       form={form}
       onFinish={handleSearch}
