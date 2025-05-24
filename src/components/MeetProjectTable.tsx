@@ -212,7 +212,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         onCancel={() => setShowDetailModal(false)}
         width={'90%'}
       >
-        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true}/>
+        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true} initOpenAdvanced={true}/>
       </Modal>
 
       {!loading && !error && (

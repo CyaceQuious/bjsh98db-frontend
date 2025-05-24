@@ -43,13 +43,13 @@ export function getResultTableItemName(itemName: keyof SearchResultTableItem): s
 }
 
 const searchQueryPlaceHolderDictCn: Record<keyof SearchQuery, string> = {
-    name: "留空代表不指定。例：张三",
-    groupname: "留空代表不指定。例：清华",
-    meet: "留空代表不指定。例：	2024,马约翰杯",
-    projectname: "留空代表不指定。例：跳高",
-    xingbie: "留空代表不指定。例：男子",
-    zubie: "留空代表不指定。例：甲组",
-    leixing: "留空代表不指定。例：决赛",
+    name: "留空不指定。e.g. 张三",
+    groupname: "留空不指定。e.g. 清华",
+    meet: "留空不指定。e.g. 2024,马约翰杯",
+    projectname: "留空不指定。e.g. 跳高",
+    xingbie: "留空不指定。e.g. 男子",
+    zubie: "留空不指定。e.g. 甲组",
+    leixing: "留空不指定。e.g. 决赛",
     precise: "",
     ranked: "", 
     page: "", 

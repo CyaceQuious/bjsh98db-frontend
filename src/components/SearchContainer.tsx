@@ -17,13 +17,14 @@ import { useRouter } from 'next/router';
 interface SearchContainerProps {
     oldQuery?: SearchQuery; // 提供的初始查询参数。默认为空。
     hiddenResult?: boolean; // 是否隐藏搜索结果的表格。目前只在index启用以满足页面布局要求。默认为false
+    initOpenAdvanced: boolean; // 是否显示高级搜索按钮
     searchJump: boolean; // 点击搜索后是否跳转，即是否更新当前页面的url（应该在index和search页面启用，其他作为页面内嵌组件的情况下禁用）
     onContentRefresh: () => void; // 当比赛项目被修改之后，会被调用的函数（比如可以用于通知其他组件刷新内容）
     frozeNames?: string[]; // 冻结的参数名，这些参数不会允许用户改动，也不会对用户显示。默认不冻结。
     briefButton?: boolean; // 是则删去清空搜索历史的按钮，用于精简页面。默认为false
 }
 
-export default function SearchContainer({ oldQuery, hiddenResult, searchJump, onContentRefresh, frozeNames, briefButton }: SearchContainerProps) {
+export default function SearchContainer({ oldQuery, hiddenResult, initOpenAdvanced, searchJump, onContentRefresh, frozeNames, briefButton }: SearchContainerProps) {
     const router = useRouter();
 
     const session = useSelector((state: RootState) => state.auth.session);
@@ -32,6 +33,7 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
     const [results, setResults] = useState<SearchResultItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
+    const [showAdvanced, setShowAdvanced] = useState(briefButton === true ? true : initOpenAdvanced);
 
     const [total, setTotal] = useState(0);
 
@@ -107,7 +109,7 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
         setQuery(newQuery); 
         setLastQuery(newQuery)
         if (searchJump) {
-            router.push(`/search?${interfaceToString(newQuery)}`);
+            router.push(`/search?${interfaceToString({...newQuery, showAdvanced})}`);
         }
         else if (hiddenResult === false) {
             fetchResults(newQuery);
@@ -125,22 +127,26 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
         const newQuery: SearchQuery = { ...lastQuery, page, page_size: newPageSize }
         setLastQuery(newQuery);
         if (searchJump) {
-            router.push(`/search?${interfaceToString(newQuery)}`);
+            router.push(`/search?${interfaceToString({...newQuery, showAdvanced})}`);
         }
         fetchResults(newQuery); 
     };
 
     const allSearchItems = [
-        { key: "name", type: "text" },
-        { key: "groupname", type: "text" },
-        { key: "projectname", type: "text" },
-        { key: "xingbie", type: "text" },
-        { key: "zubie", type: "text" },
-        { key: "leixing", type: "text" },
-        { key: "meet", type: "text", isFullLine: true },
-        { key: "ranked", type: "boolean" },
-        { key: "precise", type: "boolean" },
-        { key: "star", type: "boolean" },
+        // width = [xs, sm, md, lg] of 24
+        { key: "name", type: "text", width: [24, 24, 12, 6] },
+        { key: "groupname", type: "text", width: [24, 24, 12, 6] },
+        { key: "meet", type: "text", width: [24, 24, 24, 12] },
+    ]
+    const advanceSearchItems = [
+        // width = [xs, sm, md, lg] of 24
+        { key: "projectname", type: "text", width: [24, 24, 12, 6] },
+        { key: "xingbie", type: "text", width: [24, 24, 12, 6] },
+        { key: "zubie", type: "text", width: [24, 24, 12, 6] },
+        { key: "leixing", type: "text", width: [24, 24, 12, 6] },
+        { key: "ranked", type: "boolean", width: [8, 8, 4, 4] },
+        { key: "precise", type: "boolean", width: [8, 8, 4, 4] },
+        { key: "star", type: "boolean", width: [8, 8, 4, 4] },
     ]
     const searchItems = allSearchItems.filter(item => {
         if (frozeNames !== undefined) {
@@ -151,15 +157,27 @@ export default function SearchContainer({ oldQuery, hiddenResult, searchJump, on
         }
     }).map(item => {return{...item, key: item.key as keyof SearchQuery}});
 
+    const advanceItems = advanceSearchItems.filter(item => {
+        if (frozeNames !== undefined) {
+            // console.log(`in check frozekey: ${item.key}`); 
+            return !frozeNames.includes(item.key);
+        } else {
+            return true;
+        }
+    }).map(item => {return{...item, key: item.key as keyof SearchQuery}});
+
     return (
-        <div style={{ width: "100%", marginTop: "25px" }}>
+        <div style={{ width: "100%", marginTop: "25px", marginBottom: "25px"}}>
             <SearchBox
                 query={query}
                 queryTextChange={changeTextQuery}
                 queryBooleanChange={changeBooleanQuery}
+                showAdvancedChange={(value: boolean) => setShowAdvanced(value)}
                 doSearch={handleSearch}
                 searchItems={searchItems}
+                advanceItems={advanceItems}
                 briefButton={briefButton === true}
+                showAdvanced={showAdvanced}
             />
             <div style={{ marginTop: "20px" }}>
                 {hiddenResult ? "" :
