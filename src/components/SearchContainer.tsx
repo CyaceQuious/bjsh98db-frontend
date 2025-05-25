@@ -84,22 +84,15 @@ export default function SearchContainer({ oldQuery, hiddenResult, initOpenAdvanc
             if (value === undefined) {
                 value = ''; 
             }
-            if (typeof prev[name] === "string") {
-                return { ...prev, [name]: value }
-            }
-            console.warn("Invalid field type:", name)
-            return prev
+            return { ...prev, [name]: value }
         })
     }
 
     // change boolean query
     const changeBooleanQuery = (name: keyof SearchQuery, value: boolean) => {
+        console.log(name, value)
         setQuery(prev => {
-            if (typeof prev[name] === "boolean") {
-                return { ...prev, [name]: value }
-            }
-            console.warn("Invalid field type:", name)
-            return prev
+            return { ...prev, [name]: value }
         })
     }
 
