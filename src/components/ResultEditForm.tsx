@@ -137,7 +137,7 @@ const ResultEditForm = ({
   return (
     <>
       <Button
-        variant={isEditMode ? 'outlined' : 'solid'}
+        variant={isEditMode ? 'filled' : 'solid'}
         color="primary"
         style={!useGray ? buttonStyle :
           {

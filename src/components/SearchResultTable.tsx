@@ -122,9 +122,9 @@ export default function SearchResultTable({
             fixed: 'right',
             width: 100,
             render: (_, record) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
                   {isDepartmentOfficial &&
-                <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
                     <FeedbackApplicationForm
                         defaultValues={{
                             entryString: `${record.meet}-${record.xingbie}${record.zubie}${record.projectname}${record.leixing}-${record.groupname}${record.name}-${record.result}`,
@@ -136,7 +136,7 @@ export default function SearchResultTable({
                     />
                 </div>}
                 {(isSystemAdmin || allContestOfficial.includes(record.mid)) ?
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
                     <ResultEditForm 
                         defaultValues={record} 
                         infoIds={record}

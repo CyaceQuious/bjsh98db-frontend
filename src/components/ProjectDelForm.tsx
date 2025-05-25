@@ -75,7 +75,7 @@ const ProjectDelForm = ({
   return (
     <>
       <Button
-          variant="dashed"
+          variant="filled"
           color="danger"
           onClick={() => handleDeleteClick({...values} as DeleteRequest)}
           style={buttonStyle}

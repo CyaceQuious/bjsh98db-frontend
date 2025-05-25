@@ -112,7 +112,7 @@ const FeedbackApplicationForm = ({
   return (
     <>
       <Button
-        variant='outlined'
+        variant='filled'
         color='green'
         style={!useGray ? buttonStyle :
           {
