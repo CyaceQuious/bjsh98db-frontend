@@ -76,7 +76,8 @@ const ResultDelForm = ({
   return (
     <>
       <Button
-          type="link"
+          variant="dashed"
+          color='danger'
           onClick={() => handleDeleteClick({...values} as DeleteRequest)}
           style={buttonStyle}
           icon={<DeleteOutlined />}

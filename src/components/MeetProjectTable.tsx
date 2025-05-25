@@ -10,7 +10,7 @@ import { RootState } from "../redux/store";
 
 import ProjectEditForm from './ProjectEditForm';
 import ProjectDelForm from './ProjectDelForm';
-import { ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined, UnorderedListOutlined } from '@ant-design/icons';
 
 interface Projects {
   name: string;
@@ -90,7 +90,8 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         <>
         {meetName !== "loading" ? (
           <Button 
-            type="link" 
+            variant="outlined"
+            color="green" 
             onClick={() => {
               setQuery({
                 projectname: record.name,
@@ -106,12 +107,12 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
               setShowDetailModal(true);
             }}
           >
-            查看成绩
+            <UnorderedListOutlined/> 成绩
           </Button>
         ) : (
           <span>加载中...</span>
         )}
-        <ProjectEditForm 
+        {isContestOfficial&&<ProjectEditForm 
           defaultValues={{
             meet: meetName,
             name: record.name,
@@ -121,18 +122,20 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
           }}
           infoIds={{id: record.id}}
           isEditMode
+          buttonStyle={{ marginLeft: '10px'}}
           onSuccess={onContentRefresh}
           frozenItems={[
             "meet" 
           ]}
-        />
-        <ProjectDelForm
+        />}
+        {isContestOfficial&&<ProjectDelForm
           values={{
             ...record,
             mid
           }}
+          buttonStyle={{ marginLeft: '10px'}}
           onSuccess={onContentRefresh}
-        />
+        />}
         </>
       ),
     },
