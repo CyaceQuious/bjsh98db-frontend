@@ -122,19 +122,8 @@ export default function SearchResultTable({
             fixed: 'right',
             width: 100,
             render: (_, record) => (
-                <>
-                {(isSystemAdmin || allContestOfficial.includes(record.mid)) ?
-                <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <ResultEditForm 
-                        defaultValues={record} 
-                        infoIds={record}
-                        isEditMode 
-                        onSuccess={onContentReFresh} 
-                        frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]}
-                    />
-                    <ResultDelForm values={record} onSuccess={onContentReFresh} />
-                </div> : ""}
-                {isDepartmentOfficial &&
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {isDepartmentOfficial &&
                 <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <FeedbackApplicationForm
                         defaultValues={{
@@ -146,7 +135,18 @@ export default function SearchResultTable({
                         onSuccess={(_: any)=>{}}
                     />
                 </div>}
-                </>
+                {(isSystemAdmin || allContestOfficial.includes(record.mid)) ?
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <ResultEditForm 
+                        defaultValues={record} 
+                        infoIds={record}
+                        isEditMode 
+                        onSuccess={onContentReFresh} 
+                        frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]}
+                    />
+                    <ResultDelForm values={record} onSuccess={onContentReFresh} />
+                </div> : ""}
+                </div>
             )
         };
         columns = [...columns, managementColumn]; 

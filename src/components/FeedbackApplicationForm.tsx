@@ -112,7 +112,8 @@ const FeedbackApplicationForm = ({
   return (
     <>
       <Button
-        type={'link'}
+        variant='outlined'
+        color='green'
         style={!useGray ? buttonStyle :
           {
             ...buttonStyle,
