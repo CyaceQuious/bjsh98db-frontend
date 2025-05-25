@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Modal, Input, message } from 'antd'; 
+import { Button, Modal, Input, message, Card } from 'antd'; 
 
 import { EditOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 
@@ -9,8 +9,8 @@ import { getContestName, request } from '../utils/network';
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-import ResultEditForm from "./ResultEditForm";
 import ProjectEditForm from './ProjectEditForm';
+import { current } from '@reduxjs/toolkit';
 
 interface MeetManageProps {
 	mid: number; 
@@ -55,6 +55,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     setLoading(true);
     const name = await getContestName(mid);
     setMeetName(name);
+    setNewName(name);
     setLoading(false);
   }; 
 
@@ -72,7 +73,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   };
   const handleRenameCancel = () => {
     setShowModifyModal(false);
-    setNewName('');
+    setNewName(meetName);
     setSelectedMid(undefined);
   };
   const putRenameRequest = async () => {
@@ -144,10 +145,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   }, [])
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        赛事管理
-      </h1>
+    <Card title={"赛事管理"} style={{padding: '20px', width: '100%', margin: '5px 0px' }}>
 
       <Modal
         title="修改比赛名称"
@@ -165,15 +163,10 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       </Modal>
 
       {!loading && <div>
-      <ResultEditForm 
-        buttonStyle={{ marginLeft: 16 }}
-        defaultValues={{mid, meet: meetName}} 
-        onSuccess={() => reload()}
-        frozenItems={["meet", "mid"]}
-      />
       <ProjectEditForm
         buttonStyle={{ marginLeft: 16 }}
-        defaultValues={{mid, meet: meetName}}
+        defaultValues={{meet: meetName}}
+        infoIds={{mid}}
         onSuccess={() => reload()}
         frozenItems={["meet", "mid"]}
       />
@@ -190,13 +183,13 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       {(isSystemAdmin) && <Button
         type={'primary'}
         style={{ marginLeft: 16 }}
-        onClick={() => handleRenameClick(mid, "no name now")}
+        onClick={() => handleRenameClick(mid, meetName)}
         icon={<EditOutlined />}
       >
         修改赛事名称
       </Button>}
       </div>}
-	</div>
+	</Card>
   )
 }
 

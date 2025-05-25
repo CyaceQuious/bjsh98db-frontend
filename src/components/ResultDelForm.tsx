@@ -5,15 +5,11 @@ import { RootState } from "../redux/store";
 
 import { request } from '../utils/network';
 
+import { filterByType } from '../utils/types';
+
 interface DeleteRequest {
   session: string;
-  mid: number;
-  name: string;
-  projectname: string;
-  leixing: string;
-  zubie: string;
-  xingbie: string;
-  groupname: string;
+  resultid: number;
 }
 
 interface DeleteResponse {
@@ -59,10 +55,10 @@ const ResultDelForm = ({
       const data: DeleteResponse = await request(
         `/api/manage_result`,
         'DELETE',
-        {
+        filterByType<DeleteRequest>({
           ...values,
           session,
-        } as DeleteRequest,
+        },['resultid','session']),
         false,
         'json'
       );
@@ -80,7 +76,8 @@ const ResultDelForm = ({
   return (
     <>
       <Button
-          type="link"
+          variant="filled"
+          color='danger'
           onClick={() => handleDeleteClick({...values} as DeleteRequest)}
           style={buttonStyle}
           icon={<DeleteOutlined />}

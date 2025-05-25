@@ -17,16 +17,16 @@ export default function Logout() {
 
     const {userName} = useSelector((state: RootState) => state.auth);
 
-    if (!router.isReady) return (
-        <div>Loading...</div>
-    );
-
     useEffect(() => {
         if (userName === "") {
             alert("暂未登录所以无法登出。将返回首页。")
             router.push("/")
         }
     }, [])
+
+    if (!router.isReady) return (
+        <div>Loading...</div>
+    );
 
     const decideLogout = () => {
         const oldUserName = userName; 

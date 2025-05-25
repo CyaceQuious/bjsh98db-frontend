@@ -76,6 +76,9 @@ export interface SearchResultItem {
     grade: string; 
     rank: string; 
     score: string; 
+    mid: number;
+    resultid: number;
+    projectid: number;
 }
 
 export interface SearchResult {
@@ -139,3 +142,38 @@ export interface TeamScoreResponse {
   export interface TeamScoreRequest {
     mid: number;
   }
+
+  export interface UserProfile {
+  username: string;
+  email: string;
+  create_time: string;
+  Is_Department_Official: boolean;
+  Is_Contest_Official: string[];
+  Is_System_Admin: boolean;
+  star_list: string[];
+}
+
+export interface AuthRequest {
+  message_id: number;
+  real_name: string;
+  invited_reviewer: string;
+  applied_at: string;
+  status: number; // 0: pending, 1: approved, 2: rejected
+  reject_reason?: string;
+  replied_at?: string;
+  sender_username?: string;
+}
+
+/**
+ * 过滤对象属性，仅保留类型 T 中定义的键
+ * @param obj 原始对象
+ * @param keys 类型 T 的键列表
+ * @returns 符合类型 T 的对象
+ */
+export function filterByType<T>(obj: any, keys: (keyof T)[]): T {
+    const result = {} as T;
+    keys.forEach((key) => {
+        result[key] = obj[key] || undefined;
+    });
+    return result;
+}

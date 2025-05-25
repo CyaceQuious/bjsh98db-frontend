@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Table } from 'antd';
+import { Button, Modal, Table, Card } from 'antd';
 import { getContestName, request } from '../utils/network';
 import { interfaceToString } from '../utils/types';
 import SearchContainer from './SearchContainer';
@@ -10,12 +10,14 @@ import { RootState } from "../redux/store";
 
 import ProjectEditForm from './ProjectEditForm';
 import ProjectDelForm from './ProjectDelForm';
+import { ReloadOutlined, UnorderedListOutlined } from '@ant-design/icons';
 
 interface Projects {
   name: string;
   leixing: string; 
   zubie: string;
   xingbie: string;
+  id: number;
 }
 
 interface ApiRequest {
@@ -44,11 +46,32 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   // 具体结果对话框
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [query, setQuery] = useState<SearchQuery>(getEmptyQuery());
+  const [showProjectId, setShowProjectId] = useState<number>(0);
 
   const isSystemAdmin = useSelector((state: RootState) => state.auth.isSystemAdmin);
   const isContestOfficial = useSelector((state: RootState) => state.auth.isContestOfficial.includes(mid));
 
   const columns = [
+    {
+      title: '性别',
+      dataIndex: 'xingbie',
+      key: 'xingbie',
+      filters: Array.from(new Set(projects.map(p => p.xingbie))).map(value => ({
+        text: value,
+        value
+      })),
+      onFilter: (value: any, record: Projects) => record.xingbie === value,
+    },
+    {
+      title: '组别',
+      dataIndex: 'zubie',
+      key: 'zubie',
+      filters: Array.from(new Set(projects.map(p => p.zubie))).map(value => ({
+        text: value,
+        value
+      })),
+      onFilter: (value: any, record: Projects) => record.zubie === value,
+    },
     { title: '项目名称', dataIndex: 'name', key: 'name' },
     { 
       title: '类型',
@@ -61,33 +84,14 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
       onFilter: (value: any, record: Projects) => record.leixing === value,
     },
     {
-      title: '组别',
-      dataIndex: 'zubie',
-      key: 'zubie',
-      filters: Array.from(new Set(projects.map(p => p.zubie))).map(value => ({
-        text: value,
-        value
-      })),
-      onFilter: (value: any, record: Projects) => record.zubie === value,
-    },
-    {
-      title: '性别',
-      dataIndex: 'xingbie',
-      key: 'xingbie',
-      filters: Array.from(new Set(projects.map(p => p.xingbie))).map(value => ({
-        text: value,
-        value
-      })),
-      onFilter: (value: any, record: Projects) => record.xingbie === value,
-    },
-    {
       title: '操作',
       key: 'action',
       render: (text: any, record: Projects) => (
         <>
         {meetName !== "loading" ? (
           <Button 
-            type="link" 
+            variant="filled"
+            color="green" 
             onClick={() => {
               setQuery({
                 projectname: record.name,
@@ -99,41 +103,39 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
                 page_size: 10,
                 precise: true
               });
+              setShowProjectId(record.id);
               setShowDetailModal(true);
             }}
           >
-            查看成绩
+            <UnorderedListOutlined/> 成绩
           </Button>
         ) : (
           <span>加载中...</span>
         )}
-        <ProjectEditForm 
+        {(isSystemAdmin || isContestOfficial)&&<ProjectEditForm 
           defaultValues={{
-            mid,
             meet: meetName,
             name: record.name,
             leixing: record.leixing,
             zubie: record.zubie,
             xingbie: record.xingbie,
-            new_name: record.name,
-            new_leixing: record.leixing,
-            new_zubie: record.zubie,
-            new_xingbie: record.xingbie,
           }}
+          infoIds={{id: record.id}}
           isEditMode
+          // buttonStyle={{ marginLeft: '10px'}}
           onSuccess={onContentRefresh}
           frozenItems={[
-            "meet", "mid", 
-            "name", "leixing", "zubie", "xingbie", 
+            "meet" 
           ]}
-        />
-        <ProjectDelForm
+        />}
+        {(isSystemAdmin || isContestOfficial)&&<ProjectDelForm
           values={{
             ...record,
             mid
           }}
+          // buttonStyle={{ marginLeft: '10px'}}
           onSuccess={onContentRefresh}
-        />
+        />}
         </>
       ),
     },
@@ -154,9 +156,9 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         setError(data.info || 'Failed to fetch projects');
       }
     } catch (err) {
-      alert('An error occurred while fetching projects' + err); 
-      setError('An error occurred while fetching projects' + err);
-      console.log('Fetch error:', err);
+      alert('An error occurred while fetching projects' + `${err}`); 
+      setError('An error occurred while fetching projects' + `${err}`);
+      console.log('Fetch error:', `${err}`);
     } finally {
       setLoading(false);
     }
@@ -167,22 +169,27 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
     setMeetName(name);
   }
 
-  useEffect(() => {
+  const handleFresh = () => {
     fetchProjects();
     fetchMeetName(); 
     setShowDetailModal(false); 
     setQuery(getEmptyQuery());
+  }
+
+  useEffect(() => {
+    handleFresh();
   }, []);
 
   useEffect(() => {
     fetchProjects();
+    fetchMeetName(); 
   }, [refreshTrigger]);
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        {meetName} 全部比赛项目
-      </h1>
+    <Card 
+      title={<>{`${meetName} 全部比赛项目`}<Button type="text" onClick={handleFresh} icon={<ReloadOutlined/>} style={{ marginLeft: '10px' }}>刷新</Button></>}
+      style={{ padding: '20px', margin: '5px auto', width: '100%'}}
+    >
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
@@ -196,10 +203,19 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         title={
           <div>
             查看项目成绩
-            {(isSystemAdmin || isContestOfficial) && <ResultEditForm useGray={true} frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]} defaultValues={{...query, mid}} onSuccess={()=> {
-              onContentRefresh(); 
-              setQuery({...query}); 
-            }}/>}
+            {/* 创建新成绩的按钮 */}
+            {(isSystemAdmin || isContestOfficial) && 
+            <ResultEditForm 
+              useGray={true} 
+              isEditMode={false}
+              frozenItems={["meet", "projectname", "leixing", "zubie", "xingbie"]} 
+              defaultValues={query}
+              infoIds={{projectid: showProjectId}} 
+              onSuccess={()=> {
+                onContentRefresh(); 
+                setQuery({...query}); 
+              }}
+            />}
           </div>
         }
         open={showDetailModal}
@@ -208,7 +224,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         onCancel={() => setShowDetailModal(false)}
         width={'90%'}
       >
-        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true}/>
+        <SearchContainer oldQuery={query} hiddenResult={false} onContentRefresh={onContentRefresh} frozeNames={["meet", "projectname", "leixing", "zubie", "xingbie", "precise", "ranked"]} searchJump={false} briefButton={true} initOpenAdvanced={true}/>
       </Modal>
 
       {!loading && !error && (
@@ -224,6 +240,6 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
           style={{ marginTop: 20 }}
         />
       )}
-    </div>
+    </Card>
   );
 };

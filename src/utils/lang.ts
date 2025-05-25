@@ -29,10 +29,13 @@ const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, strin
     zubie: "组别",
     leixing: "项目阶段",
     result: "成绩",
-    grade: "运动技术等级",
+    grade: "等级",
     rank: "名次", 
     score: "得分", 
-    manage: "管理"
+    manage: "管理",
+    mid: "运动会编号",
+    projectid: "项目编号",
+    resultid: "成绩编号",
 };
 // current language is simplified chinese
 export function getResultTableItemName(itemName: keyof SearchResultTableItem): string {
@@ -40,13 +43,13 @@ export function getResultTableItemName(itemName: keyof SearchResultTableItem): s
 }
 
 const searchQueryPlaceHolderDictCn: Record<keyof SearchQuery, string> = {
-    name: "留空代表不指定。例：张三",
-    groupname: "留空代表不指定。例：清华",
-    meet: "留空代表不指定。例：	2024,马约翰杯",
-    projectname: "留空代表不指定。例：跳高",
-    xingbie: "留空代表不指定。例：男子",
-    zubie: "留空代表不指定。例：甲组",
-    leixing: "留空代表不指定。例：决赛",
+    name: "留空不指定。e.g. 张三",
+    groupname: "留空不指定。e.g. 清华",
+    meet: "留空不指定。e.g. 2024,马约翰杯",
+    projectname: "留空不指定。e.g. 跳高",
+    xingbie: "留空不指定。e.g. 男子",
+    zubie: "留空不指定。e.g. 甲组",
+    leixing: "留空不指定。e.g. 决赛",
     precise: "",
     ranked: "", 
     page: "", 

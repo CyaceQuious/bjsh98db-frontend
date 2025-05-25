@@ -7,7 +7,7 @@ const contestsPage: NextPage = () => {
   const router = useRouter();
   if (!router.isReady) return <div>Loading...</div>;
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
       <Head>
         <title>比赛列表</title>
         <meta name="description" content="List of available contests" />

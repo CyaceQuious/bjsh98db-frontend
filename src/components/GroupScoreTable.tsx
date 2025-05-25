@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from 'react';
 
-import { Space, AutoComplete, Button, Form, Table } from 'antd';
+import { Space, AutoComplete, Button, Form, Table, Card } from 'antd';
 
-import { SearchOutlined, HistoryOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import useSearchHistory from '../hook/useSearchHistory';
 
 import { getContestName } from '../utils/network';
@@ -33,6 +33,9 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
 
   const [zubie, setZubie] = useState<string>('');
   const [xingbie, setXingbie] = useState<string>('');
+
+  const [zubieList, setZubieList] = useState<string[]>([]);
+  const xingbieList = ['男子', '女子', '混合']; 
 
   const handleSearch = () => {
     fetchData(); // 触发数据更新
@@ -78,10 +81,37 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
     }
   };
 
-  useEffect(() => {
+  const fetchZubieList = async () => {
+    try {
+      const params = new URLSearchParams({
+        mid: mid.toString(),
+      });
+
+      const response = await fetch(`/api/query_project_zubie_list?${params.toString()}`);
+
+      const data = await response.json();
+
+      if (data.code !== 0) {
+      throw new Error(data.info || 'Failed to fetch team scores');
+      }
+
+      setZubieList(data.results || []);
+    } catch (err) {
+      setZubieList([]);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const handleFresh = () => {
     if (!mid) return;
     fetchData();
     fetchMeetName();
+    fetchZubieList();
+  }
+
+  useEffect(() => {
+    handleFresh()
   }, [mid, refreshTrigger]);
 
   const columns = [
@@ -104,10 +134,10 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
   ];
 
   return (
-    <div style={{ padding: '20px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        {meetName} 团体总分排名
-      </h1>
+    <Card 
+      title={<>{`${meetName} 团体总分排名`}<Button type="text" onClick={handleFresh} icon={<ReloadOutlined/>} style={{ marginLeft: '10px' }}>刷新</Button></>} 
+      style={{ padding: '20px', margin: '5px auto' }}
+    >
 
       {loading && <p style={{ textAlign: 'center' }}>加载中...</p>}
 
@@ -123,16 +153,15 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
         autoComplete="off"
       >
         <AutoComplete
-          options={zubieHistory.history.map(item => ({
-            value: item.query,
+          options={zubieList.map(item => ({
+            value: item,
             label: (
               <Space>
-                <HistoryOutlined />
-                <span>{item.query}</span>
+                <span>{item}</span>
               </Space>
             )
           }))}
-          placeholder="输入组别，留空不指定"
+          placeholder="选择组别，留空不指定"
           value={zubie}
           onChange={(e) => setZubie(e)}
           // onSearch={handleSearch}
@@ -140,16 +169,15 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
           style={{ width: 200 }}
         />
         <AutoComplete
-          options={xingbieHistory.history.map(item => ({
-            value: item.query,
+          options={xingbieList.map(item => ({
+            value: item,
             label: (
               <Space>
-                <HistoryOutlined />
-                <span>{item.query}</span>
+                <span>{item}</span>
               </Space>
             )
           }))}
-          placeholder="输入性别，留空不指定"
+          placeholder="选择性别，留空不指定"
           value={xingbie}
           onChange={(e) => setXingbie(e)}
           // onSearch={handleSearch}
@@ -190,6 +218,6 @@ export default function GroupScoreTable( {mid, refreshTrigger}: TeamScoreTablePr
         locale={{ emptyText: '暂无数据' }}
       />
       )}
-    </div>
+    </Card>
   );
 }

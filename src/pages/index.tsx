@@ -13,7 +13,7 @@ const WelcomeSearch = () => {
     return (
         <div className={styles.container}>
             <div style={{width: '80%'}}>
-            <SearchContainer hiddenResult={true} onContentRefresh={() => {}} searchJump={true}/>
+            <SearchContainer hiddenResult={true} onContentRefresh={() => {}} searchJump={true} initOpenAdvanced={false}/>
             <AboutCard mode='simple'/>
             </div>
         </div>

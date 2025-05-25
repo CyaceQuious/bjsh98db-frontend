@@ -7,6 +7,8 @@ import store, { persistor } from "../redux/store"; // 确保从 store 导出 per
 
 import Navbar from "../components/NaviBar";
 
+import UserRefresh from "../components/UserRefresh";
+
 import '@ant-design/v5-patch-for-react-19';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -16,7 +18,8 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Head>
                 <title> BJSH98.db </title>
             </Head>
-            <div style={{ padding: 12 }}>
+            <div>
+                <UserRefresh/>
                 <Navbar/>
                 <Component {...pageProps} />
             </div>
