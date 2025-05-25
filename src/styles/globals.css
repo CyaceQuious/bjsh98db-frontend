@@ -67,3 +67,8 @@ a {
 .logo-menu-item::after {
   display: none !important;
 }
+
+.spacer-col .ant-table-cell {
+  padding: 0 !important;
+  border: none !important;
+}

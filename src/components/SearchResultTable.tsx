@@ -150,6 +150,16 @@ export default function SearchResultTable({
             )
         };
         columns = [...columns, managementColumn]; 
+    } else {
+      /* ★ 关键：给没有管理列的表再塞一个“占位”固定列 ★ */
+      columns.push({
+        title: '',                // 头部留空
+        key: '__spacer__',
+        fixed: 'right',           // 仍然固定在右侧
+        width: 1,                 // 1 px 足够触发布局，又几乎看不见
+        render: () => undefined,       // 不渲染任何内容
+        className: 'spacer-col',  // 可选：加个类名方便调样式
+      });
     }
 
     // 处理数据源
