@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
 import ProjectEditForm from './ProjectEditForm';
+import { current } from '@reduxjs/toolkit';
 
 interface MeetManageProps {
 	mid: number; 
@@ -54,6 +55,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
     setLoading(true);
     const name = await getContestName(mid);
     setMeetName(name);
+    setNewName(name);
     setLoading(false);
   }; 
 
@@ -71,7 +73,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
   };
   const handleRenameCancel = () => {
     setShowModifyModal(false);
-    setNewName('');
+    setNewName(meetName);
     setSelectedMid(undefined);
   };
   const putRenameRequest = async () => {
@@ -181,7 +183,7 @@ const MeetManage = ({mid, reload}: MeetManageProps) => {
       {(isSystemAdmin) && <Button
         type={'primary'}
         style={{ marginLeft: 16 }}
-        onClick={() => handleRenameClick(mid, "no name now")}
+        onClick={() => handleRenameClick(mid, meetName)}
         icon={<EditOutlined />}
       >
         修改赛事名称
