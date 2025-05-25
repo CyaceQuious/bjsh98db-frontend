@@ -107,7 +107,7 @@ export default function SearchResultTable({
                 }
             }
             if (name === 'projectname') {
-              return record.xingbie?.toString() + record.projectname?.toString() + record.zubie?.toString() + record.leixing?.toString();
+              return record.xingbie?.toString() + record.zubie?.toString() + record.projectname?.toString()  + record.leixing?.toString();
             }
             return value?.toString() || '-';
         }
