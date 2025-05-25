@@ -1,10 +1,11 @@
-import { Typography, Alert, List, theme } from 'antd';
+import { Typography, Alert, List, theme, Collapse } from 'antd';
 import Link from 'next/link';
 import Card from 'antd/es/card/Card';
 import React from 'react';
 
 const { Title, Text, Paragraph } = Typography;
 const { useToken } = theme;
+const { Panel } = Collapse;
 
 const Developers = [
   { name: 'CyaceQuious', link: 'https://github.com/CyaceQuious' , other: ''},
@@ -37,60 +38,62 @@ const AboutCard = ({mode}: AboutCardProps) => {
       </Card>
 
       {mode === "full" && (
-        <Card title="帮助" style={{ marginBottom: token.marginLG }}>
-          <Typography>
-            <Title level={3}>搜索</Title>
+        <Collapse style={{ marginBottom: token.marginLG }} defaultActiveKey={[]}>
+          <Panel header={<strong>帮助</strong>} key="1">
+            <Typography style={{ marginTop: 0 }}>
+              <Title level={3} style={{ marginTop: 0 }}>搜索</Title>
 
-            <Title level={4}>基础搜索</Title>
-            <Paragraph>
-              可以根据<strong>姓名</strong>、<strong>代表队</strong>、<strong>运动会</strong>三个关键词搜索
-              <Link href="https://wx.bjsh98.com/client/index.html#page_meet">原网页</Link>
-              的成绩信息。<strong>姓名</strong>栏可以输入多个（用","分隔），当成绩条目的选手是这些名字之一时会被检索到。
-              <strong>运动会</strong>栏也可以输入多个（用","分隔），当成绩条目的比赛名称包含所有这些关键词时会被检索到。
-            </Paragraph>
+              <Title level={4}>基础搜索</Title>
+              <Paragraph>
+                可以根据<strong>姓名</strong>、<strong>代表队</strong>、<strong>运动会</strong>三个关键词搜索
+                <Link href="https://wx.bjsh98.com/client/index.html#page_meet">原网页</Link>
+                的成绩信息。<strong>姓名</strong>栏可以输入多个（用","分隔），当成绩条目的选手是这些名字之一时会被检索到。
+                <strong>运动会</strong>栏也可以输入多个（用","分隔），当成绩条目的比赛名称包含所有这些关键词时会被检索到。
+              </Paragraph>
 
-            <Title level={4}>高级搜索</Title>
-            <Paragraph>
-              <strong>项目信息：</strong>
-              <br />
-              <strong>性别、组别、比赛项目、类型</strong>四个字段用于定位比赛的项目，例如"男子甲组1500米决赛"的四个字段分别为"男子""甲组""1500米""决赛"。
-              原网页的成绩条目的"性别"只有"男子""女子""混合"三种。
-            </Paragraph>
-            <Paragraph>
-              <strong>精确搜索：</strong>
-              <br />
-              这个开关打开时，<strong>运动会</strong>、<strong>代表队</strong>和<strong>项目信息</strong>要求成绩条目的相应字段与关键词完全一致，
-              而关闭时只要求成绩条目的相应字段<strong>包含</strong>关键词。注意<strong>姓名</strong>无论是否打开该开关，
-              都要求成绩条目的相应字段与关键词完全一致。
-            </Paragraph>
-            <Paragraph>
-              <strong>其他：</strong>
-              <br />
-              还可以选择只显示排名前八名的成绩，只显示我关注选手的成绩。
-            </Paragraph>
+              <Title level={4}>高级搜索</Title>
+              <Paragraph>
+                <strong>项目信息：</strong>
+                <br />
+                <strong>性别、组别、比赛项目、类型</strong>四个字段用于定位比赛的项目，例如"男子甲组1500米决赛"的四个字段分别为"男子""甲组""1500米""决赛"。
+                原网页的成绩条目的"性别"只有"男子""女子""混合"三种。
+              </Paragraph>
+              <Paragraph>
+                <strong>精确搜索：</strong>
+                <br />
+                这个开关打开时，<strong>运动会</strong>、<strong>代表队</strong>和<strong>项目信息</strong>要求成绩条目的相应字段与关键词完全一致，
+                而关闭时只要求成绩条目的相应字段<strong>包含</strong>关键词。注意<strong>姓名</strong>无论是否打开该开关，
+                都要求成绩条目的相应字段与关键词完全一致。
+              </Paragraph>
+              <Paragraph>
+                <strong>其他：</strong>
+                <br />
+                还可以选择只显示排名前八名的成绩，只显示我关注选手的成绩。
+              </Paragraph>
 
-            <Title level={4}>检索结果</Title>
-            <Paragraph>
-              点击检索结果的<strong>姓名</strong>，可以显示该选手的卡片，包含了每个参与过的项目的个人最好成绩、级别；
-              如果该选手通过认证与某用户相关联，也会显示关联的用户名、邮箱（如果该用户设置了）。点击卡片左上角的星星图案，
-              可以关注/取消关注该选手。
-              <br />
-              点击检索结果的<strong>运动会</strong>一栏，可以跳转到该比赛的主页。
-            </Paragraph>
+              <Title level={4}>检索结果</Title>
+              <Paragraph>
+                点击检索结果的<strong>姓名</strong>，可以显示该选手的卡片，包含了每个参与过的项目的个人最好成绩、级别；
+                如果该选手通过认证与某用户相关联，也会显示关联的用户名、邮箱（如果该用户设置了）。点击卡片左上角的星星图案，
+                可以关注/取消关注该选手。
+                <br />
+                点击检索结果的<strong>运动会</strong>一栏，可以跳转到该比赛的主页。
+              </Paragraph>
 
-            <Title level={3}>比赛</Title>
-            <Paragraph>
-              比赛主页包括团体总分排名和项目列表，项目列表提供了类似原网站的视图。
-            </Paragraph>
+              <Title level={3}>比赛</Title>
+              <Paragraph>
+                比赛主页包括团体总分排名和项目列表，项目列表提供了类似原网站的视图。
+              </Paragraph>
 
-            <Title level={3}>用户主页</Title>
-            <Paragraph>
-              <strong>个人资料</strong>页可以查看自己的基本信息、权限、关注列表，点击关注列表中的名字同样会显示 ta 的选手卡片。
-              <br />
-              <strong>运动员认证</strong>页可以申请认证（需要给一个有体干权限的号审核，目前填 caeious 就行），查看申请记录。
-            </Paragraph>
-          </Typography>
-        </Card>
+              <Title level={3}>用户主页</Title>
+              <Paragraph>
+                <strong>个人资料</strong>页可以查看自己的基本信息、权限、关注列表，点击关注列表中的名字同样会显示 ta 的选手卡片。
+                <br />
+                <strong>运动员认证</strong>页可以申请认证（需要给一个有体干权限的号审核，目前填 caeious 就行），查看申请记录。
+              </Paragraph>
+            </Typography>
+          </Panel>
+        </Collapse>
       )}
 
       {mode === "full" && (
