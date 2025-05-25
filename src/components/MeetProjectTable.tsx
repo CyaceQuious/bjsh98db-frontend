@@ -90,7 +90,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         <>
         {meetName !== "loading" ? (
           <Button 
-            variant="outlined"
+            variant="filled"
             color="green" 
             onClick={() => {
               setQuery({
@@ -122,7 +122,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
           }}
           infoIds={{id: record.id}}
           isEditMode
-          buttonStyle={{ marginLeft: '10px'}}
+          // buttonStyle={{ marginLeft: '10px'}}
           onSuccess={onContentRefresh}
           frozenItems={[
             "meet" 
@@ -133,7 +133,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
             ...record,
             mid
           }}
-          buttonStyle={{ marginLeft: '10px'}}
+          // buttonStyle={{ marginLeft: '10px'}}
           onSuccess={onContentRefresh}
         />}
         </>

@@ -8,7 +8,7 @@ import {
   Divider,
 } from 'antd';
 import { useState } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
+import { MinusSquareOutlined, PlusSquareOutlined, SearchOutlined } from '@ant-design/icons';
 import type { FormProps } from 'antd';
 import SearchTextBox from "./SearchTextBox";
 import { SearchQuery } from "../utils/types";
@@ -113,12 +113,16 @@ export default function SearchBox({
       }}
     >
       {advanceItems.length > 0 && <Button
-        type="link"
+        variant="dashed"
+        color="default"
+        icon={showAdvanced ? <MinusSquareOutlined/> : <PlusSquareOutlined/>}
         onClick={() => showAdvancedChange(!showAdvanced)}
       >
-        {showAdvanced ? '收起' : '高级搜索'}
+        {showAdvanced ? '收起高级搜索' : '高级搜索'}
       </Button>}
       <Button
+        variant="dashed"
+        color="danger"
         icon={<DeleteOutlined />}
         onClick={() => allFunctionDeleteHistory.forEach((item) => item())}
         disabled={history.length === 0}
@@ -138,7 +142,8 @@ export default function SearchBox({
       }}
     >
       <Button
-        type="primary"
+        variant="solid"
+        color="primary"
         icon={<SearchOutlined />}
         htmlType="submit"
         loading={loading}
@@ -179,7 +184,7 @@ export default function SearchBox({
               maxHeight: showAdvanced ? '1000px' : '0',
               opacity: showAdvanced ? 1 : 0,
               overflow: 'hidden',
-              transition: 'max-height 0.2s ease-in-out, opacity 0.2s ease-in-out',
+              transition: 'max-height 0.3s, opacity 0.2s',
             }}
           >
             <Row gutter={[token.marginSM, token.marginSM]}>

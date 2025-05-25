@@ -29,7 +29,7 @@ const searchResultTableItemNameDictCn: Record<keyof SearchResultTableItem, strin
     zubie: "组别",
     leixing: "项目阶段",
     result: "成绩",
-    grade: "运动技术等级",
+    grade: "等级",
     rank: "名次", 
     score: "得分", 
     manage: "管理",

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { Button, Modal, Input, message, Form, Table, Card } from 'antd'; 
 
-import { PlusOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloudDownloadOutlined, HomeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { request } from '../utils/network';
 
@@ -282,27 +282,33 @@ export default function ContestsTable() {
       title: '操作',
       key: 'action',
       render: (_: any, record: Contest) => (
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '0' }}>
           <Button 
-            type="link" 
+            variant="filled"
+            color="green"
+            icon={<HomeOutlined/>} 
             onClick={() => router.push(`/meet?mid=${record.mid}`)}
-            style={{ padding: 0 }}
+            // style={{ padding: 0 }}
           >
-            进入主页
+            主页
           </Button>
           {isSystemAdmin && (
             <>
               <Button
-                type="link"
+                variant="filled"
+                color="primary"
+                icon={<EditOutlined/>}
                 onClick={() => handleRenameClick(record.mid, record.name)}
-                style={{ padding: 0 }}
+                // style={{ padding: 0 }}
               >
                 修改名称
               </Button>
               <Button
-                type="link"
+                variant="filled"
+                color="danger"
+                icon={<DeleteOutlined/>}
                 onClick={() => handleDeleteClick(record.mid, record.name)}
-                style={{ padding: 0 }}
+                // style={{ padding: 0 }}
               >
                 删除比赛
               </Button>
