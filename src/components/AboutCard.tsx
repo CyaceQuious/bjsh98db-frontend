@@ -37,7 +37,7 @@ const AboutCard = ({mode}: AboutCardProps) => {
       </Card>
 
       {mode === "full" && (
-        <Card title="网站功能" style={{ marginBottom: token.marginLG }}>
+        <Card title="帮助" style={{ marginBottom: token.marginLG }}>
           <Typography>
             <Title level={3}>搜索</Title>
 
