@@ -181,7 +181,8 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
   }, []);
 
   useEffect(() => {
-    handleFresh();
+    fetchProjects();
+    fetchMeetName(); 
   }, [refreshTrigger]);
 
   return (
