@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Descriptions, Input, message } from 'antd';
 import { AuthRequest } from '../utils/types';
 
@@ -21,6 +21,12 @@ const AuthReviewModal: React.FC<AuthReviewModalProps> = ({
 }) => {
   const [rejectReason, setRejectReason] = useState('');
 
+  useEffect(() => {
+    if (visible) {
+      setRejectReason('');
+    }
+  }, [visible]);
+  
   const handleReject = () => {
     if (!rejectReason.trim()) {
       message.error('请填写拒绝原因');
