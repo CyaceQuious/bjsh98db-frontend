@@ -53,7 +53,7 @@ export default function CompetitionTeamScore() {
   return (
     <div style={{ display: 'flex', marginLeft: 200 }}>
       <Head>
-        <title>比赛团体总分 - 赛事 {midNum}</title>
+        <title>比赛主页 - 赛事 {midNum}</title>
       </Head>
       
       {/* 左侧目录 - List样式 */}

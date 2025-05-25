@@ -112,7 +112,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
         ) : (
           <span>加载中...</span>
         )}
-        {isContestOfficial&&<ProjectEditForm 
+        {(isSystemAdmin || isContestOfficial)&&<ProjectEditForm 
           defaultValues={{
             meet: meetName,
             name: record.name,
@@ -128,7 +128,7 @@ export default function MeetProjectTable({mid, refreshTrigger, onContentRefresh}
             "meet" 
           ]}
         />}
-        {isContestOfficial&&<ProjectDelForm
+        {(isSystemAdmin || isContestOfficial)&&<ProjectDelForm
           values={{
             ...record,
             mid

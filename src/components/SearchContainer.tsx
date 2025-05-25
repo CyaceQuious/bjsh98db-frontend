@@ -133,9 +133,9 @@ export default function SearchContainer({ oldQuery, hiddenResult, initOpenAdvanc
     ]
     const advanceSearchItems = [
         // width = [xs, sm, md, lg] of 24
-        { key: "projectname", type: "text", width: [24, 24, 12, 6] },
         { key: "xingbie", type: "text", width: [24, 24, 12, 6] },
         { key: "zubie", type: "text", width: [24, 24, 12, 6] },
+        { key: "projectname", type: "text", width: [24, 24, 12, 6] },
         { key: "leixing", type: "text", width: [24, 24, 12, 6] },
         { key: "ranked", type: "boolean", width: [8, 8, 4, 4] },
         { key: "precise", type: "boolean", width: [8, 8, 4, 4] },
