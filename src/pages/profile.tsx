@@ -412,14 +412,10 @@ const UserProfilePage = () => {
         }
         style={{ width: "80%", margin: "10px auto" }}
       >
-        <AuthStatus 
-          authRequests={authRequests} 
-          onApplyAuth={() => setAuthModalVisible(true)} 
-        />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-lg font-semibold">基本信息</h3>
+            <h3 className="text-lg font-semibold" style={{ marginTop: 0 }}>基本信息</h3>
             <div className="space-y-2 mt-2">
               <p>
                 <span className="font-medium">用户名:</span> {profile.username}
@@ -536,6 +532,11 @@ const UserProfilePage = () => {
       {(isContestOfficial.length > 0)&&<FeedbackReceiver style={{ width: "80%", margin: "20px auto" }}/>}
     </>),
     authAppl: (<div style={{ width: "80%", margin: "20px auto"}}>
+      <AuthStatus 
+        authRequests={authRequests} 
+        onApplyAuth={() => setAuthModalVisible(true)} 
+      />
+      <div style={{ marginTop: 16 }} />
       <AuthRequests
         authRequests={authRequests}
         isDepartmentOfficial={isDepartmentOfficial||isSystemAdmin}

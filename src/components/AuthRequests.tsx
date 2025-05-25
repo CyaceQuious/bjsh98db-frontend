@@ -45,7 +45,7 @@ const AuthRequests: React.FC<AuthRequestsProps> = ({
 
   return (
     <>
-      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+      <Space direction="vertical" size={16} style={{ width: '100%' }}>
         {authRequests.length > 0 && (
           <div className="mt-6">
             <Card title="我提出的认证申请" bordered={false}>
