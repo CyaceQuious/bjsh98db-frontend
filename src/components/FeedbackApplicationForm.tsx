@@ -3,7 +3,7 @@ import { Button, Modal, Form, Input, message, Spin } from 'antd';
 import type { ModalProps } from 'antd';
 const { TextArea } = Input;
 
-import { EditOutlined } from '@ant-design/icons';
+import { MessageOutlined } from '@ant-design/icons';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -121,7 +121,7 @@ const FeedbackApplicationForm = ({
           }
         }
         onClick={() => setOpen(true)}
-        icon={<EditOutlined/>}
+        icon={<MessageOutlined/>}
       >
         {'反馈'}
       </Button>

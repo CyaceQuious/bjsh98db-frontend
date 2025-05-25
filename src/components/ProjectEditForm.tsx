@@ -125,7 +125,8 @@ const ProjectEditForm = ({
   return (
     <>
       <Button
-        type={isEditMode ? 'link' : 'primary'}
+        variant={isEditMode ? 'outlined' : 'solid'}
+        color="primary"
         style={!useGray ? buttonStyle :
           {
             ...buttonStyle,
