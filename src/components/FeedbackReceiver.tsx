@@ -58,7 +58,13 @@ export default function FeedbackReceiver({ style }: FeedbackReceiverProps) {
         })
         fetchResults()
     }, [])
-
+    useEffect(() => {
+      setPagination(prev => ({
+        ...prev,
+        total: results.length
+      }));
+    }, [results]);
+    
     // start to search
     const fetchResults = async () => {
         setIsLoading(true);
